@@ -6,9 +6,13 @@ const sequelize = require ('./config/sequelize.js')
 require('dotenv').config()
 const port = process.env.port || 3001
 
-app.use("/", (req, res)=>{
-    res.send("ATEMS Server")
-})
+const gcRoute = require("./router/gcRoutes")
+const stdRoute = require ("./router/stdRoutes")
+const facultyRoute = require ("./router/facultyRoutes")
+
+app.use("/gc", gcRoute)
+app.use("/std", stdRoute)
+app.use("/faculty", facultyRoute)
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}/`);
