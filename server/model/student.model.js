@@ -1,6 +1,6 @@
-const { sequelize, DataTypes } = require("./config/sequelize");
+const { sequelize, DataTypes } = require("../config/sequelize");
 
-const Student = sequelize.define("students", {
+const students = sequelize.define("students", {
     rollno: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -22,6 +22,14 @@ const Student = sequelize.define("students", {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    semester: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    program: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     cgpa: {
         type: DataTypes.FLOAT,
         allowNull: false
@@ -33,6 +41,14 @@ const Student = sequelize.define("students", {
     password: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
     }
 });
 
@@ -41,3 +57,5 @@ sequelize.sync().then(() => {
 }).catch((error) => {
     console.error('Unable to create table : ', error);
 });
+
+module.exports = { students };
