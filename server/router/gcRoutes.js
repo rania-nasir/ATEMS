@@ -1,9 +1,8 @@
 const express = require('express');
 const gcRouter = express.Router();
+const gcFunctions = require("../controller/gc.controller");
 
-
- gcRouter.get('/signIn', (req, res)=>{ res.send('GC sigin here'); });
-// gcRouter.post('/signIn', gcFunctions.gcSignIn);
+gcRouter.post('/signIn', gcFunctions.gcSignIn);
 //gcRouter.get('/viewStudent', (req, res)=>{ res.send('Display student here'); });
 // gcRouter.post('/addStudent', (req, res)=>{ res.send('Add student here'); });
 // gcRouter.put('/updateStudent', (req, res)=>{ res.send('Add student here'); });

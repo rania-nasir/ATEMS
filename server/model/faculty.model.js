@@ -1,6 +1,6 @@
 const { sequelize, DataTypes } = require("../config/sequelize");
  
- const Faculty = sequelize.define("faculties", {
+ const faculties = sequelize.define("faculties", {
     facultyid: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -45,3 +45,5 @@ const { sequelize, DataTypes } = require("../config/sequelize");
  }).catch((error) => {
     console.error('Unable to create table : ', error);
  });
+
+ module.exports = { faculties };
