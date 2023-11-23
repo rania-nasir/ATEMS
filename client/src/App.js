@@ -1,14 +1,15 @@
 import './App.css';
-import logo from "./Images/faviconn.png"
+// import logo from "./Images/faviconn.png"
+import LandingPage from './Components/LandingPage'
+import WhoPage from './Components/WhoPage'
+import SignInPage from './Components/SignInPage'
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        
-        <p className='text-3xl font-bold underline mt-8'>This is ATEMS Project...</p>
-      </header>
+      <LandingPage/>
+      <WhoPage/>
+      <SignInPage/>
     </div>
   );
 }
