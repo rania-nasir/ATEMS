@@ -22,3 +22,5 @@ sequelize.sync().then(() => {
 }).catch((error) => {
     console.error('Unable to create Internal table : ', error);
 });
+
+module.exports = Internal;

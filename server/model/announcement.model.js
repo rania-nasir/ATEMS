@@ -26,3 +26,5 @@ sequelize.sync().then(() => {
 }).catch((error) => {
     console.error('Unable to create table : ', error);
 });
+
+module.exports = Announcement;
