@@ -11,7 +11,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
+@import "keep-react/src/main.min.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
