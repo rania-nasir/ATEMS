@@ -16,8 +16,8 @@ const stdSignIn = async (req, res) => {
     });
 
     if (resp) {
-      res.send('Sign In successfully');
       console.log(`${rollno}, ${password}`);
+      res.send('Sign In successfully');
     } else {
       res.send('Invalid Credentials');
     }
