@@ -15,7 +15,7 @@ const students = sequelize.define("students", {
         allowNull: false
     },
     gender: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.CHAR,
         allowNull: false
     },
     batch: {
