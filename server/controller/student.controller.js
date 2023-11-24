@@ -17,13 +17,13 @@ const stdSignIn = async (req, res) => {
 
     if (resp) {
       console.log(`${rollno}, ${password}`);
-      res.send('Sign In successfully');
+      res.status(200).json({ message: 'Student Sign In successfully  from Server side' });
     } else {
-      res.send('Invalid Credentials');
+      res.json({ message: 'Invalid Credentials' });
     }
   } catch (error) {
     console.error('Failed to retrieve data: ', error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).json({ message: 'Internal Server Error from Server side' });
   }
 };
 

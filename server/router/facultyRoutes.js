@@ -1,7 +1,8 @@
 const express = require('express');
 const facRouter = express.Router();
+const facFunctions = require('../controller/faculty.controller');
 
-facRouter.post('/signIn', (req, res)=>{ res.send('Faculty SignIn'); });
+facRouter.post('/signIn', facFunctions.facultySignIn);
 facRouter.get('/supReviewRequest', (req, res)=>{ res.send('Review Supervision Request'); });
 facRouter.post('/forwardRequest', (req, res)=>{ res.send('Update announcement here'); });  //forward supervison reuqest to GC
 facRouter.post('/addAnnouncement', (req, res)=>{ res.send('Send announcement here'); });
