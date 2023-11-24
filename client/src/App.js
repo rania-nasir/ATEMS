@@ -4,6 +4,8 @@ import WhoPage from './Components/WhoPage'
 import Facultylogin from './Components/Facultylogin'
 import Studentlogin from './Components/Studentlogin'
 import NotFoundPage from './Components/NotFoundPage'
+import Facultyhome from './Components/Facultyhome'
+import Studenthome from './Components/Studenthome'
 
 import { Route, Routes } from 'react-router-dom'
 
@@ -14,7 +16,9 @@ function App() {
         <Route path='/' element={<LandingPage />} />
         <Route path='/who' element={<WhoPage />} />
         <Route path='/facultylogin' element={<Facultylogin />} />
-        <Route path='/Studentlogin' element={<Studentlogin />} />
+        <Route path='/studentlogin' element={<Studentlogin />} />
+        <Route path='/facultyhome' element={<Facultyhome />} />
+        <Route path='/studenthome' element={<Studenthome />} />
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
     </div>

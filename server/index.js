@@ -6,6 +6,9 @@ const {Sequelize, DataTypes} = require ('./config/sequelize.js')
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
+const cors = require('cors');
+app.use(cors());
+
 app.use(express.json());
 
 const sequelize = require ('./config/sequelize.js') 

@@ -1,7 +1,52 @@
 import Atemlogo from '../Images/faviconn.png'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import React, {useState} from 'react';
 
 export default function Studentlogin() {
+    const navigate = useNavigate();
+
+    const [user, setuser] = useState({
+        rollno: "", password: ""
+    })
+
+    const handleInputs = (e) => {
+        const { name, value } = e.target; // Destructure name and value directly from event.target
+
+        setuser({ ...user, [name]: value }); // Update state using the name and value of the input field
+    };
+
+    const PostData = async (e) => {
+        e.preventDefault();
+    
+        const { rollno, password } = user;
+        const res = await fetch("http://localhost:5000/std/signIn", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                rollno, password
+            })
+        });
+    
+        const data = await res.json();
+        console.log("Response data:", data); // Log the response data
+    
+        if (res.status === 200) {
+            if (data.message === "Invalid Credentials") {
+                window.alert("Invalid Credentials");
+                console.log("Invalid Credentials");
+            } else {
+                window.alert("Login Successful");
+                console.log("Login Successful");
+                navigate('/studenthome');
+            }
+        } else {
+            window.alert("Something went wrong");
+            console.log("Something went wrong");
+        }
+    };
+    
     return (
         <>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -28,6 +73,7 @@ export default function Studentlogin() {
                                     name="rollno"
                                     type="rollno"
                                     autoComplete="rollno"
+                                    onChange={handleInputs}
                                     required
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
@@ -51,6 +97,7 @@ export default function Studentlogin() {
                                     name="password"
                                     type="password"
                                     autoComplete="current-password"
+                                    onChange={handleInputs}
                                     required
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
@@ -59,8 +106,9 @@ export default function Studentlogin() {
 
                         <div>
                             <button
-                                type="submit"
+                                type="button"
                                 className="flex w-full justify-center rounded-md bg-green-700 hover:bg-green-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+                                onClick={PostData}
                             >
                                 Log In
                             </button>
