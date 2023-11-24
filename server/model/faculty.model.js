@@ -15,11 +15,11 @@ const { sequelize, DataTypes } = require("../config/sequelize");
       allowNull: false
     },
     gender: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.CHAR,
       allowNull: false
-    }, 
+    },
     role: {
-      type: DataTypes.INTEGER, 
+      type: DataTypes.ARRAY(DataTypes.STRING), 
       allowNull: true
     }, 
     mobile: {
