@@ -1,4 +1,5 @@
 const { sequelize, DataTypes } = require("../config/sequelize");
+
 const announcements = sequelize.define("announcements", {
   announcementID: {
     type: DataTypes.STRING,
