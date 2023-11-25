@@ -1,7 +1,7 @@
-const { sequelize } = require("../config/sequelize");
-const { students } = require("../model/student.model");
-const { faculties } = require("../model/faculty.model");
-const { synopsis } = require("../model/synopsis.model");
+const { sequelize } = require("../../config/sequelize");
+const { students } = require("../../model/student.model");
+const { faculties } = require("../../model/faculty.model");
+const { synopsis } = require("../../model/synopsis.model");
 
 /*Synopsis Controller*/
 

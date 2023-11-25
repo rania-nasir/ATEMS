@@ -1,5 +1,5 @@
-const { sequelize } = require("../config/sequelize");
-const { students } = require("../model/student.model");
+const { sequelize } = require("../../config/sequelize");
+const { students } = require("../../model/student.model");
 
 const stdSignIn = async (req, res) => {
   try {

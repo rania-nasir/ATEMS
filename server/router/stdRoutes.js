@@ -1,7 +1,7 @@
 const express = require("express");
 const stdRouter = express.Router();
-const stdFunctions = require("../controller/student.controller");
-const synopsisController = require("../controller/synopsis.controller");
+const stdFunctions = require("../controller/student/student.controller");
+const synopsisController = require("../controller/synopsis/synopsis.controller");
 
 stdRouter.post('/signIn', stdFunctions.stdSignIn);
 
