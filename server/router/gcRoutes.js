@@ -1,6 +1,6 @@
 const express = require('express');
 const gcRouter = express.Router();
-const gcFunctions = require("../controller/gc.controller");
+const gcFunctions = require("../controller/gc/gc.controller");
 
 //gcRouter.get('/viewStudent', (req, res)=>{ res.send('Display student here'); });
 gcRouter.post('/addStudent', gcFunctions.addStudent);

@@ -1,6 +1,6 @@
 const express = require('express');
 const facRouter = express.Router();
-const facFunctions = require('../controller/faculty.controller');
+const facFunctions = require('../controller/faculty/faculty.controller');
 
 facRouter.post('/signIn', facFunctions.facultySignIn);
 facRouter.get('/supReviewRequest', (req, res)=>{ res.send('Review Supervision Request'); });
