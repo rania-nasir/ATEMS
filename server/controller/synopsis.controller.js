@@ -31,7 +31,7 @@ const sendFaculties = async (req, res) => {
 
     } catch (error) {
         console.error('Error loading synopsis form:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error 1' }); // error 1 for this function
     }
 };
 
@@ -73,8 +73,9 @@ const fillSynopsis = async (req, res) => {
 
     } catch (error) {
         console.error('Error processing synopsis form:', error);
-        res.status(500).json({ error: 'Internal server error 2' });
+        res.status(500).json({ error: 'Internal server error 2' }); // error 2 for this function
     }
 }
 
+// export the 2 functions required
 module.exports = { fillSynopsis, sendFaculties };
