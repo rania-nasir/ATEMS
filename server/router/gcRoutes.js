@@ -3,7 +3,7 @@ const gcRouter = express.Router();
 const gcFunctions = require("../controller/gc.controller");
 
 //gcRouter.get('/viewStudent', (req, res)=>{ res.send('Display student here'); });
-// gcRouter.post('/addStudent', (req, res)=>{ res.send('Add student here'); });
+gcRouter.post('/addStudent', gcFunctions.addStudent);
 // gcRouter.put('/updateStudent', (req, res)=>{ res.send('Add student here'); });
 // gcRouter.delete('/deleteStudent', (req, res)=>{ res.send('Add student here'); });
 // gcRouter.get('/viewFaculty', (req, res)=>{ res.send('View faculty here'); });
