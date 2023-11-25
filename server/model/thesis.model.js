@@ -22,7 +22,7 @@ const thesis = sequelize.define('thesis', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    internals:{
+    internals: {
         type: DataTypes.ARRAY(DataTypes.STRING),
         defaultValue: [],
         allowNull: false
