@@ -1,6 +1,6 @@
-const { sequelize } = require("../config/sequelize");
+const { sequelize } = require("../../config/sequelize");
 //const { faculties } = require("../model/faculty.model");
-const { students } = require("../model/student.model");
+const { students } = require("../../model/student.model");
 //const { announcements } = require("../model/announcement.model");
 
 
