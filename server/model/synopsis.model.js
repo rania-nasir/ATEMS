@@ -25,6 +25,13 @@ const synopsis = sequelize.define('synopsis', {
     facultyname: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    synopsisstatus: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        validate: {
+            isIn: [['Pending', 'Rejected', 'Approved']]
+        }
     }
 });
 

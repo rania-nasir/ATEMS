@@ -57,7 +57,7 @@ const approveSynopsis = async (req, res) => {
         const facultyId = req.user.id;
 
         await synopsis.update(
-            { status: 'Accepted' },
+            { synopsisstatus: 'Approved' },
             { where: { synopsisid: synopsisId, facultyid: facultyId } }
         );
 
@@ -76,7 +76,7 @@ const declineSynopsis = async (req, res) => {
         // const { reason } = req.body; if we want to send a reason
 
         await synopsis.update(
-            { status: 'Rejected' },
+            { synopsisstatus: 'Rejected' },
             { where: { synopsisid: synopsisId, facultyid: facultyId } }
         );
 
