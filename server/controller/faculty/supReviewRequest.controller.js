@@ -69,4 +69,23 @@ const approveSynopsis = async (req, res) => {
     }
 }
 
-module.exports = { getSynopsis, getSynopsisDetails, approveSynopsis };
+const declineSynopsis = async (req, res) => {
+    try {
+        const { synopsisId } = req.params;
+        const facultyId = req.user.id;
+        // const { reason } = req.body; if we want to send a reason
+
+        await synopsis.update(
+            { status: 'Rejected' },
+            { where: { synopsisid: synopsisId, facultyid: facultyId } }
+        );
+
+        res.json({ message: 'Synopsis rejected succesfully' });
+
+    } catch (error) {
+        console.error('Error declining synopsis:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+module.exports = { getSynopsis, getSynopsisDetails, approveSynopsis, declineSynopsis };
