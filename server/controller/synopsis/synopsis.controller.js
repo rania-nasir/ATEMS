@@ -62,9 +62,10 @@ const fillSynopsis = async (req, res) => {
         const newSynopsis = await synopsis.create({
             synopsistitle,
             description,
-            facultyid,
+            facultyid: 5555,
             facultyname: facultyname,
-            // rollno: 5, dummy for testing
+            rollno: 1234, //dummy for testing
+            synopsisstatus: 'Pending',
 
         });
 
