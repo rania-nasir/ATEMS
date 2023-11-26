@@ -7,7 +7,7 @@ facRouter.post('/signIn', facFunctions.facultySignIn);
 // Fetches the list of requests
 facRouter.get('/supAllRequests', facReview.getSynopsis);
 // supervisor selects 1 request out of many, fetches the synopsis details
-facRouter.get('/supReviewRequest/:synopsisid', facReview.getSynopsisDetails);
+facRouter.get('/supReviewRequest/:synopsisId', facReview.getSynopsisDetails);
 // supervisor approves
 facRouter.post('/approve-synopsis/:synopsisId', facReview.approveSynopsis);
 // supervisor declines

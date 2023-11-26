@@ -9,12 +9,12 @@ const { thesis } = require("../../model/thesis.model");
 const getSynopsis = async (req, res) => {
     try {
         // fetch all synopsis for the logged in supervisor
-        const facultyId = req.user.id; // obtain the logged in faculty id.
+        const facultyId = req.user.id;  //4455; // obtain the logged in faculty id.
 
         const allSynopsis = await synopsis.findAll({
             where: {
-                facultyId: facultyId,
-                status: 'Pending'
+                facultyid: facultyId,
+                synopsisstatus: 'Pending'
             },
             attributes: ['synopsisid', 'synopsistitle', 'description'],
         });
@@ -32,6 +32,8 @@ const getSynopsisDetails = async (req, res) => {
         // Faculty will choose an id for review
         const { synopsisId } = req.params;
         const facultyId = req.user.id; // obtain the logged in faculty id.
+
+        console.log("SynopsisId is : ", synopsisId);
 
         const selectedSynopsis = await synopsis.findOne({
             where: {
@@ -56,12 +58,25 @@ const approveSynopsis = async (req, res) => {
         const { synopsisId } = req.params;
         const facultyId = req.user.id;
 
-        await synopsis.update(
-            { synopsisstatus: 'Approved' },
-            { where: { synopsisid: synopsisId, facultyid: facultyId } }
+        const [rowsAffected, [updatedSynopsis]] = await synopsis.update(
+            {
+                synopsisstatus: 'Approved'
+            },
+            {
+                where:
+                {
+                    synopsisid: synopsisId,
+                    facultyid: facultyId
+                },
+                returning: true,
+            }
         );
 
-        res.json({ message: 'Synopsis approved succesfully' });
+        if (rowsAffected === 0) {
+            return res.status(404).json({ error: 'Synopsis not found or not authorized for approval' });
+        }
+
+        res.json({ message: 'Synopsis approved succesfully', updatedSynopsis });
 
     } catch (error) {
         console.error('Error approving synopsis:', error);
@@ -75,12 +90,25 @@ const declineSynopsis = async (req, res) => {
         const facultyId = req.user.id;
         // const { reason } = req.body; if we want to send a reason
 
-        await synopsis.update(
-            { synopsisstatus: 'Rejected' },
-            { where: { synopsisid: synopsisId, facultyid: facultyId } }
+        const [rowsAffected, [updatedSynopsis]] = await synopsis.update(
+            {
+                synopsisstatus: 'Rejected'
+            },
+            {
+                where:
+                {
+                    synopsisid: synopsisId,
+                    facultyid: facultyId
+                },
+                returning: true,
+            }
         );
 
-        res.json({ message: 'Synopsis rejected succesfully' });
+        if (rowsAffected === 0) {
+            return res.status(404).json({ error: 'Synopsis not found or not authorized for rejection' });
+        }
+
+        res.json({ message: 'Synopsis rejected succesfully', updatedSynopsis });
 
     } catch (error) {
         console.error('Error declining synopsis:', error);
@@ -100,6 +128,10 @@ const selectInternalMembers = async (req, res) => {
                 facultyid: facultyId
             },
         });
+
+        if (!selectedSynopsis) {
+            return res.status(404).json({ error: 'Synopsis not found or not authorized' });
+        }
 
         const newThesis = await thesis.create({
             thesistitle: selectedSynopsis.synopsistitle,
