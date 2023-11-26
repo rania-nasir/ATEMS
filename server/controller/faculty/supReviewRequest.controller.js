@@ -1,5 +1,4 @@
 const { sequelize } = require("../../config/sequelize");
-const { faculties } = require("../../model/faculty.model");
 const { synopsis } = require("../../model/synopsis.model");
 const { thesis } = require("../../model/thesis.model");
 

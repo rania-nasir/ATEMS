@@ -9,11 +9,11 @@ facRouter.get('/supAllRequests', facReview.getSynopsis);
 // supervisor selects 1 request out of many, fetches the synopsis details
 facRouter.get('/supReviewRequest/:synopsisid', facReview.getSynopsisDetails);
 // supervisor approves
-router.post('/approve-synopsis/:synopsisId', facReview.approveSynopsis);
+facRouter.post('/approve-synopsis/:synopsisId', facReview.approveSynopsis);
 // supervisor declines
-router.post('/decline-synopsis/:synopsisId', facReview.declineSynopsis);
+facRouter.post('/decline-synopsis/:synopsisId', facReview.declineSynopsis);
 // supervisor adds internals
-router.post('/select-internal-members/:synopsisId', facReview.selectInternalMembers);
+facRouter.post('/select-internal-members/:synopsisId', facReview.selectInternalMembers);
 
 facRouter.post('/forwardRequest', (req, res) => { res.send('Update announcement here'); });  //forward supervison reuqest to GC
 facRouter.post('/addAnnouncement', (req, res) => { res.send('Send announcement here'); });
