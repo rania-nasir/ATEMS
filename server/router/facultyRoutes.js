@@ -8,6 +8,12 @@ facRouter.post('/signIn', facFunctions.facultySignIn);
 facRouter.get('/supAllRequests', facReview.getSynopsis);
 // supervisor selects 1 request out of many, fetches the synopsis details
 facRouter.get('/supReviewRequest/:synopsisId', facReview.getSynopsisDetails);
+// supervisor approves
+facRouter.post('/approve-synopsis/:synopsisId', facReview.approveSynopsis);
+// supervisor declines
+facRouter.post('/decline-synopsis/:synopsisId', facReview.declineSynopsis);
+// supervisor adds internals
+facRouter.post('/select-internal-members/:synopsisId', facReview.selectInternalMembers);
 
 facRouter.post('/forwardRequest', (req, res) => { res.send('Update announcement here'); });  //forward supervison reuqest to GC
 facRouter.post('/addAnnouncement', (req, res) => { res.send('Send announcement here'); });
