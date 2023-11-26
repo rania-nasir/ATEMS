@@ -1,6 +1,7 @@
 const { sequelize } = require("../../config/sequelize");
 const { faculties } = require("../../model/faculty.model");
 const { synopsis } = require("../../model/synopsis.model");
+const { thesis } = require("../../model/thesis.model");
 
 
 /* Supervisor Review Requests Controller */
@@ -88,4 +89,32 @@ const declineSynopsis = async (req, res) => {
     }
 }
 
-module.exports = { getSynopsis, getSynopsisDetails, approveSynopsis, declineSynopsis };
+const selectInternalMembers = async (req, res) => {
+    try {
+        const { synopsisId } = req.params;
+        const facultyId = req.user.id;
+        const { internal1, internal2 } = req.body;
+
+        const selectedSynopsis = await synopsis.findOne({
+            where: {
+                synopsisid: synopsisId,
+                facultyid: facultyId
+            },
+        });
+
+        const newThesis = await thesis.create({
+            thesistitle: selectedSynopsis.synopsistitle,
+            description: selectedSynopsis.description,
+            rollno: selectedSynopsis.rollno,
+            facultyid: selectedSynopsis.facultyid,
+            internals: [internal1, internal2]
+        });
+
+        res.json({ message: 'Internal members selected succesfully', thesis: newThesis });
+    } catch (error) {
+        console.error('Error selecting internal members:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+module.exports = { getSynopsis, getSynopsisDetails, approveSynopsis, declineSynopsis, selectInternalMembers };
