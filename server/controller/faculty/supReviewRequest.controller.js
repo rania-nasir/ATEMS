@@ -1,6 +1,7 @@
 const { sequelize } = require("../../config/sequelize");
 const { synopsis } = require("../../model/synopsis.model");
 const { thesis } = require("../../model/thesis.model");
+const { faculties } = require("../../model/faculty.model");
 
 
 /* Supervisor Review Requests Controller */
@@ -9,7 +10,7 @@ const { thesis } = require("../../model/thesis.model");
 const getSynopsis = async (req, res) => {
     try {
         // fetch all synopsis for the logged in supervisor
-        const facultyId = req.user.id;  //4455; // obtain the logged in faculty id.
+        const facultyId = 4455; // obtain the logged in faculty id.
 
         const allSynopsis = await synopsis.findAll({
             where: {
@@ -31,7 +32,7 @@ const getSynopsisDetails = async (req, res) => {
     try {
         // Faculty will choose an id for review
         const { synopsisId } = req.params;
-        const facultyId = req.user.id; // obtain the logged in faculty id.
+        const facultyId = 4455; // obtain the logged in faculty id.
 
         const selectedSynopsis = await synopsis.findOne({
             where: {
@@ -54,7 +55,7 @@ const getSynopsisDetails = async (req, res) => {
 const approveSynopsis = async (req, res) => {
     try {
         const { synopsisId } = req.params;
-        const facultyId = req.user.id;
+        const facultyId = 4455;
 
         const [rowsAffected, [updatedSynopsis]] = await synopsis.update(
             {
@@ -85,7 +86,7 @@ const approveSynopsis = async (req, res) => {
 const declineSynopsis = async (req, res) => {
     try {
         const { synopsisId } = req.params;
-        const facultyId = req.user.id;
+        const facultyId = 4455;
         // const { reason } = req.body; if we want to send a reason
 
         const [rowsAffected, [updatedSynopsis]] = await synopsis.update(
@@ -117,7 +118,7 @@ const declineSynopsis = async (req, res) => {
 const selectInternalMembers = async (req, res) => {
     try {
         const { synopsisId } = req.params;
-        const facultyId = req.user.id;
+        const facultyId = 4455;
         const { internal1, internal2 } = req.body;
 
         const selectedSynopsis = await synopsis.findOne({
@@ -126,9 +127,20 @@ const selectInternalMembers = async (req, res) => {
                 facultyid: facultyId
             },
         });
-
+        console.log("Passed 2");
         if (!selectedSynopsis) {
             return res.status(404).json({ error: 'Synopsis not found or not authorized' });
+        }
+
+        const facultyList = await faculties.findAll({
+            attributes: ['facultyid', 'name'],
+        }); // show the list of available faculty on frontend
+
+        const internal1id = facultyList.find(faculty => faculty.name === internal1)?.facultyid;
+        const internal2id = facultyList.find(faculty => faculty.name === internal2)?.facultyid;
+
+        if (!internal1id || !internal2id) {
+            return res.status(400).json({ error: 'Invalid internal faculty names' });
         }
 
         const newThesis = await thesis.create({
@@ -136,7 +148,8 @@ const selectInternalMembers = async (req, res) => {
             description: selectedSynopsis.description,
             rollno: selectedSynopsis.rollno,
             facultyid: selectedSynopsis.facultyid,
-            internals: [internal1, internal2]
+            internals: [internal1, internal2],
+            internalsid: [internal1id, internal2id]
         });
 
         res.json({ message: 'Internal members selected succesfully', thesis: newThesis });
