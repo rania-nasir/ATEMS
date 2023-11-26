@@ -26,6 +26,11 @@ const thesis = sequelize.define('thesis', {
         type: DataTypes.ARRAY(DataTypes.STRING),
         defaultValue: [],
         allowNull: false
+    },
+    internalsid: {
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
+        defaultValue: [],
+        allowNull: false
     }
 });
 
