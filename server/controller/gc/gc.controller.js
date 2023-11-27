@@ -1,5 +1,5 @@
 const { sequelize } = require("../../config/sequelize");
-//const { faculties } = require("../model/faculty.model");
+const { faculties } = require("../../model/faculty.model");
 const { students } = require("../../model/student.model");
 //const { announcements } = require("../model/announcement.model");
 
@@ -70,7 +70,41 @@ const addStudent = async (req, res) => {
 };
 
 
+
+const addFaculty = async (req, res) => {
+  try {
+    const facultyid = req.body.facultyid;
+    const name = req.body.name;
+    const email = req.body.email;
+    const gender = req.body.gender;
+    const role = req.body.role;
+    const mobile = req.body.mobile;
+    const password = req.body.password;
+
+    // Validate email
+    const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: "Invalid email format" });
+    }
+    
+    await faculties.create({
+      facultyid: facultyid,
+      name: name,
+      email: email,
+      gender: gender,
+      role: role,
+      mobile: mobile,
+      password: password
+    });
+    res.status(200).send('Faculty record added successfully');
+  } catch (error) {
+    console.error('Failed to retrieve data: ', error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
 module.exports =
 {
-  addStudent
+  addStudent, 
+  addFaculty
 };

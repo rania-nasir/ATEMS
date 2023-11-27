@@ -7,7 +7,7 @@ gcRouter.post('/addStudent', gcFunctions.addStudent);
 // gcRouter.put('/updateStudent', (req, res)=>{ res.send('Add student here'); });
 // gcRouter.delete('/deleteStudent', (req, res)=>{ res.send('Add student here'); });
 // gcRouter.get('/viewFaculty', (req, res)=>{ res.send('View faculty here'); });
-// gcRouter.post('/addFaculty', (req, res)=>{ res.send('Add faculty here'); });
+gcRouter.post('/addFaculty', gcFunctions.addFaculty);
 // gcRouter.put('/updateFaculty', (req, res)=>{ res.send('Update faculty here'); });
 // gcRouter.delete('/deleteFaculty', (req, res)=>{ res.send('Delete faculty here'); });
 // gcRouter.get('/gcReviewRequest', (req, res)=>{ res.send('All requests to GC'); });
