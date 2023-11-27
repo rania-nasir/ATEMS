@@ -16,7 +16,10 @@ const students = sequelize.define("students", {
     },
     gender: {
         type: DataTypes.CHAR,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          isIn: [['M', 'F']]
+        }
     },
     batch: {
         type: DataTypes.INTEGER,
