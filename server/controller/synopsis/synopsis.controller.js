@@ -1,7 +1,9 @@
 const { sequelize } = require("../../config/sequelize");
+const { sendMail } = require("../../config/mailer");
 const { students } = require("../../model/student.model");
 const { faculties } = require("../../model/faculty.model");
 const { synopsis } = require("../../model/synopsis.model");
+
 
 /*Synopsis Controller*/
 
@@ -41,33 +43,40 @@ const fillSynopsis = async (req, res) => {
         const description = req.body.description;
         const facultyname = req.body.facultyname;
 
-        //console.log('passed 1');
         const faculty = await faculties.findOne({
             where: {
                 name: facultyname,
             },
-            attributes: ['facultyid'],
+            attributes: ['facultyid', 'email'], // fetches id and email of faculty which the student wants to send request to
         });
 
 
-        //console.log('passed 2');
         if (!faculty) {
             return res.status(404).json({ error: 'Faculty not found' });
         }
 
         const facultyid = faculty.facultyid;
 
-        //console.log('passed 3');
 
         const newSynopsis = await synopsis.create({
             synopsistitle,
             description,
-            facultyid: 5555,
+            facultyid: facultyid,
             facultyname: facultyname,
-            rollno: 1234, //dummy for testing
+            rollno: 1234, //dummy for testing // should be student roll no after authentication
             synopsisstatus: 'Pending',
 
         });
+
+        // Email sending
+
+        //console.log("Faculty email : ", faculty.email);
+
+        const toEmail = faculty.email;
+        const subject = 'New Supervision Request';
+        const text = 'This is a test email sent using Nodemailer.';
+
+        sendMail(toEmail, subject, text);
 
         res.status(200).json({ message: 'Synopsis created successfully', synopsis: newSynopsis });
 
@@ -78,5 +87,4 @@ const fillSynopsis = async (req, res) => {
     }
 }
 
-// export the 2 functions required
 module.exports = { fillSynopsis, sendFaculties };
