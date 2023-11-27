@@ -22,7 +22,7 @@ const facultyRoute = require ("./router/facultyRoutes")
 
 app.use("/gc", gcRoute)
 app.use("/std", stdRoute)
-app.use("/faculty", facultyRoute)
+app.use("/faculty", facultyRoute) 
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}/`);

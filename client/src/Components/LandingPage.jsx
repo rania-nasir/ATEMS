@@ -23,6 +23,7 @@ const LandingPage = () => {
                     onClick={handleGetStarted}>
                     Get Started</button>
             </header>
+
         </>
     )
 }
