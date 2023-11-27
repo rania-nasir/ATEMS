@@ -6,6 +6,8 @@ import Studentlogin from './Components/Studentlogin'
 import NotFoundPage from './Components/NotFoundPage'
 import Facultyhome from './Components/Facultyhome'
 import Studenthome from './Components/Studenthome'
+import AddStudentRecord from './Components/AddStudentRecord'
+import GCDashboard from './Components/GCDashboard';
 
 import { Route, Routes } from 'react-router-dom'
 
@@ -19,6 +21,9 @@ function App() {
         <Route path='/studentlogin' element={<Studentlogin />} />
         <Route path='/facultyhome' element={<Facultyhome />} />
         <Route path='/studenthome' element={<Studenthome />} />
+        <Route path='/addstudentrecord' element={<AddStudentRecord />} />
+        {/* <Route path='/addstudentrecord' element={<AddStudentRecord />} /> */}
+        <Route path='/GCDashboard' element={<GCDashboard />} />
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
     </div>

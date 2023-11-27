@@ -62,10 +62,10 @@ const addStudent = async (req, res) => {
       mobile: mobile,
       password: password
     });
-    res.status(200).send('Student record added successfully');
+    res.status(200).json('Student record added successfully');
   } catch (error) {
     console.error('Failed to retrieve data: ', error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).json('Internal Server Error');
   }
 };
 
@@ -96,10 +96,10 @@ const addFaculty = async (req, res) => {
       mobile: mobile,
       password: password
     });
-    res.status(200).send('Faculty record added successfully');
+    res.status(200).json('Faculty record added successfully');
   } catch (error) {
     console.error('Failed to retrieve data: ', error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).json('Internal Server Error');
   }
 }
 
