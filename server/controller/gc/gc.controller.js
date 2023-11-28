@@ -123,9 +123,22 @@ const addFaculty = async (req, res) => {
   }
 }
 
+const viewFaculty = async (req, res) => {
+  try {
+    const facultyMembers = await faculties.findAll({
+      attributes: ['facultyid', 'name', 'email']
+    });
+    res.json(facultyMembers);
+  } catch (error) {
+    console.error('Failed to retrieve data: ', error);
+    res.status(500).json('Internal Server Error');
+  }
+};
+
 module.exports =
 {
   addStudent, 
+  viewStudents,
   addFaculty,
-  viewStudents
+  viewFaculty
 };
