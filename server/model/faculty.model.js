@@ -26,7 +26,7 @@ const faculties = sequelize.define("faculties", {
     allowNull: true
   },
   mobile: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false
   },
   password: {
