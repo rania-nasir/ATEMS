@@ -74,7 +74,17 @@ const addStudent = async (req, res) => {
   }
 };
 
-
+const viewStudents = async (req, res) => {
+  try {
+    const studentsnData = await students.findAll({
+      attributes: ['rollno', 'name', 'batch', 'semester', 'program', 'cgpa']
+    });
+    res.json(studentsnData);
+  } catch (error) {
+    console.error('Failed to retrieve data: ', error);
+    res.status(500).send.json('Internal Server Error');
+  }
+}
 
 const addFaculty = async (req, res) => {
   try {
@@ -96,7 +106,7 @@ const addFaculty = async (req, res) => {
     if (!mobileRegex.test(mobile)) {
       return res.status(400).json({ error: "Invalid mobile number format" });
     }
-    
+
     await faculties.create({
       facultyid: facultyid,
       name: name,
@@ -116,5 +126,6 @@ const addFaculty = async (req, res) => {
 module.exports =
 {
   addStudent, 
-  addFaculty
+  addFaculty,
+  viewStudents
 };
