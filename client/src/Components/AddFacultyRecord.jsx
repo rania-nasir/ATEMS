@@ -1,14 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 
-export default function AddStudentRecord() {
+export default function AddFacultyRecord() {
 
     const navigate = useNavigate();
 
     const [user, setuser] = useState({
-        rollno: "", name: "", email: "",
-        gender: "", batch: "", semester: "",
-        program: "", cgpa: "", mobile: "", password: ""
+        facultyid: "", name: "", email: "",
+        gender: "", mobile: "", password: ""  
     })
     const handleInputs = (e) => {
         const { name, value } = e.target
@@ -18,16 +17,16 @@ export default function AddStudentRecord() {
     const PostData = async (e) => {
         e.preventDefault();
 
-        const { rollno, name, email, gender, batch, semester, program, cgpa, mobile, password } = user;
+        const { facultyid, name, email, gender, mobile, password } = user;
 
         try {
-            const res = await fetch("http://localhost:5000/gc/addstudent", {
+            const res = await fetch("http://localhost:5000/gc/addFaculty", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    rollno, name, email, gender, batch, semester, program, cgpa, mobile, password
+                    facultyid, name, email, gender, mobile, password
                 })
             });
 
@@ -39,8 +38,8 @@ export default function AddStudentRecord() {
                     window.alert("Invalid Credentials");
                     console.log("Invalid Credentials");
                 } else {
-                    window.alert("Student Added Successfully");
-                    console.log("Student Added Successfully");
+                    window.alert("Faculty Added Successfully");
+                    console.log("Faculty Added Successfully");
                     navigate('/GCDashboard');
                 }
             } else {
@@ -59,7 +58,7 @@ export default function AddStudentRecord() {
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                        Add Student Record
+                        Add Faculty Record
                     </h2>
                 </div>
 
@@ -67,22 +66,22 @@ export default function AddStudentRecord() {
                     <form className="space-y-2" method="POST">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6">
                             <div className="flex flex-col">
-                                <label htmlFor="rollno" className="block text-sm font-medium leading-6 text-gray-900">
-                                    Roll Number
+                                <label htmlFor="facultyid" className="block text-sm font-medium leading-6 text-gray-900">
+                                    Faculty ID
                                 </label>
                                 <input
-                                    id="rollno"
-                                    name="rollno"
+                                    id="facultyid"
+                                    name="facultyid"
                                     type="text"
                                     autoComplete="off"
-                                    value={user.rollno}
+                                    value={user.facultyid}
                                     onChange={handleInputs}
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
                             <div className="flex flex-col">
                                 <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
-                                    Student Name
+                                    Faculty Name
                                 </label>
                                 <input
                                     id="name"
@@ -125,62 +124,6 @@ export default function AddStudentRecord() {
                                 />
                             </div>
                             <div className="flex flex-col">
-                                <label htmlFor="batch" className="block text-sm font-medium leading-6 text-gray-900">
-                                    Batch
-                                </label>
-                                <input
-                                    id="batch"
-                                    name="batch"
-                                    type="text"
-                                    autoComplete="off"
-                                    value={user.batch}
-                                    onChange={handleInputs}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
-                            </div>
-                            <div className="flex flex-col">
-                                <label htmlFor="semester" className="block text-sm font-medium leading-6 text-gray-900">
-                                    Semester
-                                </label>
-                                <input
-                                    id="semester"
-                                    name="semester"
-                                    type="text"
-                                    autoComplete="off"
-                                    value={user.semester}
-                                    onChange={handleInputs}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
-                            </div>
-                            <div className="flex flex-col">
-                                <label htmlFor="program" className="block text-sm font-medium leading-6 text-gray-900">
-                                    Program Name
-                                </label>
-                                <input
-                                    id="program"
-                                    name="program"
-                                    type="text"
-                                    autoComplete="off"
-                                    value={user.program}
-                                    onChange={handleInputs}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
-                            </div>
-                            <div className="flex flex-col">
-                                <label htmlFor="cgpa" className="block text-sm font-medium leading-6 text-gray-900">
-                                    CGPA
-                                </label>
-                                <input
-                                    id="cgpa"
-                                    name="cgpa"
-                                    type="text"
-                                    autoComplete="off"
-                                    value={user.cgpa}
-                                    onChange={handleInputs}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
-                            </div>
-                            <div className="flex flex-col">
                                 <label htmlFor="mobile" className="block text-sm font-medium leading-6 text-gray-900">
                                     Mobile
                                 </label>
@@ -215,7 +158,7 @@ export default function AddStudentRecord() {
                                 className="flex mt-6 w-full justify-center rounded-md bg-green-700 hover:bg-green-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
                                 onClick={PostData}
                             >
-                                Add Student
+                                Add Faculty
                             </button>
                         </div>
                     </form>
