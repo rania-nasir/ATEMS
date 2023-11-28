@@ -50,6 +50,11 @@ const addStudent = async (req, res) => {
       return res.status(400).json({ error: "Student is not eligible for synopsis registration" });
     }
 
+    const mobileRegex = /^\d{11}$/;
+    if (!mobileRegex.test(mobile)) {
+      return res.status(400).json({ error: "Invalid mobile number format" });
+    }
+
     await students.create({
       rollno: rollno,
       name: name,
@@ -85,6 +90,11 @@ const addFaculty = async (req, res) => {
     const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ error: "Invalid email format" });
+    }
+    
+    const mobileRegex = /^\d{11}$/;
+    if (!mobileRegex.test(mobile)) {
+      return res.status(400).json({ error: "Invalid mobile number format" });
     }
     
     await faculties.create({

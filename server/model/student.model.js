@@ -38,7 +38,7 @@ const students = sequelize.define("students", {
         allowNull: false
     },
     mobile: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false
     },
     password: {
