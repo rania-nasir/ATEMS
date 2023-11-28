@@ -115,6 +115,7 @@ const declineSynopsis = async (req, res) => {
     }
 }
 
+
 const selectInternalMembers = async (req, res) => {
     try {
         const { synopsisId } = req.params;
@@ -141,6 +142,11 @@ const selectInternalMembers = async (req, res) => {
 
         if (!internal1id || !internal2id) {
             return res.status(400).json({ error: 'Invalid internal faculty names' });
+        }
+
+        //validating that supervisor and internal members are not the same
+        if (facultyId === internal1id || facultyId === internal2id || internal1id === internal2id) {
+            return res.status(400).json({ error: 'Supervisor and Internals must be different for a thesis' });
         }
 
         const newThesis = await thesis.create({

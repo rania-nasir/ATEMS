@@ -23,7 +23,7 @@ const faculties = sequelize.define("faculties", {
   },
   role: {
     type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: true
+    allowNull: false
   },
   mobile: {
     type: DataTypes.STRING,
