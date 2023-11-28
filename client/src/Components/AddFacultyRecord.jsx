@@ -1,13 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
+import { MultiSelect } from 'primereact/multiselect';
 
 export default function AddFacultyRecord() {
 
     const navigate = useNavigate();
 
+    const [selectedrole, setSelectedrole] = useState(null);
+    const role = ['Supervisor', 'MSRC', 'Internal'];
+
     const [user, setuser] = useState({
         facultyid: "", name: "", email: "",
-        gender: "", mobile: "", password: ""  
+        gender: "", mobile: "", role: selectedrole, password: ""
     })
     const handleInputs = (e) => {
         const { name, value } = e.target
@@ -19,16 +23,21 @@ export default function AddFacultyRecord() {
 
         const { facultyid, name, email, gender, mobile, password } = user;
 
+        const facultyData = {
+            facultyid, name, email, gender, mobile, role: selectedrole, password
+        }
+
+        console.log(`role are ===== ` + facultyData.role)
+
         try {
             const res = await fetch("http://localhost:5000/gc/addFaculty", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    facultyid, name, email, gender, mobile, password
-                })
+                body: JSON.stringify(facultyData)
             });
+
 
             const data = await res.json();
             console.log("Response data:", data);
@@ -136,6 +145,10 @@ export default function AddFacultyRecord() {
                                     onChange={handleInputs}
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
+                            </div>
+                            <div className="flex flex-col">
+                                <MultiSelect value={selectedrole} onChange={(e) => setSelectedrole(e.value)} options={role}
+                                    placeholder="Select role" maxSelectedLabels={3} className="leading-6 text-gray-900 font-medium text-sm w-full md:w-20rem" />
                             </div>
                             <div className="flex flex-col">
                                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
