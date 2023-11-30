@@ -2,9 +2,10 @@ const { sequelize, DataTypes } = require("../config/sequelize");
 
 const announcements = sequelize.define("announcements", {
   announcementID: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
-    primaryKey: true
+    primaryKey: true,
+    autoIncrement: true
   },
   announcementTitle: {
     type: DataTypes.STRING,

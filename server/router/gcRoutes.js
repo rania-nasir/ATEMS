@@ -12,6 +12,6 @@ gcRouter.get('/viewFaculty', gcFunctions.viewFaculty);
 // gcRouter.delete('/deleteFaculty', (req, res)=>{ res.send('Delete faculty here'); });
 // gcRouter.get('/gcReviewRequest', (req, res)=>{ res.send('All requests to GC'); });
 // gcRouter.get('/assignRoles', (req, res)=>{ res.send('GC assign faculty roles here'); });
-// gcRouter.post('/makeAnnouncement', (req, res)=>{ res.send('GC make announcements here'); });
+gcRouter.post('/makeAnnouncement', gcFunctions.addAnnouncement);
 
 module.exports = gcRouter;
