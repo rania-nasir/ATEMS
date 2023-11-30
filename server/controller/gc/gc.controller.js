@@ -1,7 +1,8 @@
 const { sequelize } = require("../../config/sequelize");
 const { faculties } = require("../../model/faculty.model");
 const { students } = require("../../model/student.model");
-//const { announcements } = require("../model/announcement.model");
+const { announcements } = require("../../model/announcement.model");
+const { sendMail } = require("../../config/mailer");
 
 
 const addStudent = async (req, res) => {
@@ -135,10 +136,54 @@ const viewFaculty = async (req, res) => {
   }
 };
 
+const addAnnouncement = async (req, res) => {
+  try {
+    const announcementID = req.body.announcementID;
+    const announcementType = req.body.announcementType;
+    const announcementTitle = req.body.announcementTitle;
+    const announcementContent = req.body.announcementContent;
+ 
+    await announcements.create({
+      announcementID,
+      announcementType,
+      announcementTitle,
+      announcementContent
+    });
+
+    if (announcementType === 'Student' || announcementType === 'Both') {
+      const Students = await students.findAll();
+      // Send email to all students
+      Students.forEach((student) => {
+        const toEmail = student.email;
+        const subject = 'New Announcement';
+        const text = 'An announcement has been added to the system.';
+        sendMail(toEmail, subject, text);
+      });
+    }
+
+    if (announcementType === 'Faculty' || announcementType === 'Both') {
+      const Faculties = await faculties.findAll();
+      // Send email to all faculties
+      Faculties.forEach((faculty) => {
+        const toEmail = faculty.email;
+        const subject = 'New Announcement';
+        const text = 'An announcement has been added to the system.';
+        sendMail(toEmail, subject, text);
+      });
+    }
+    
+    res.status(200).json('Announcement record added successfully');
+  } catch (error) {
+    console.error('Failed to retrieve data: ', error);
+    res.status(500).json('Internal Server Error');
+  }
+};
+
 module.exports =
 {
   addStudent, 
   viewStudents,
   addFaculty,
-  viewFaculty
+  viewFaculty,
+  addAnnouncement
 };
