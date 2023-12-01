@@ -11,6 +11,7 @@ import AddFacultyRecord from './Components/AddFacultyRecord'
 import GCDashboard from './Components/GCDashboard';
 import ViewStudent from './Components/ViewStudent';
 import ViewFaculty from './Components/ViewFaculty';
+import MakeAnnouncement from './Components/MakeAnnouncement';
 
 import { Route, Routes } from 'react-router-dom'
 
@@ -33,6 +34,7 @@ function App() {
         <Route path='/addfacultyrecord' element={<AddFacultyRecord />} />
         <Route path='/viewstudent' element={<ViewStudent />} />
         <Route path='/viewfaculty' element={<ViewFaculty />} />
+        <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
         <Route path='/GCDashboard' element={<GCDashboard />} />
         <Route path='*' element={<NotFoundPage />} />
       </Routes>
