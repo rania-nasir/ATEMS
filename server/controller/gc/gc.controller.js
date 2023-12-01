@@ -155,8 +155,8 @@ const addAnnouncement = async (req, res) => {
       // Send email to all students
       Students.forEach((student) => {
         const toEmail = student.email;
-        const subject = 'New Announcement';
-        const text = 'An announcement has been added to the system.';
+        const subject = announcementTitle;
+        const text = announcementContent.slice(0, 50);
         sendMail(toEmail, subject, text);
       });
     }
@@ -166,8 +166,8 @@ const addAnnouncement = async (req, res) => {
       // Send email to all faculties
       Faculties.forEach((faculty) => {
         const toEmail = faculty.email;
-        const subject = 'New Announcement';
-        const text = 'An announcement has been added to the system.';
+        const subject = announcementTitle;
+        const text = announcementContent.slice(0, 50) + "........ Check the system to see full announcement";
         sendMail(toEmail, subject, text);
       });
     }
