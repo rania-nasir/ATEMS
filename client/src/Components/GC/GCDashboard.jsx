@@ -1,5 +1,5 @@
 
-import logo from '../Images/faviconn.png'
+import logo from '../../Images/faviconn.png'
 
 const GCDashboard = () => {
 
