@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import atems_logo from '../../Images/faviconn.png'
 import ATEMS from './ATEMS';
 import Navlist from './Navlist'
 import {
@@ -29,7 +30,10 @@ const NavbarDefault = () => {
                     className="text-2xl font-sans mr-4 cursor-pointer py-1.5 font-medium"
                     style={{ color: "black" }}
                 >
-                    <ATEMS />
+                    <div className="flex justify-between items-center">
+                        <img src={atems_logo} className="w-10" alt="logo" />
+                        <ATEMS />
+                    </div>
                 </Typography>
                 <div className="hidden lg:block">
                     {/* Component here */}
