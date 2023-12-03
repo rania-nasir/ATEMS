@@ -1,4 +1,3 @@
-import Atemlogo from '../../Images/faviconn.png'
 import { NavLink, useNavigate } from 'react-router-dom'
 import React, { useState } from 'react'
 
@@ -17,10 +16,19 @@ export default function Facultylogin() {
     };
 
     const PostData = async (e) => {
-    
+
         e.preventDefault();
 
         const { facultyid, password } = user;
+
+        const errorMessage = document.getElementById('errorMessage');
+        if (!facultyid || !password) {
+            errorMessage.innerHTML = 'Please fill all the fields';
+            return;
+        } else {
+            errorMessage.innerHTML = '';
+        }
+
 
         const res = await fetch("http://localhost:5000/faculty/signIn", {
             method: "POST",
@@ -30,9 +38,9 @@ export default function Facultylogin() {
             body: JSON.stringify({
                 facultyid, password
             })
-        });const data = await res.json();
+        }); const data = await res.json();
         console.log("Response data:", data); // Log the response data
-    
+
         if (res.status === 200) {
             if (data.message === "Invalid Credentials") {
                 window.alert("Invalid Credentials");
@@ -51,69 +59,51 @@ export default function Facultylogin() {
         <>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <img
-                        className="mx-auto h-20 w-auto"
-                        src={Atemlogo}
-                        alt="Your Company"
-                    />
-                    <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                    <h2 className="text-2xl tracking-tight text-gray-700 font-bold mt-4 mb-2">
                         Sign In to your account
                     </h2>
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form className="space-y-6" method="POST">
-                        <div>
-                            <label htmlFor="facultyid" className="block text-sm font-medium leading-6 text-gray-900">
-                                Faculty ID
-                            </label>
-                            <div className="mt-2">
-                                <input
-                                    id="facultyid"
-                                    name="facultyid"
-                                    type="facultyid"
-                                    autoComplete="off"
+                    <form class="w-full max-w-lg">
+                        <div class="flex flex-wrap -mx-3 mb-6">
+                            <div class="w-full px-3 mb-6 md:mb-0">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    Faculty ID
+                                </label>
+                                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     value={user.facultyid}
                                     onChange={handleInputs}
                                     required
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
+                                    type="facultyid"
+                                    name="facultyid"
+                                    placeholder="F-1234" />
                             </div>
                         </div>
-
-                        <div>
-                            <div className="flex items-center justify-between">
-                                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                        <div class="flex flex-wrap -mx-3 mb-6">
+                            <div class="w-full px-3">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
                                     Password
                                 </label>
-                                <div className="text-sm">
-                                    <NavLink to="#" className="font-semibold text-green-600 hover:text-green-500">
-                                        Forgot password?
-                                    </NavLink>
-                                </div>
-                            </div>
-                            <div className="mt-2">
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    autoComplete="off"
+                                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     value={user.password}
                                     onChange={handleInputs}
                                     required
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    placeholder="******************" />
                             </div>
+                            <p id='errorMessage' class="pl-4 text-red-500 text-xs italic"></p>
                         </div>
-
-                        <div>
-                            <button
-                                type="button"
-                                className="flex w-full justify-center rounded-md bg-green-700 hover:bg-green-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
-                                onClick={PostData}
-                            >
-                                Log In
-                            </button>
+                        <div class="flex flex-wrap -mx-3 mb-6">
+                            <div class="w-full px-3">
+                                <button class="block w-full flex-shrink-0 bg-green-500 hover:bg-green-700 border-green-500 hover:border-green-700 text-sm border-4 text-white py-1 px-2 rounded"
+                                    type="button"
+                                    onClick={PostData}>
+                                    Log In
+                                </button>
+                            </div>
                         </div>
                     </form>
 
