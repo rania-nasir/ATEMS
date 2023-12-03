@@ -1,7 +1,7 @@
 
-import logo from '../Images/faviconn.png'
+import logo from '../../Images/faviconn.png'
 
-const Studenthome = () => {
+const Facultyhome = () => {
 
     return (
         <>
@@ -10,11 +10,11 @@ const Studenthome = () => {
 
                 <p className='text-3xl font-bold m-6'>Academic Thesis Evaluation and Management System</p>
                 <p className='text-lg m-4 pb-2'>
-                   Student Home Page
+                   Faculty Home Page
                 </p>
             </header>
         </>
     )
 }
 
-export default Studenthome;
+export default Facultyhome;
