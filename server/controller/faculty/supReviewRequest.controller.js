@@ -55,15 +55,44 @@ const getSynopsisDetails = async (req, res) => {
 const approveSynopsis = async (req, res) => {
     try {
         const { synopsisId } = req.params;
-        const facultyId = 4455;
+        const facultyId = '4455';
+        const { internal1, internal2 } = req.body;
+
+        const selectedSynopsis = await synopsis.findOne({
+            where: {
+                synopsisid: synopsisId,
+                facultyid: facultyId
+            },
+        });
+
+        if (!selectedSynopsis) {
+            return res.status(404).json({ error: 'Synopsis not found or not authorized' });
+        }
+
+        const facultyList = await faculties.findAll({
+            attributes: ['facultyid', 'name'],
+        });
+
+        console.log('Faculty List:', facultyList);
+
+        const internal1id = facultyList.find(faculty => faculty.name === internal1)?.facultyid;
+        const internal2id = facultyList.find(faculty => faculty.name === internal2)?.facultyid;
+
+        if (!internal1id || !internal2id) {
+            return res.status(400).json({ error: 'Invalid internal faculty names' });
+        }
+
+        // Validating that supervisor and internal members are not the same
+        if (facultyId === internal1id || facultyId === internal2id || internal1id === internal2id) {
+            return res.status(400).json({ error: 'Supervisor and Internals must be different for a thesis' });
+        }
 
         const [rowsAffected, [updatedSynopsis]] = await synopsis.update(
             {
                 synopsisstatus: 'Approved'
             },
             {
-                where:
-                {
+                where: {
                     synopsisid: synopsisId,
                     facultyid: facultyId
                 },
@@ -75,13 +104,25 @@ const approveSynopsis = async (req, res) => {
             return res.status(404).json({ error: 'Synopsis not found or not authorized for approval' });
         }
 
-        res.json({ message: 'Synopsis approved succesfully', updatedSynopsis });
+
+        const newThesis = await thesis.create({
+            thesistitle: selectedSynopsis.synopsistitle,
+            description: selectedSynopsis.description,
+            rollno: selectedSynopsis.rollno,
+            facultyid: selectedSynopsis.facultyid,
+            internals: [internal1, internal2],
+            internalsid: [internal1id, internal2id]
+        });
+
+
+
+        res.json({ message: 'Internal members selected successfully and Synopsis approved', thesis: newThesis });
 
     } catch (error) {
-        console.error('Error approving synopsis:', error);
+        console.error('Error approving synopsis or selecting internal members:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-}
+};
 
 const declineSynopsis = async (req, res) => {
     try {
@@ -116,53 +157,4 @@ const declineSynopsis = async (req, res) => {
 }
 
 
-const selectInternalMembers = async (req, res) => {
-    try {
-        const { synopsisId } = req.params;
-        const facultyId = 4455;
-        const { internal1, internal2 } = req.body;
-
-        const selectedSynopsis = await synopsis.findOne({
-            where: {
-                synopsisid: synopsisId,
-                facultyid: facultyId
-            },
-        });
-        console.log("Passed 2");
-        if (!selectedSynopsis) {
-            return res.status(404).json({ error: 'Synopsis not found or not authorized' });
-        }
-
-        const facultyList = await faculties.findAll({
-            attributes: ['facultyid', 'name'],
-        }); // show the list of available faculty on frontend
-
-        const internal1id = facultyList.find(faculty => faculty.name === internal1)?.facultyid;
-        const internal2id = facultyList.find(faculty => faculty.name === internal2)?.facultyid;
-
-        if (!internal1id || !internal2id) {
-            return res.status(400).json({ error: 'Invalid internal faculty names' });
-        }
-
-        //validating that supervisor and internal members are not the same
-        if (facultyId === internal1id || facultyId === internal2id || internal1id === internal2id) {
-            return res.status(400).json({ error: 'Supervisor and Internals must be different for a thesis' });
-        }
-
-        const newThesis = await thesis.create({
-            thesistitle: selectedSynopsis.synopsistitle,
-            description: selectedSynopsis.description,
-            rollno: selectedSynopsis.rollno,
-            facultyid: selectedSynopsis.facultyid,
-            internals: [internal1, internal2],
-            internalsid: [internal1id, internal2id]
-        });
-
-        res.json({ message: 'Internal members selected succesfully', thesis: newThesis });
-    } catch (error) {
-        console.error('Error selecting internal members:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-}
-
-module.exports = { getSynopsis, getSynopsisDetails, approveSynopsis, declineSynopsis, selectInternalMembers };
+module.exports = { getSynopsis, getSynopsisDetails, approveSynopsis, declineSynopsis };
