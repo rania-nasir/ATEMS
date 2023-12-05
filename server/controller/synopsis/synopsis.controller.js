@@ -4,7 +4,6 @@ const { students } = require("../../model/student.model");
 const { faculties } = require("../../model/faculty.model");
 const { synopsis } = require("../../model/synopsis.model");
 
-
 /*Synopsis Controller*/
 
 // get the list of faculties in the system
@@ -43,6 +42,8 @@ const fillSynopsis = async (req, res) => {
         const description = req.body.description;
         const facultyname = req.body.facultyname;
 
+        // console.log('------> ', synopsistitle, description, facultyname, '<--');
+
         const faculty = await faculties.findOne({
             where: {
                 name: facultyname,
@@ -59,7 +60,7 @@ const fillSynopsis = async (req, res) => {
 
 
         const newSynopsis = await synopsis.create({
-            synopsistitle,
+            synopsistitle, 
             description,
             facultyid: facultyid,
             facultyname: facultyname,

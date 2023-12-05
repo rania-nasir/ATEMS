@@ -23,6 +23,7 @@ import Facultyhome from './Components/Faculty/Facultyhome'
 
 // Student Folder
 import Studenthome from './Components/Student/Studenthome'
+import FillSynopsis from './Components/Student/FillSynopsis';
 
 // GC Folder
 import GCDashboard from './Components/GC/GCDashboard';
@@ -55,6 +56,7 @@ function App() {
 
         {/* Student Pages  */}
         <Route path='/studenthome' element={<Studenthome />} />
+        <Route path='/fillSynopsis' element={<FillSynopsis/>}/>
 
         {/* GC Pages */}
         <Route path='/GCDashboard' element={<GCDashboard />} />
