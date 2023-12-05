@@ -31,6 +31,13 @@ const thesis = sequelize.define('thesis', {
         type: DataTypes.ARRAY(DataTypes.INTEGER),
         defaultValue: [],
         allowNull: false
+    },
+    thesisstatus: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        validate: {
+            isIn: [['Pending', 'Approved']]
+        }
     }
 });
 

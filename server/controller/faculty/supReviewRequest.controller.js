@@ -111,7 +111,8 @@ const approveSynopsis = async (req, res) => {
             rollno: selectedSynopsis.rollno,
             facultyid: selectedSynopsis.facultyid,
             internals: [internal1, internal2],
-            internalsid: [internal1id, internal2id]
+            internalsid: [internal1id, internal2id],
+            thesisstatus: 'Pending'
         });
 
 
