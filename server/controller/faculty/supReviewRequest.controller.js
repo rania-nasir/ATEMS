@@ -10,7 +10,7 @@ const { faculties } = require("../../model/faculty.model");
 const getSynopsis = async (req, res) => {
     try {
         // fetch all synopsis for the logged in supervisor
-        const facultyId = 4455; // obtain the logged in faculty id.
+        const facultyId = req.userId; // obtain the logged in faculty id.
 
         const allSynopsis = await synopsis.findAll({
             where: {
@@ -32,7 +32,7 @@ const getSynopsisDetails = async (req, res) => {
     try {
         // Faculty will choose an id for review
         const { synopsisId } = req.params;
-        const facultyId = 4455; // obtain the logged in faculty id.
+        const facultyId = req.userId; // obtain the logged in faculty id.
 
         const selectedSynopsis = await synopsis.findOne({
             where: {
@@ -55,7 +55,7 @@ const getSynopsisDetails = async (req, res) => {
 const approveSynopsis = async (req, res) => {
     try {
         const { synopsisId } = req.params;
-        const facultyId = '4455';
+        const facultyId = req.userId;
         const { internal1, internal2 } = req.body;
 
         const selectedSynopsis = await synopsis.findOne({
@@ -128,7 +128,7 @@ const approveSynopsis = async (req, res) => {
 const declineSynopsis = async (req, res) => {
     try {
         const { synopsisId } = req.params;
-        const facultyId = 4455;
+        const facultyId = req.userId;
         // const { reason } = req.body; if we want to send a reason
 
         const [rowsAffected, [updatedSynopsis]] = await synopsis.update(

@@ -41,6 +41,7 @@ const fillSynopsis = async (req, res) => {
         const synopsistitle = req.body.synopsistitle;
         const description = req.body.description;
         const facultyname = req.body.facultyname;
+        const studentrollno = req.userId;
 
         // console.log('------> ', synopsistitle, description, facultyname, '<--');
 
@@ -60,11 +61,11 @@ const fillSynopsis = async (req, res) => {
 
 
         const newSynopsis = await synopsis.create({
-            synopsistitle, 
+            synopsistitle,
             description,
             facultyid: facultyid,
             facultyname: facultyname,
-            rollno: 1234, //dummy for testing // should be student roll no after authentication
+            rollno: studentrollno, //dummy for testing // should be student roll no after authentication
             synopsisstatus: 'Pending',
 
         });

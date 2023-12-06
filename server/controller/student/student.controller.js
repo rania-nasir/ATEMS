@@ -1,5 +1,7 @@
+// Student Sign-In Function
 const { sequelize } = require("../../config/sequelize");
 const { students } = require("../../model/student.model");
+const { generateToken } = require('../../middleware/authMiddleware');
 
 const stdSignIn = async (req, res) => {
   try {
@@ -16,8 +18,9 @@ const stdSignIn = async (req, res) => {
     });
 
     if (resp) {
+      const token = generateToken(rollno, 'student');
       console.log(`${rollno}, ${password}`);
-      res.status(200).json({ message: 'Student Sign In successfully  from Server side' });
+      res.status(200).json({ message: 'Student Sign In successfully from Server side', token });
     } else {
       res.json({ message: 'Invalid Credentials' });
     }

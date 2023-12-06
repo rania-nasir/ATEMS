@@ -2,8 +2,13 @@ const express = require('express');
 const facRouter = express.Router();
 const facFunctions = require('../controller/faculty/faculty.controller');
 const facReview = require('../controller/faculty/supReviewRequest.controller');
+const { authenticate } = require('../middleware/authMiddleware');
+
+
 
 facRouter.post('/signIn', facFunctions.facultySignIn);
+
+facRouter.use(authenticate);
 // Fetches the list of requests
 facRouter.get('/supAllRequests', facReview.getSynopsis);
 // supervisor selects 1 request out of many, fetches the synopsis details
