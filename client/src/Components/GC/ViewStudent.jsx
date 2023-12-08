@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import Cookie from 'js-cookie';
 
 export default function ViewStudent() {
     const [studentData, setStudentData] = useState([]);
@@ -8,7 +9,10 @@ export default function ViewStudent() {
     useEffect(() => {
         async function fetchStudentData() {
             try {
-                const response = await fetch('http://localhost:5000/gc/viewStudents'); 
+                const response = await fetch('http://localhost:5000/gc/viewStudents', {headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `${Cookie.get('jwtoken')}`
+                }}); 
                 if (response.ok) {
                     const data = await response.json();
                     setStudentData(data);

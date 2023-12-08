@@ -18,7 +18,7 @@ const LandingPage = () => {
                 <div className="grid grid-cols-3 gap-0">
                     <div className="col-span-2" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                         <p className="text-3xl font-bold mt-10 p-2" style={{ color: "black", opacity: "0.9" }}>
-                            Efficient Thesis Management: Secure Collaboration, Continuous Enhancement
+                            Thesis Evaluation and Management: Secure Collaboration, Continuous Enhancement
                             </p>
                         <p className="text-lg m-4 p-4 pt-2 pb-2">
                             The software streamlines thesis processes with an intuitive interface, collaboration tools, automated reminders, and customizable evaluations. It ensures secure document management, compatibility, and scalability while gathering feedback for continuous improvement.
