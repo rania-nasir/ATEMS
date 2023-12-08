@@ -24,11 +24,14 @@ const getFaculties = async () => {
 // This function will send the list of faculties registered in the system to the frontend
 const sendFaculties = async (req, res) => {
     try {
+        console.log('Passed');
         const allFaculties = await getFaculties();
+        console.log('Passed 1');
+        res.json({ allFaculties });
 
-        res.render('synopisForm', {
-            allFaculties,
-        });
+        // res.render('synopisForm', {
+        //     allFaculties,
+        // });
 
     } catch (error) {
         console.error('Error loading synopsis form:', error);

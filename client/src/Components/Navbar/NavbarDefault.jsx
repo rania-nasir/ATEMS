@@ -39,12 +39,12 @@ const NavbarDefault = () => {
                     {/* Component here */}
                     <Navlist />
                 </div>
-                <NavLink
+                {/* <NavLink
                     to="/who"
                     className="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 rounded-md font-medium text-sm px-5 py-2.5 text-center me-2 mb-2"
                 >
                     Sign In
-                </NavLink>
+                </NavLink> */}
                 <IconButton
                     variant="text"
                     className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"

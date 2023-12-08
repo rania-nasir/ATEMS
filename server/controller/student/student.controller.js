@@ -16,11 +16,18 @@ const stdSignIn = async (req, res) => {
         password: password,
       },
     });
-
+    
     if (resp) {
       const token = generateToken(rollno, 'student');
-      console.log(`${rollno}, ${password}`);
-      res.status(200).json({ message: 'Student Sign In successfully from Server side', token });
+      console.log(`${rollno}, ${password}, `, token);
+      const userType = 'student'; // Assuming it's a faculty login
+      const userId = rollno; // Assuming the faculty ID is used as the user ID
+      console.log('userID: ', userId, ', userType: ', userType);
+      res.cookie('jwtoken', token, {
+        expiresIn: 3 * 24 * 60 * 60,
+        httpOnly: true
+      })
+      res.status(200).json({ message: 'Student Sign In successfully from Server side', token, userId, userType  });
     } else {
       res.json({ message: 'Invalid Credentials' });
     }

@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import React, { useState } from 'react'
+const Cookies = require('js-cookie')
 
 export default function Studentlogin() {
 
@@ -40,15 +41,25 @@ export default function Studentlogin() {
             })
         }); const data = await res.json();
         console.log("Response data:", data); // Log the response data
+        console.log("data = ", data)
+
+        const { token, userId, userType } = data;
+
 
         if (res.status === 200) {
             if (data.message === "Invalid Credentials") {
                 window.alert("Invalid Credentials");
                 console.log("Invalid Credentials");
             } else {
-                window.alert("Login Successful");
-                console.log("Login Successful");
-                navigate('/Studenthome');
+                window.alert("Student Login Successful");
+                console.log("Student Login Successful");
+                // Set cookie using js-cookie
+                Cookies.set('jwtoken', data.token, { expires: 3 }); // Expires in 3 days
+                Cookies.set('userId', userId, { expires: 3 });
+                Cookies.set('userType', userType, { expires: 3 });
+
+                // navigate('/studenthome');
+                navigate('/');
             }
         } else {
             window.alert("Something went wrong");

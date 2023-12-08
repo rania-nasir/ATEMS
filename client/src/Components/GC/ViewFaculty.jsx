@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import Cookie from 'js-cookie'
+
 
 export default function ViewFaculty() {
     const [FacultyData, setFacultyData] = useState([]);
@@ -8,9 +10,13 @@ export default function ViewFaculty() {
     useEffect(() => {
         async function fetchFacultyData() {
             try {
-                const response = await fetch('http://localhost:5000/gc/viewFaculty'); 
+                const response = await fetch('http://localhost:5000/gc/viewFaculty', {headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `${Cookie.get('jwtoken')}`
+                }}); 
                 if (response.ok) {
                     const data = await response.json();
+                    console.log(data);
                     setFacultyData(data);
                 } else {
                     throw new Error('Failed to fetch data');
