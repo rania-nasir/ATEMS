@@ -21,6 +21,7 @@ import Studentlogin from './Components/Login/Studentlogin'
 
 // Faculty Folder
 import Facultyhome from './Components/Faculty/Facultyhome'
+import GetSynopsis from './Components/Faculty/GetSynopsis';
 
 // Student Folder
 import Studenthome from './Components/Student/Studenthome'
@@ -94,6 +95,7 @@ function App() {
                   // Render faculty pages for faculty user
                   <>
                     <Route path='/' element={<Facultyhome />} />
+                    <Route path='/supAllRequests' element={<GetSynopsis/>} />
                     <Route path='/GCDashboard' element={<GCDashboard />} />
                     <Route path='/addstudentrecord' element={<AddStudentRecord />} />
                     <Route path='/addfacultyrecord' element={<AddFacultyRecord />} />

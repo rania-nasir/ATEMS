@@ -15,7 +15,7 @@ const synopsis = sequelize.define('synopsis', {
         allowNull: false
     },
     rollno: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false
     },
     facultyid: {
