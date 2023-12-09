@@ -3,12 +3,15 @@ const jwt = require('jsonwebtoken');
 
 const generateToken = (userId, userType) => {
     const secretKey = process.env.JWT_SECRET || 'default-secret-key';
-    return jwt.sign({ [`${userType}Id`]: userId }, secretKey, { expiresIn: '1h' });
+    return jwt.sign({ [`${userType}Id`]: userId }, secretKey, { expiresIn: '6h' });
 };
 
 const authenticate = (req, res, next) => {
     console.log('Entered authentication middleware');
     const token = req.headers.authorization;
+    // const token = req.cookie.jwtoken;
+    console.log('----> ', token);
+
 
     if (!token) {
         return res.status(401).json({ error: 'Unauthorized - Missing token' });
@@ -39,6 +42,7 @@ const authenticate = (req, res, next) => {
         } else if (req.baseUrl.includes('std') && req.userType !== 'student') {
             return res.status(403).json({ error: 'Forbidden - Student access only' });
         }
+        //updateUser(req.userType, req.userId);
         next();
     } catch (error) {
         console.error('Token verification failed:', error.message);
