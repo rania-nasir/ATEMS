@@ -1,13 +1,20 @@
 import { useNavigate } from 'react-router-dom'
 import React, { useState } from 'react'
 import { Dropdown } from 'primereact/dropdown';
+import { Fdata } from './SynopsisForm'
+import Cookie from 'js-cookie';
 
 export default function FillSynopsis() {
 
     const navigate = useNavigate();
 
+    console.log('Fdata-:', Fdata);
+
     const [selectedfacultyname, setSelectedfacultyname] = useState(null);
-    const facultyname = ['facultyname 1', 'facultyname 2', 'facultyname 3', 'Faizan', 'facultyname 5'];
+    // const facultyname = ['facultyname 1', 'facultyname 2', 'facultyname 3'];
+
+    // Here, Fdata contains the list of faculty names
+    const facultyname = Fdata.map(name => ({ label: name, value: name }));
 
 
     const [user, setUser] = useState({
@@ -29,13 +36,14 @@ export default function FillSynopsis() {
             synopsistitle, description, facultyname: selectedfacultyname
         }
 
-        console.log(`Synopsis-faculties are ===== ` + synopsisData.facultyname)
+        console.log(`Synopsis-faculties` + synopsisData.facultyname)
 
 
         const res = await fetch("http://localhost:5000/std/fillSynopsis", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json',
+                'Authorization': `${Cookie.get('jwtoken')}`
             },
             body: JSON.stringify(synopsisData)
 

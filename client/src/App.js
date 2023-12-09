@@ -24,6 +24,7 @@ import Facultyhome from './Components/Faculty/Facultyhome'
 
 // Student Folder
 import Studenthome from './Components/Student/Studenthome'
+import SynopsisForm from './Components/Student/SynopsisForm';
 import FillSynopsis from './Components/Student/FillSynopsis';
 
 // GC Folder
@@ -106,6 +107,7 @@ function App() {
                   // Render student pages for student user
                   <>
                     <Route path='/' element={<Studenthome />} />
+                    <Route path='/synopsisForm' element={<SynopsisForm />} />
                     <Route path='/fillSynopsis' element={<FillSynopsis />} />
                     {/* ... (other student routes) */}
                   </>
