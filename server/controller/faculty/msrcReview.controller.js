@@ -40,4 +40,90 @@ const getAcceptedThesis = async (req, res) => {
     }
 };
 
-module.exports = { getAcceptedThesis };
+const getThesisDetails = async (req, res) => {
+    try {
+        const { thesisId } = req.params;
+
+        const facultyId = req.userId;
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["MSRC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        const selectedThesis = await thesis.findOne({
+            where: {
+                thesisid: thesisId,
+            },
+        });
+
+        if (!selectedThesis) {
+            return res.status(404).json({ error: 'Thesis not found' });
+        }
+
+        res.json({ selectedThesis });
+
+
+    } catch (error) {
+        console.error('Error fetching specific thesis:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+};
+
+const setThesisFeedback = async (req, res) => {
+    try {
+        const { thesisId } = req.params;
+
+        const facultyId = req.userId;
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["MSRC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        const selectedThesis = await thesis.findOne({
+            where: {
+                thesisid: thesisId,
+            },
+        });
+
+        if (!selectedThesis) {
+            return res.status(404).json({ error: 'Thesis not found' });
+        }
+
+        const { comment } = req.body;
+
+        // Create a new feedback entry
+        const newFeedback = await feedbacks.create({
+            feedbackType: 'MSRC',
+            rollno: selectedThesis.rollno,
+            feedbackContent: comment,
+        });
+
+        res.json({ newFeedback });
+
+
+
+    } catch (error) {
+        console.error('Error submitting feedback:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+};
+
+module.exports = { getAcceptedThesis, getThesisDetails, setThesisFeedback };

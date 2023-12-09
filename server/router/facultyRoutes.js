@@ -21,6 +21,8 @@ facRouter.post('/decline-synopsis/:synopsisId', facReview.declineSynopsis);
 
 // MSRC Functions
 facRouter.get('/msrcAllThesis', msrcReview.getAcceptedThesis);
+facRouter.get('/msrcThesisDetails/:thesisId', msrcReview.getThesisDetails);
+facRouter.get('/msrcSubmitFeedback/:thesisId', msrcReview.setThesisFeedback);
 
 facRouter.post('/forwardRequest', (req, res) => { res.send('Update announcement here'); });  //forward supervison reuqest to GC
 facRouter.post('/addAnnouncement', (req, res) => { res.send('Send announcement here'); });
