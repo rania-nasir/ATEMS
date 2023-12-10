@@ -22,6 +22,7 @@ import Studentlogin from './Components/Login/Studentlogin'
 // Faculty Folder
 import Facultyhome from './Components/Faculty/Facultyhome'
 import GetSynopsis from './Components/Faculty/GetSynopsis';
+import GetSynopsisDetails from './Components/Faculty/GetSynopsisDetails';
 
 // Student Folder
 import Studenthome from './Components/Student/Studenthome'
@@ -96,6 +97,7 @@ function App() {
                   <>
                     <Route path='/' element={<Facultyhome />} />
                     <Route path='/supAllRequests' element={<GetSynopsis/>} />
+                    <Route path='/supReviewRequest/:synopsisid' element={<GetSynopsisDetails />} />
                     <Route path='/GCDashboard' element={<GCDashboard />} />
                     <Route path='/addstudentrecord' element={<AddStudentRecord />} />
                     <Route path='/addfacultyrecord' element={<AddFacultyRecord />} />
