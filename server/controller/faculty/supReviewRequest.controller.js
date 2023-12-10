@@ -62,6 +62,8 @@ const approveSynopsis = async (req, res) => {
         const facultyId = req.userId;
         const { internal1, internal2 } = req.body;
 
+        console.log('Internals are : ', internal1, ', ', internal2)
+
         const selectedSynopsis = await synopsis.findOne({
             where: {
                 synopsisid: synopsisId,

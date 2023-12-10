@@ -53,6 +53,12 @@ const SidebarDefault = () => {
         },
         {
             id: 2,
+            title: 'Supervision Request',
+            path: '/supAllRequests',
+            subItems: [],
+        },
+        {
+            id: 3,
             title: 'View Announcement',
             path: '/viewAnnouncement',
             subItems: [],

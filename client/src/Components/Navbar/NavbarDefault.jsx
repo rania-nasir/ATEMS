@@ -31,7 +31,9 @@ const NavbarDefault = () => {
                     style={{ color: "black" }}
                 >
                     <div className="flex justify-between items-center">
+                        <NavLink to='/'>
                         <img src={atems_logo} className="w-10" alt="logo" />
+                        </NavLink>
                         <ATEMS />
                     </div>
                 </Typography>
