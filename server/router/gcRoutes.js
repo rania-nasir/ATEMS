@@ -4,6 +4,8 @@ const gcFunctions = require("../controller/gc/gc.controller");
 const gcReview = require("../controller/gc/gcReviewRequest.Controller");
 const { authenticate } = require('../middleware/authMiddleware');
 
+gcRouter.post('/signIn', gcFunctions.GCSignIn);
+
 gcRouter.use(authenticate);
 
 gcRouter.get('/viewStudents', gcFunctions.viewStudents);
