@@ -41,11 +41,15 @@ const getSynopsisDetails = async (req, res) => {
             },
         });
 
+        const facultyList = await faculties.findAll({
+            attributes: ['facultyid', 'name'],
+        });
+
         if (!selectedSynopsis) {
             return res.status(404).json({ error: 'Synopsis not found' });
         }
 
-        res.json({ selectedSynopsis });
+        res.json({ selectedSynopsis, facultyList });
     } catch (error) {
         console.error('Error fetching synopsis details:', error);
         res.status(500).json({ error: 'Internal server error' });
