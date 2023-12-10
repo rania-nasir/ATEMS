@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import { Dropdown } from 'primereact/dropdown';
+import Cookie from 'js-cookie';
 
 export default function MakeAnnouncement() {
 
@@ -32,7 +33,8 @@ export default function MakeAnnouncement() {
             const res = await fetch("http://localhost:5000/gc/makeAnnouncement", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `${Cookie.get('jwtoken')}`
                 },
                 body: JSON.stringify(announcementData)
 
@@ -49,7 +51,7 @@ export default function MakeAnnouncement() {
                 } else {
                     window.alert("Announcement Added Successfully");
                     console.log("Announcement Added Successfully");
-                    navigate('/GCDashboard');
+                    navigate('/');
                 }
             } else {
                 window.alert("Something went wrong");

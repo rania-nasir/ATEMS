@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
+import Cookie from 'js-cookie';
 
 export default function AddStudentRecord() {
 
@@ -24,7 +25,8 @@ export default function AddStudentRecord() {
             const res = await fetch("http://localhost:5000/gc/addstudent", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `${Cookie.get('jwtoken')}`
                 },
                 body: JSON.stringify({
                     rollno, name, email, gender, batch, semester, program, cgpa, mobile

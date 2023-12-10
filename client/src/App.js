@@ -16,6 +16,7 @@ import NavbarDefault from './Components/Navbar/NavbarDefault';
 
 // Login Folder
 import WhoPage from './Components/Login/WhoPage'
+import GClogin from './Components/Login/GClogin';
 import Facultylogin from './Components/Login/Facultylogin'
 import Studentlogin from './Components/Login/Studentlogin'
 
@@ -36,6 +37,7 @@ import AddFacultyRecord from './Components/GC/AddFacultyRecord'
 import ViewStudent from './Components/GC/ViewStudent';
 import ViewFaculty from './Components/GC/ViewFaculty';
 import MakeAnnouncement from './Components/GC/MakeAnnouncement';
+import GetThesis from './Components/GC/GetThesis';
 
 // Error Folder
 import NotFoundPage from './Components/Error/NotFoundPage'
@@ -87,6 +89,7 @@ function App() {
                 <Route path='/who' element={<WhoPage />} />
                 <Route path='/facultylogin' element={<Facultylogin />} />
                 <Route path='/studentlogin' element={<Studentlogin />} />
+                <Route path='/gclogin' element={<GClogin />} />
 
               </>
             ) : (
@@ -96,14 +99,9 @@ function App() {
                   // Render faculty pages for faculty user
                   <>
                     <Route path='/' element={<Facultyhome />} />
-                    <Route path='/supAllRequests' element={<GetSynopsis/>} />
+                    <Route path='/supAllRequests' element={<GetSynopsis />} />
                     <Route path='/supReviewRequest/:synopsisid' element={<GetSynopsisDetails />} />
-                    <Route path='/GCDashboard' element={<GCDashboard />} />
-                    <Route path='/addstudentrecord' element={<AddStudentRecord />} />
-                    <Route path='/addfacultyrecord' element={<AddFacultyRecord />} />
-                    <Route path='/viewstudent' element={<ViewStudent />} />
-                    <Route path='/viewfaculty' element={<ViewFaculty />} />
-                    <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
+
                     {/* ... (other faculty routes) */}
                   </>
                 )}
@@ -116,6 +114,21 @@ function App() {
                     {/* ... (other student routes) */}
                   </>
                 )}
+                {
+                  userDetails.userType === 'gc' && (
+                    // Render gc pages for gc user
+                    <>
+                      <Route path='/' element={<GCDashboard />} />
+                      <Route path='/addstudentrecord' element={<AddStudentRecord />} />
+                      <Route path='/addfacultyrecord' element={<AddFacultyRecord />} />
+                      <Route path='/viewstudent' element={<ViewStudent />} />
+                      <Route path='/viewfaculty' element={<ViewFaculty />} />
+                      <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
+                      <Route path='/ReviewRequest' element={<GetThesis />} />
+                      {/* ... (other gc routes) */}
+                    </>
+                  )
+                }
               </>
             )}
 
