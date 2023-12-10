@@ -22,13 +22,16 @@ const authenticate = (req, res, next) => {
         console.log('Token', token);
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default-secret-key');
         console.log('Decoded Token:', decoded);
-        req.userId = decoded.facultyId || decoded.studentId;
+        req.userId = decoded.facultyId || decoded.studentId || decoded.gcId;
         if (decoded.facultyId) {
             req.userId = decoded.facultyId;
             req.userType = 'faculty';
         } else if (decoded.studentId) {
             req.userId = decoded.studentId;
             req.userType = 'student';
+        } else if (decoded.gcId) {
+            req.userId = decoded.gcId;
+            req.userType = 'gc';
         } else {
             // Handle the case when neither ID is present
             return res.status(401).json({ error: 'Unauthorized - Invalid token' });
@@ -41,6 +44,8 @@ const authenticate = (req, res, next) => {
             return res.status(403).json({ error: 'Forbidden - Faculty access only' });
         } else if (req.baseUrl.includes('std') && req.userType !== 'student') {
             return res.status(403).json({ error: 'Forbidden - Student access only' });
+        } else if (req.baseUrl.includes('gc') && req.userType !== 'gc') {
+            return res.status(403).json({ error: 'Forbidden - GC access only' });
         }
         //updateUser(req.userType, req.userId);
         next();

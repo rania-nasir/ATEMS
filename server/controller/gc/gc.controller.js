@@ -3,6 +3,51 @@ const { faculties } = require("../../model/faculty.model");
 const { students } = require("../../model/student.model");
 const { announcements } = require("../../model/announcement.model");
 const { sendMail } = require("../../config/mailer");
+const { generateToken } = require('../../middleware/authMiddleware');
+const { Op } = require('sequelize');
+
+//GC login
+const GCSignIn = async (req, res) => {
+  try {
+    const gcid = req.body.gcid;
+    const password = req.body.password;
+    await sequelize.sync();
+
+    const resp = await faculties.findOne({
+      where: {
+        facultyid: gcid,
+        password: password,
+        role: {
+          [Op.contains]: ["GC"]
+        },
+      },
+    });
+
+    if (!resp) {
+      return res.status(404).json({ error: 'GC Login Forbidden' });
+    }
+
+    if (resp) {
+      const token = generateToken(gcid, 'gc');
+
+      console.log(`${gcid}, ${password}, `, token);
+      const userType = 'gc'; // Assuming it's a faculty login
+      const userId = gcid; // Assuming the faculty ID is used as the user ID
+      console.log('userID: ', userId, ', userType: ', userType);
+      res.cookie('jwtoken', token, {
+        expiresIn: 3 * 24 * 60 * 60,
+        httpOnly: true
+      })
+      res.status(200).json({ message: 'Sign In successfully from Server side', token, userId, userType });
+    } else {
+      res.json({ message: 'Invalid Credentials' });
+    }
+  } catch (error) {
+    console.error('Failed to retrieve data: ', error);
+    res.status(500).json({ message: 'Internal Server Error from Server side' });
+  }
+};
+
 
 //assigning random password
 function generateRandomPassword(length) {
@@ -205,6 +250,7 @@ const addAnnouncement = async (req, res) => {
 
 module.exports =
 {
+  GCSignIn,
   addStudent,
   viewStudents,
   addFaculty,
