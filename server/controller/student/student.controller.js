@@ -2,6 +2,9 @@
 const { sequelize } = require("../../config/sequelize");
 const { students } = require("../../model/student.model");
 const { generateToken } = require('../../middleware/authMiddleware');
+const { announcements } = require('../../model/announcement.model');
+const { Op } = require('sequelize');
+const { all } = require("../../router/stdRoutes");
 
 const stdSignIn = async (req, res) => {
   try {
@@ -20,8 +23,8 @@ const stdSignIn = async (req, res) => {
     if (resp) {
       const token = generateToken(rollno, 'student');
       console.log(`${rollno}, ${password}, `, token);
-      const userType = 'student'; // Assuming it's a faculty login
-      const userId = rollno; // Assuming the faculty ID is used as the user ID
+      const userType = 'student'; // Assuming it's a student login
+      const userId = rollno; // Assuming the student ID is used as the user ID
       console.log('userID: ', userId, ', userType: ', userType);
       res.cookie('jwtoken', token, {
         expiresIn: 3 * 24 * 60 * 60,
@@ -37,4 +40,43 @@ const stdSignIn = async (req, res) => {
   }
 };
 
-module.exports = { stdSignIn };
+
+
+const getAnnouncements = async () => {
+  try {
+      const allAnnouncements = await announcements.findAll({
+        where: {
+          announcementType: { [Op.in]: ['Student', 'Both'] }
+        }, 
+        attributes: ['announcementTitle', 'announcementContent'],
+      });
+
+      return allAnnouncements;
+  } catch (error) {
+      console.error('Error fetching Announcements:', error);
+      throw error;
+  }
+};
+
+
+const viewStudentAnnouncements = async (req, res) => {
+  try {
+    
+      console.log('Passed');
+      const allAnnouncements = await getAnnouncements();
+
+      res.json({ allAnnouncements });
+
+  } catch (error) {
+
+      console.error('Error loading Announcements:', error);
+      res.status(500).json({ error: 'Internal server error 1' }); // error 1 for this function
+      
+  }
+};
+
+module.exports = 
+{ 
+  stdSignIn, 
+  viewStudentAnnouncements
+};
