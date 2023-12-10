@@ -171,6 +171,11 @@ const addFaculty = async (req, res) => {
       return res.status(400).json({ error: "Invalid mobile number format" });
     }
 
+    const facultyIdRegex = /^\d{4}$/;
+    if (!facultyIdRegex.test(facultyid)) {
+      return res.status(400).json({ error: "Invalid faculty ID format" });
+    }
+
     await faculties.create({
       facultyid: facultyid,
       name: name,

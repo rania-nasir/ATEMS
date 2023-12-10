@@ -24,10 +24,6 @@ facRouter.get('/msrcAllThesis', msrcReview.getAcceptedThesis);
 facRouter.get('/msrcThesisDetails/:thesisId', msrcReview.getThesisDetails);
 facRouter.get('/msrcSubmitFeedback/:thesisId', msrcReview.setThesisFeedback);
 
-facRouter.post('/forwardRequest', (req, res) => { res.send('Update announcement here'); });  //forward supervison reuqest to GC
-facRouter.post('/addAnnouncement', (req, res) => { res.send('Send announcement here'); });
-facRouter.get('/viewAnnouncement', (req, res) => { res.send('Views announcements here'); });
-facRouter.get('/msrcReviewRequest', (req, res) => { res.send('Review MSC Request'); });
-facRouter.post('/msrcComment', (req, res) => { res.send('Give comments here'); });
+facRouter.get('/viewAnnouncement', facFunctions.viewFacultyAnnouncements);
 
 module.exports = facRouter;

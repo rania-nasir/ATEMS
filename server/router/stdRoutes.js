@@ -13,7 +13,7 @@ stdRouter.get("/synopsisForm", synopsisController.sendFaculties);
 // Process the filled synopsis form
 stdRouter.post("/fillSynopsis", synopsisController.fillSynopsis);
 
-stdRouter.get("/viewAnnouncement", (req, res) => { res.send("Student views announcements here") });
+stdRouter.get("/viewAnnouncement", stdFunctions.viewStudentAnnouncements);
 stdRouter.get("/viewFeedback", (req, res) => { res.send("Student views feedback here") });
 
 module.exports = stdRouter;
