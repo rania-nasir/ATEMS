@@ -30,7 +30,7 @@ const SidebarDefault = () => {
             path: '/',
             subItems: [
                 { id: 31, title: 'Add Faculty', path: '/addfacultyrecord' },
-                { id: 32, title: 'View Student', path: '/viewstudent' },
+                { id: 32, title: 'View Faculty', path: '/viewfaculty' },
             ],
         },
         {
@@ -41,6 +41,12 @@ const SidebarDefault = () => {
                 { id: 41, title: 'Add Student', path: '/addstudentrecord' },
                 { id: 42, title: 'View Student', path: '/viewstudent' },
             ],
+        },
+        {
+            id: 5,
+            title: 'Thesis Requests',
+            path: '/ReviewRequest',
+            subItems: [], // empty array for Thesis Requests
         }
     ];
 
@@ -112,7 +118,7 @@ const SidebarDefault = () => {
     const renderSubMenuItems = (subItems) => {
         return (
             <ul>
-                {subItems.map((subItem) => (
+                {subItems && subItems.map((subItem) => (
                     <li key={subItem.id}>
                         <NavLink
                             to={subItem.path}

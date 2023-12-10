@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import { MultiSelect } from 'primereact/multiselect';
+import Cookie from 'js-cookie';
 
 export default function AddFacultyRecord() {
 
@@ -33,7 +34,8 @@ export default function AddFacultyRecord() {
             const res = await fetch("http://localhost:5000/gc/addFaculty", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `${Cookie.get('jwtoken')}`
                 },
                 body: JSON.stringify(facultyData)
             });
