@@ -5,6 +5,7 @@ const { generateToken } = require('../../middleware/authMiddleware');
 const { announcements } = require('../../model/announcement.model');
 const { Op } = require('sequelize');
 const { all } = require("../../router/stdRoutes");
+const { feedbacks } = require("../../model/feedback.model");
 
 const stdSignIn = async (req, res) => {
   try {
@@ -75,8 +76,25 @@ const viewStudentAnnouncements = async (req, res) => {
   }
 };
 
+const viewFeedback = async (req, res) => {
+  try {
+    const rollno = req.userId; // Assuming the student ID is used as the user ID
+    const feedbackList = await feedbacks.findAll({
+      where: {
+        rollno: rollno,
+        feedbackType: 'MSRC' // Assuming the feedback type for MSRC members is 'MSRC'
+      }
+    });
+    res.json(feedbackList);
+  } catch (error) {
+    console.error('Error fetching feedback:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 module.exports = 
 { 
   stdSignIn, 
-  viewStudentAnnouncements
+  viewStudentAnnouncements,
+  viewFeedback
 };
