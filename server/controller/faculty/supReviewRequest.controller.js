@@ -64,6 +64,17 @@ const approveSynopsis = async (req, res) => {
 
         console.log('Internals are : ', internal1, ', ', internal2)
 
+        const existingApprovedSynopsis = await synopsis.findOne({
+            where: {
+                synopsisid: synopsisId,
+                synopsisstatus: 'Approved'
+            }
+        });
+
+        if (existingApprovedSynopsis) {
+            return res.status(400).json({ error: 'A request with the same synopsis ID already exists' });
+        }
+
         const selectedSynopsis = await synopsis.findOne({
             where: {
                 synopsisid: synopsisId,

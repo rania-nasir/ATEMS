@@ -19,7 +19,7 @@ const synopsis = sequelize.define('synopsis', {
         allowNull: false
     },
     facultyid: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false
     },
     facultyname: {
