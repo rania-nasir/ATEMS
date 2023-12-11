@@ -25,12 +25,15 @@ import Facultyhome from './Components/Faculty/Facultyhome'
 import GetSynopsis from './Components/Faculty/GetSynopsis';
 import GetSynopsisDetails from './Components/Faculty/GetSynopsisDetails';
 import FacultyviewAnnouncement from './Components/Faculty/FacultyviewAnnouncement'
+import MSRCAllThesis from './Components/Faculty/MSRCAllThesis';
+import MSRCThesisDetails from './Components/Faculty/MSRCThesisDetails';
 
 // Student Folder
 import Studenthome from './Components/Student/Studenthome'
 import SynopsisForm from './Components/Student/SynopsisForm';
 import FillSynopsis from './Components/Student/FillSynopsis';
 import StudentviewAnnouncement from './Components/Student/StudentviewAnnouncement'
+import ViewFeedback from './Components/Student/ViewFeedback';
 
 // GC Folder
 import GCDashboard from './Components/GC/GCDashboard';
@@ -105,6 +108,8 @@ function App() {
                     <Route path='/supAllRequests' element={<GetSynopsis />} />
                     <Route path='/supReviewRequest/:synopsisid' element={<GetSynopsisDetails />} />
                     <Route path='viewAnnouncement' element={<FacultyviewAnnouncement />} />
+                    <Route path='/MSRCAllThesis' element={<MSRCAllThesis />} />
+                    <Route path='/MSRCThesisDetails/:thesisid' element={<MSRCThesisDetails />} />
                     {/* ... (other faculty routes) */}
                   </>
                 )}
@@ -115,6 +120,7 @@ function App() {
                     <Route path='/synopsisForm' element={<SynopsisForm />} />
                     <Route path='/fillSynopsis' element={<FillSynopsis />} />
                     <Route path='/viewAnnouncement' element={<StudentviewAnnouncement />} />
+                    <Route path='/viewFeedback' element={<ViewFeedback />} />
                     {/* ... (other student routes) */}
                   </>
                 )}
