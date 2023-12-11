@@ -51,7 +51,7 @@ export default function AddFacultyRecord() {
                 } else {
                     window.alert("Faculty Added Successfully");
                     console.log("Faculty Added Successfully");
-                    navigate('/GCDashboard');
+                    navigate('/');
                 }
             } else {
                 window.alert("Something went wrong");

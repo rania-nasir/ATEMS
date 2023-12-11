@@ -71,7 +71,7 @@ export default function GetThesis() {
                                     {rowData.description}
                                 </td>
                                 <td className="px-6 py-4">
-                                    <NavLink to={`/supReviewRequest/${rowData.thesisid}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                    <NavLink to={`/ReviewRequest/${rowData.thesisid}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                         View Details
                                     </NavLink>
                                 </td>

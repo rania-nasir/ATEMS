@@ -43,7 +43,7 @@ export default function AddStudentRecord() {
                 } else {
                     window.alert("Student Added Successfully");
                     console.log("Student Added Successfully");
-                    navigate('/GCDashboard');
+                    navigate('/');
                 }
             } else {
                 window.alert("Something went wrong");
