@@ -59,7 +59,7 @@ export default function FillSynopsis() {
             } else {
                 window.alert("Submitted Synopsis Successfully");
                 console.log("Submitted Synopsis Successfully");
-                navigate('/Studenthome');
+                navigate('/');
             }
         } else {
             window.alert("Something went wrong");

@@ -38,6 +38,7 @@ import ViewStudent from './Components/GC/ViewStudent';
 import ViewFaculty from './Components/GC/ViewFaculty';
 import MakeAnnouncement from './Components/GC/MakeAnnouncement';
 import GetThesis from './Components/GC/GetThesis';
+import GetThesisDetails from './Components/GC/GetThesisDetails';
 
 // Error Folder
 import NotFoundPage from './Components/Error/NotFoundPage'
@@ -125,6 +126,7 @@ function App() {
                       <Route path='/viewfaculty' element={<ViewFaculty />} />
                       <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
                       <Route path='/ReviewRequest' element={<GetThesis />} />
+                      <Route path='/ReviewRequest/:thesisid' element={<GetThesisDetails />} />
                       {/* ... (other gc routes) */}
                     </>
                   )
