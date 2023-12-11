@@ -24,11 +24,13 @@ import Studentlogin from './Components/Login/Studentlogin'
 import Facultyhome from './Components/Faculty/Facultyhome'
 import GetSynopsis from './Components/Faculty/GetSynopsis';
 import GetSynopsisDetails from './Components/Faculty/GetSynopsisDetails';
+import FacultyviewAnnouncement from './Components/Faculty/FacultyviewAnnouncement'
 
 // Student Folder
 import Studenthome from './Components/Student/Studenthome'
 import SynopsisForm from './Components/Student/SynopsisForm';
 import FillSynopsis from './Components/Student/FillSynopsis';
+import StudentviewAnnouncement from './Components/Student/StudentviewAnnouncement'
 
 // GC Folder
 import GCDashboard from './Components/GC/GCDashboard';
@@ -102,7 +104,7 @@ function App() {
                     <Route path='/' element={<Facultyhome />} />
                     <Route path='/supAllRequests' element={<GetSynopsis />} />
                     <Route path='/supReviewRequest/:synopsisid' element={<GetSynopsisDetails />} />
-
+                    <Route path='viewAnnouncement' element={<FacultyviewAnnouncement />} />
                     {/* ... (other faculty routes) */}
                   </>
                 )}
@@ -112,6 +114,7 @@ function App() {
                     <Route path='/' element={<Studenthome />} />
                     <Route path='/synopsisForm' element={<SynopsisForm />} />
                     <Route path='/fillSynopsis' element={<FillSynopsis />} />
+                    <Route path='/viewAnnouncement' element={<StudentviewAnnouncement />} />
                     {/* ... (other student routes) */}
                   </>
                 )}
