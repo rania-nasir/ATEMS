@@ -16,6 +16,14 @@ const feedbacks = sequelize.define("feedbacks", {
         allowNull: false,
         primaryKey: true
     },
+    facultyid: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    facultyname: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     feedbackContent: {
         type: DataTypes.STRING,
         allowNull: true
