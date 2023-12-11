@@ -84,8 +84,9 @@ const setThesisFeedback = async (req, res) => {
 
         const facultyId = req.userId;
         const faculty = await faculties.findOne({
+            attributes: ['facultyid', 'name'],
             where: {
-                facultyid: facultyId,
+                facultyid: facultyId, 
                 role: {
                     [Op.contains]: ["MSRC"]
                 },
@@ -112,17 +113,20 @@ const setThesisFeedback = async (req, res) => {
             where: {
                 feedbackType: 'MSRC',
                 rollno: selectedThesis.rollno,
+                facultyid: facultyId
             },
         });
 
         if (existingFeedback) {
-            return res.status(409).json({ error: 'Feedback already exists for this student' });
+            return res.status(409).json({ error: 'This MSRC member has already given feedback for this student' });
         }
-        
+
         // Create a new feedback entry
         const newFeedback = await feedbacks.create({
             feedbackType: 'MSRC',
             rollno: selectedThesis.rollno,
+            facultyid: facultyId,
+            facultyname: faculty.name,
             feedbackContent: comment,
         });
 
