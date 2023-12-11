@@ -43,8 +43,8 @@ const getThesisDetails = async (req, res) => {
         });
 
 
-
-        res.json({ selectedThesis });
+        
+        res.json({ selectedThesis, facultyList });
 
     } catch (error) {
         console.error('Error fetching thesis details:', error);
