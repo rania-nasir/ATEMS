@@ -69,6 +69,12 @@ const SidebarDefault = () => {
             path: '/viewAnnouncement',
             subItems: [],
         },
+        {
+            id: 4,
+            title: 'MSRC',
+            path: '/MSRCAllThesis',
+            subItems: [],
+        },
         
     ];
 
@@ -89,6 +95,12 @@ const SidebarDefault = () => {
             id: 3,
             title: 'View Announcement',
             path: '/viewAnnouncement',
+            subItems: [],
+        },
+        {
+            id: 4,
+            title: 'View Feedback',
+            path: '/viewFeedback',
             subItems: [],
         },
     ];

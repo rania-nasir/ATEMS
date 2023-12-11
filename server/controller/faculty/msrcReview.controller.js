@@ -109,6 +109,8 @@ const setThesisFeedback = async (req, res) => {
 
         const { comment } = req.body;
 
+        console.log('Comment -> ', comment)
+
         const existingFeedback = await feedbacks.findOne({
             where: {
                 feedbackType: 'MSRC',
@@ -118,6 +120,7 @@ const setThesisFeedback = async (req, res) => {
         });
 
         if (existingFeedback) {
+            console.log('This MSRC member has already given feedback for this student', comment);
             return res.status(409).json({ error: 'This MSRC member has already given feedback for this student' });
         }
 
