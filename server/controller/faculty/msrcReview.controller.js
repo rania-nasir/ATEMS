@@ -108,6 +108,17 @@ const setThesisFeedback = async (req, res) => {
 
         const { comment } = req.body;
 
+        const existingFeedback = await feedbacks.findOne({
+            where: {
+                feedbackType: 'MSRC',
+                rollno: selectedThesis.rollno,
+            },
+        });
+
+        if (existingFeedback) {
+            return res.status(409).json({ error: 'Feedback already exists for this student' });
+        }
+
         // Create a new feedback entry
         const newFeedback = await feedbacks.create({
             feedbackType: 'MSRC',

@@ -86,6 +86,11 @@ const approveThesis = async (req, res) => {
             return res.status(400).json({ error: 'Supervisor and Internals must be different for a thesis' });
         }
 
+        // New check to ensure supervisor is not selected as an internal
+        if (supervisorid === final_internal1id || supervisorid === final_internal2id) {
+            return res.status(400).json({ error: 'Supervisor cannot be selected as an internal for the same thesis' });
+        }
+
         const [rowsAffected, [updatedThesis]] = await thesis.update(
             {
                 thesisstatus: 'Approved',

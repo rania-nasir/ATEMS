@@ -47,6 +47,15 @@ const fillSynopsis = async (req, res) => {
         const studentrollno = req.userId;
 
         // console.log('------> ', synopsistitle, description, facultyname, '<--');
+        const existingSynopsis = await synopsis.findOne({
+            where: {
+                rollno: studentrollno,
+            },
+        });
+
+        if (existingSynopsis) {
+            return res.status(400).json({ error: 'Request already exists for this roll number' });
+        }
 
         const faculty = await faculties.findOne({
             where: {
@@ -74,12 +83,23 @@ const fillSynopsis = async (req, res) => {
         });
 
         // Email sending
-
+        const student = await students.findOne({
+            where: {
+                rollno: studentrollno,
+            },
+            attributes: ['name'],
+        });
+        const studentname = student.name;
         //console.log("Faculty email : ", faculty.email);
 
         const toEmail = faculty.email;
         const subject = 'New Supervision Request';
-        const text = 'This is a test email sent using Nodemailer.';
+        const text = `A student has requested for you supervision. Details are as follows: 
+        Roll number: ${studentrollno}
+        Student Name: ${studentname}
+        Synopsis title: ${synopsistitle}
+        
+        Visit ATEMS for further action`;
 
         sendMail(toEmail, subject, text);
 

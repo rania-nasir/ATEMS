@@ -22,7 +22,7 @@ facRouter.post('/decline-synopsis/:synopsisId', facReview.declineSynopsis);
 // MSRC Functions
 facRouter.get('/msrcAllThesis', msrcReview.getAcceptedThesis);
 facRouter.get('/msrcThesisDetails/:thesisId', msrcReview.getThesisDetails);
-facRouter.get('/msrcSubmitFeedback/:thesisId', msrcReview.setThesisFeedback);
+facRouter.post('/msrcSubmitFeedback/:thesisId', msrcReview.setThesisFeedback);
 
 facRouter.get('/viewAnnouncement', facFunctions.viewFacultyAnnouncements);
 
