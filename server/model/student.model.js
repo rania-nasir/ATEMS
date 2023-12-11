@@ -55,6 +55,22 @@ const students = sequelize.define("students", {
     }
 });
 
+const { synopsis } = require("./synopsis.model");
+
+students.belongsTo(synopsis, {
+    foreignKey: 'rollno',
+    targetKey: 'rollno',
+    as: 'synopsis',
+});
+
+
+// Define the association after all models have been imported
+synopsis.hasMany(students, {
+    foreignKey: 'rollno',
+    sourceKey: 'rollno',
+    as: 'students',
+});
+
 sequelize.sync().then(() => {
     console.log('Student table created successfully!');
 }).catch((error) => {

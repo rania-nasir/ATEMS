@@ -1,5 +1,6 @@
 const { sequelize, DataTypes } = require("../config/sequelize");
 
+
 const synopsis = sequelize.define('synopsis', {
     synopsisid: {
         type: DataTypes.INTEGER,
@@ -34,6 +35,7 @@ const synopsis = sequelize.define('synopsis', {
         }
     }
 });
+
 
 sequelize.sync().then(() => {
     console.log('Synopsis table created successfully!');

@@ -2,6 +2,8 @@ const { sequelize } = require("../../config/sequelize");
 const { synopsis } = require("../../model/synopsis.model");
 const { thesis } = require("../../model/thesis.model");
 const { faculties } = require("../../model/faculty.model");
+const { students } = require("../../model/student.model");
+const { sendMail } = require("../../config/mailer");
 
 
 /* Supervisor Review Requests Controller */
@@ -142,37 +144,81 @@ const approveSynopsis = async (req, res) => {
     }
 };
 
+
 const declineSynopsis = async (req, res) => {
     try {
         const { synopsisId } = req.params;
         const facultyId = req.userId;
-        // const { reason } = req.body; if we want to send a reason
 
-        const [rowsAffected, [updatedSynopsis]] = await synopsis.update(
-            {
-                synopsisstatus: 'Rejected'
+        const student = await synopsis.findOne({
+            where: {
+                synopsisid: synopsisId
             },
-            {
-                where:
+            attributes: ['rollno'],
+            include: [
                 {
-                    synopsisid: synopsisId,
-                    facultyid: facultyId
-                },
-                returning: true,
-            }
-        );
+                    model: students,
+                    as: 'students',
+                    attributes: ['rollno', 'email', 'name']
+                }
+            ]
+        });
 
-        if (rowsAffected === 0) {
+        if (!student || !student.students) {
+            return res.status(404).json({ error: 'Student not found for the given synopsis' });
+        }
+
+        const studentEmail = student.students[0].email;
+        if (!studentEmail || !/^.+@.+\..+$/.test(studentEmail)) {
+            return res.status(400).json({ error: 'Invalid student email address' });
+        }
+        console.log(studentEmail);
+
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId
+            },
+            attributes: ['name']
+        });
+
+        if (!faculty) {
+            return res.status(404).json({ error: 'Faculty not found for the given ID' });
+        }
+
+        const facultyName = faculty.name;
+
+        const toEmail = studentEmail;
+        const subject = 'Synopsis Rejected';
+        const text = `Dear Student,
+
+Your synopsis has been rejected by ${facultyName} (Faculty ID: ${facultyId}). Please fill another synopsis form.
+
+Regards,`;
+        sendMail(toEmail, subject, text);
+        const deletedSynopsis = await synopsis.destroy({
+            where: {
+                synopsisid: synopsisId,
+                facultyid: facultyId
+            }
+        });
+
+        if (deletedSynopsis === 0) {
             return res.status(404).json({ error: 'Synopsis not found or not authorized for rejection' });
         }
 
-        res.json({ message: 'Synopsis rejected succesfully', updatedSynopsis });
+        res.json({ message: 'Synopsis rejected successfully and deleted from the synopsis table' });
 
     } catch (error) {
         console.error('Error declining synopsis:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-}
+};
 
 
-module.exports = { getSynopsis, getSynopsisDetails, approveSynopsis, declineSynopsis };
+module.exports = 
+{ 
+    getSynopsis, 
+    getSynopsisDetails, 
+    approveSynopsis, 
+    declineSynopsis 
+};
