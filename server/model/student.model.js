@@ -1,4 +1,5 @@
 const { sequelize, DataTypes } = require("../config/sequelize");
+const { synopsis } = require("./synopsis.model");
 
 const students = sequelize.define("students", {
     rollno: {
@@ -18,7 +19,7 @@ const students = sequelize.define("students", {
         type: DataTypes.CHAR,
         allowNull: false,
         validate: {
-          isIn: [['M', 'F']]
+            isIn: [['M', 'F']]
         }
     },
     batch: {
@@ -43,7 +44,7 @@ const students = sequelize.define("students", {
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     createdAt: {
         type: DataTypes.DATE,
@@ -55,21 +56,19 @@ const students = sequelize.define("students", {
     }
 });
 
-const { synopsis } = require("./synopsis.model");
-
-students.belongsTo(synopsis, {
-    foreignKey: 'rollno',
-    targetKey: 'rollno',
-    as: 'synopsis',
-});
+// students.belongsTo(synopsis, {
+//     foreignKey: 'rollno',
+//     targetKey: 'rollno',
+//     as: 'synopsis',
+// });
 
 
-// Define the association after all models have been imported
-synopsis.hasMany(students, {
-    foreignKey: 'rollno',
-    sourceKey: 'rollno',
-    as: 'students',
-});
+// // Define the association after all models have been imported
+// synopsis.hasMany(students, {
+//     foreignKey: 'rollno',
+//     sourceKey: 'rollno',
+//     as: 'students',
+// });
 
 sequelize.sync().then(() => {
     console.log('Student table created successfully!');

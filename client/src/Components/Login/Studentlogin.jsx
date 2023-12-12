@@ -102,7 +102,7 @@ export default function Studentlogin() {
                                     id="password"
                                     name="password"
                                     type="password"
-                                    placeholder="******************" />
+                                    placeholder="********" />
                             </div>
                             <p id='errorMessage' class="pl-4 text-red-500 text-xs italic"></p>
                         </div>

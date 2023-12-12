@@ -1,6 +1,5 @@
 const { sequelize, DataTypes } = require("../config/sequelize");
 
-
 const synopsis = sequelize.define('synopsis', {
     synopsisid: {
         type: DataTypes.INTEGER,
@@ -17,7 +16,8 @@ const synopsis = sequelize.define('synopsis', {
     },
     rollno: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     facultyid: {
         type: DataTypes.STRING,

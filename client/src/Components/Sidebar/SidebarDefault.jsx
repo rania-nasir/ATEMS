@@ -23,24 +23,30 @@ const SidebarDefault = () => {
         },
         {
             id: 3,
-            title: 'Faculty Records',
-            path: '/',
-            subItems: [
-                { id: 31, title: 'Add Faculty', path: '/addfacultyrecord' },
-                { id: 32, title: 'View Faculty', path: '/viewfaculty' },
-            ],
+            title: 'Thesis Records',
+            path: '/viewAllThesis',
+            subItems: [], // empty array for Thesis Requests
         },
         {
             id: 4,
-            title: 'Student Records',
+            title: 'Faculty Records',
             path: '/',
             subItems: [
-                { id: 41, title: 'Add Student', path: '/addstudentrecord' },
-                { id: 42, title: 'View Student', path: '/viewstudent' },
+                { id: 41, title: 'Add Faculty', path: '/addfacultyrecord' },
+                { id: 42, title: 'View Faculty', path: '/viewfaculty' },
             ],
         },
         {
             id: 5,
+            title: 'Student Records',
+            path: '/',
+            subItems: [
+                { id: 51, title: 'Add Student', path: '/addstudentrecord' },
+                { id: 52, title: 'View Student', path: '/viewstudent' },
+            ],
+        },
+        {
+            id: 6,
             title: 'Thesis Requests',
             path: '/ReviewRequest',
             subItems: [], // empty array for Thesis Requests
