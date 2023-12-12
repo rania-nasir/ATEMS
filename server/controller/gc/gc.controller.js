@@ -148,7 +148,7 @@ const addStudent = async (req, res) => {
 const viewStudents = async (req, res) => {
   try {
     const studentsnData = await students.findAll({
-      attributes: ['rollno', 'name', 'batch', 'semester', 'program', 'cgpa']
+      attributes: ['rollno', 'name', 'email', 'batch', 'semester', 'program', 'cgpa']
     });
     res.json(studentsnData);
   } catch (error) {
@@ -215,7 +215,7 @@ const addFaculty = async (req, res) => {
 const viewFaculty = async (req, res) => {
   try {
     const facultyMembers = await faculties.findAll({
-      attributes: ['facultyid', 'name', 'email']
+      attributes: ['facultyid', 'name', 'email', 'role']
     });
     res.json(facultyMembers);
   } catch (error) {

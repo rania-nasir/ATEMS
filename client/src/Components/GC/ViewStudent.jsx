@@ -30,19 +30,65 @@ export default function ViewStudent() {
     return (
         <>
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                        Students Record
-                    </h2>
-                </div>
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                <DataTable value={studentData} stripedRows tableStyle={{ minWidth: '50rem' }}>
-                    <Column field="rollno" header="Roll Number"></Column>
-                    <Column field="name" header="Name"></Column>
-                    <Column field="batch" header="Batch"></Column>
-                    <Column field="semester" header="Semester"></Column>
-                    <Column field="program" header="Program"></Column>
-                    <Column field="cgpa" header="CGPA"></Column>
-                </DataTable>
+                <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                    Student Record
+                </h2>
+            </div>
+            <div class="mt-6 shadow-md sm:rounded-lg">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                Roll Number
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Student Name
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Email
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Batch
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Semester
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Program
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                CGPA
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {studentData?.map(rowData => (
+                            <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={rowData.thesisid}>
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {rowData.rollno}
+                                </td>
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {rowData.name}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {rowData.email}
+                                </td>
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {rowData.batch}
+                                </td>
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {rowData.semester}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {rowData.program}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {rowData.cgpa}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </>
     )
