@@ -31,7 +31,7 @@ const faculties = sequelize.define("faculties", {
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   createdAt: {
     type: DataTypes.DATE,

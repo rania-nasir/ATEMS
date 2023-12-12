@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
 import Cookie from 'js-cookie';
 
 export default function ViewStudent() {
