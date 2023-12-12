@@ -5,6 +5,8 @@ const { generateToken } = require('../../middleware/authMiddleware');
 const { announcements } = require('../../model/announcement.model');
 const { Op } = require('sequelize');
 
+
+// Sign in function for Faculty
 const facultySignIn = async (req, res) => {
   try {
     const facultyid = req.body.facultyid;
@@ -19,13 +21,13 @@ const facultySignIn = async (req, res) => {
     });
 
     if (resp) {
-      const token = generateToken(facultyid, 'faculty');
+      const token = generateToken(facultyid, 'faculty'); // generating token for faculty id
 
-      console.log(`${facultyid}, ${password}, `, token);
-      const userType = 'faculty'; // Assuming it's a faculty login
-      const userId = facultyid; // Assuming the faculty ID is used as the user ID
-      console.log('userID: ', userId, ', userType: ', userType);
-      res.cookie('jwtoken', token, {
+      console.log(`${facultyid}, ${password}, `, token); // logging sign in
+      const userType = 'faculty';
+      const userId = facultyid;
+      //console.log('userID: ', userId, ', userType: ', userType);
+      res.cookie('jwtoken', token, { // Creating cookie
         expiresIn: 3 * 24 * 60 * 60,
         httpOnly: true
       })
@@ -39,41 +41,40 @@ const facultySignIn = async (req, res) => {
   }
 };
 
+// Helper function to get all Announcements
 const getAnnouncements = async () => {
   try {
-      const allAnnouncements = await announcements.findAll({
-        where: {
-          announcementType: { [Op.in]: ['Faculty', 'Both'] }
-        }, 
-        attributes: ['announcementTitle', 'announcementContent'],
-      });
+    const allAnnouncements = await announcements.findAll({
+      where: {
+        announcementType: { [Op.in]: ['Faculty', 'Both'] }
+      },
+      attributes: ['announcementTitle', 'announcementContent'],
+    });
 
-      return allAnnouncements;
+    return allAnnouncements;
   } catch (error) {
-      console.error('Error fetching Announcements:', error);
-      throw error;
+    console.error('Error fetching Announcements:', error);
+    throw error;
   }
 };
 
-
+// Function to display all Faculty Announcements
 const viewFacultyAnnouncements = async (req, res) => {
   try {
-    
-      console.log('Passed');
-      const allAnnouncements = await getAnnouncements();
+    const allAnnouncements = await getAnnouncements(); // uses helper function to get all announcements
 
-      res.json({ allAnnouncements });
+    res.json({ allAnnouncements });
 
   } catch (error) {
 
-      console.error('Error loading Announcements:', error);
-      res.status(500).json({ error: 'Internal server error 1' }); // error 1 for this function
-      
+    console.error('Error loading Announcements:', error);
+    res.status(500).json({ error: 'Internal server error 1' }); // error 1 for this function
+
   }
 };
 
-module.exports = 
-{ 
+module.exports =
+{
   facultySignIn,
   viewFacultyAnnouncements
 };
