@@ -7,13 +7,12 @@ const { authenticate } = require('../middleware/authMiddleware');
 stdRouter.post('/signIn', stdFunctions.stdSignIn);
 
 stdRouter.use(authenticate);
-// Render the synopsis form with faculties
-stdRouter.get("/synopsisForm", synopsisController.sendFaculties);
 
-// Process the filled synopsis form
-stdRouter.post("/fillSynopsis", synopsisController.fillSynopsis);
+/* Student Functions */
 
-stdRouter.get("/viewAnnouncement", stdFunctions.viewStudentAnnouncements);
-stdRouter.get("/viewFeedback", stdFunctions.viewFeedback);
+stdRouter.get("/synopsisForm", synopsisController.sendFaculties); // Render the synopsis form with faculties
+stdRouter.post("/fillSynopsis", synopsisController.fillSynopsis); // Process the filled synopsis form
+stdRouter.get("/viewAnnouncement", stdFunctions.viewStudentAnnouncements); // Student views Announcements
+stdRouter.get("/viewFeedback", stdFunctions.viewFeedback); // Student views Feedback
 
 module.exports = stdRouter;
