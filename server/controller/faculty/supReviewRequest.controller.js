@@ -61,15 +61,16 @@ const getSynopsisDetails = async (req, res) => {
     }
 };
 
+// Approve The selected synopsis
 const approveSynopsis = async (req, res) => {
     try {
         const { synopsisId } = req.params;
         const facultyId = req.userId;
-        const { internal1, internal2 } = req.body;
+        const { internal1, internal2 } = req.body; // fetch the names of the internals from the frontend
 
-        console.log('Internals are : ', internal1, ', ', internal2)
+        //console.log('Internals are : ', internal1, ', ', internal2)
 
-        const existingApprovedSynopsis = await synopsis.findOne({
+        const existingApprovedSynopsis = await synopsis.findOne({ // check for existing approved synopsis, if it is already existing display error
             where: {
                 synopsisid: synopsisId,
                 synopsisstatus: 'Approved'
@@ -77,7 +78,7 @@ const approveSynopsis = async (req, res) => {
         });
 
         if (existingApprovedSynopsis) {
-            return res.status(400).json({ error: 'A request with the same synopsis ID already exists' });
+            return res.status(400).json({ error: 'A request with the same synopsis ID already exists' }); // error
         }
 
         const selectedSynopsis = await synopsis.findOne({
@@ -91,12 +92,33 @@ const approveSynopsis = async (req, res) => {
             return res.status(404).json({ error: 'Synopsis not found or not authorized' });
         }
 
+
+        const student = await students.findOne({ // get student details for mail from rollno in synopsis table
+            where: {
+                rollno: selectedSynopsis.rollno.toString()
+            }
+        });
+
+        if (!student) {
+            return res.status(404).json({ error: 'Student not found for the given synopsis' });
+        }
+
+        // Validating student email
+        const studentEmail = student.email;
+        if (!studentEmail || !/^.+@.+\..+$/.test(studentEmail)) {
+            return res.status(400).json({ error: 'Invalid student email address' });
+        }
+        console.log(studentEmail);
+
+
         const facultyList = await faculties.findAll({
             attributes: ['facultyid', 'name'],
         });
 
-        console.log('Faculty List:', facultyList);
+        //console.log('Faculty List:', facultyList);
 
+
+        // fetch id of the faculty members chosen as internals through name
         const internal1id = facultyList.find(faculty => faculty.name === internal1)?.facultyid;
         const internal2id = facultyList.find(faculty => faculty.name === internal2)?.facultyid;
 
@@ -109,7 +131,8 @@ const approveSynopsis = async (req, res) => {
             return res.status(400).json({ error: 'Supervisor and Internals must be different for a thesis' });
         }
 
-        const [rowsAffected, [updatedSynopsis]] = await synopsis.update(
+
+        const [rowsAffected, [updatedSynopsis]] = await synopsis.update( // update synopsis status from pending to approved 
             {
                 synopsisstatus: 'Approved'
             },
@@ -127,7 +150,10 @@ const approveSynopsis = async (req, res) => {
         }
 
 
-        const newThesis = await thesis.create({
+
+
+
+        const newThesis = await thesis.create({ // Create thesis with internal members name and id and set status to pending
             thesistitle: selectedSynopsis.synopsistitle,
             description: selectedSynopsis.description,
             rollno: selectedSynopsis.rollno,
@@ -137,7 +163,17 @@ const approveSynopsis = async (req, res) => {
             thesisstatus: 'Pending'
         });
 
+        // Send mail of Approval to student
+        const facultyName = selectedSynopsis.facultyName;
+        const toEmail = studentEmail;
+        const subject = 'Synopsis Approved';
+        const text = `Dear Student,
 
+        Your synopsis has been accepted by ${facultyName} (Faculty ID: ${facultyId}).
+
+        Regards,`;
+
+        sendMail(toEmail, subject, text);
 
         res.json({ message: 'Internal members selected successfully and Synopsis approved', thesis: newThesis });
 
@@ -147,37 +183,40 @@ const approveSynopsis = async (req, res) => {
     }
 };
 
-
+// Function to decline the selected Synopsis
 const declineSynopsis = async (req, res) => {
     try {
         const { synopsisId } = req.params;
         const facultyId = req.userId;
 
-        const student = await synopsis.findOne({
+        const selectedSynopsis = await synopsis.findOne({ // See if the synopsis being rejected is pending
             where: {
-                synopsisid: synopsisId
-            },
-            attributes: ['rollno'],
-            include: [
-                {
-                    model: students,
-                    as: 'students',
-                    attributes: ['rollno', 'email', 'name']
-                }
-            ]
+                synopsisid: synopsisId,
+                synopsisstatus: 'Pending'
+            }
         });
 
-        if (!student || !student.students) {
+        if (!selectedSynopsis) {
+            return res.status(404).json({ error: 'Synopsis not found for the given synopsisID' });
+        }
+        const student = await students.findOne({ // get student details for mail from rollno in synopsis table
+            where: {
+                rollno: selectedSynopsis.rollno.toString()
+            }
+        });
+
+        if (!student) {
             return res.status(404).json({ error: 'Student not found for the given synopsis' });
         }
 
-        const studentEmail = student.students[0].email;
+        /* Validations */
+        const studentEmail = student.email;
         if (!studentEmail || !/^.+@.+\..+$/.test(studentEmail)) {
             return res.status(400).json({ error: 'Invalid student email address' });
         }
         console.log(studentEmail);
 
-        const faculty = await faculties.findOne({
+        const faculty = await faculties.findOne({ // Get faculty
             where: {
                 facultyid: facultyId
             },
@@ -188,16 +227,18 @@ const declineSynopsis = async (req, res) => {
             return res.status(404).json({ error: 'Faculty not found for the given ID' });
         }
 
+        // Send mail of Rejection to student
         const facultyName = faculty.name;
-
         const toEmail = studentEmail;
         const subject = 'Synopsis Rejected';
         const text = `Dear Student,
 
-Your synopsis has been rejected by ${facultyName} (Faculty ID: ${facultyId}). Please fill another synopsis form.
+        Your synopsis has been rejected by ${facultyName} (Faculty ID: ${facultyId}). Please fill another synopsis form.
 
-Regards,`;
+        Regards,`;
+
         sendMail(toEmail, subject, text);
+
         const deletedSynopsis = await synopsis.destroy({
             where: {
                 synopsisid: synopsisId,
