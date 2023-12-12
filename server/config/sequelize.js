@@ -1,8 +1,8 @@
-const { Sequelize, DataTypes } = require("sequelize");
+const { Sequelize, DataTypes } = require("sequelize"); // using sequelize for data models
 //const sequelize = new Sequelize('postgres://user:admin@localhost:5432/postgres')
 require('dotenv').config()
 
-const sequelize = new Sequelize(
+const sequelize = new Sequelize( // Integrating Sequelize with .env database settings
     process.env.DB_NAME,
     process.env.DB_USER,
     process.env.DB_PASSWORD,

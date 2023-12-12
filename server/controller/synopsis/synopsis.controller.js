@@ -6,7 +6,8 @@ const { synopsis } = require("../../model/synopsis.model");
 
 /*Synopsis Controller*/
 
-// get the list of faculties in the system
+// Helper function for sendFaculties.
+// Get the list of faculties in the system.
 const getFaculties = async () => {
     try {
         // Fetch all faculties
@@ -24,21 +25,18 @@ const getFaculties = async () => {
 // This function will send the list of faculties registered in the system to the frontend
 const sendFaculties = async (req, res) => {
     try {
-        console.log('Passed');
-        const allFaculties = await getFaculties();
-        console.log('Passed 1');
-        res.json({ allFaculties });
 
-        // res.render('synopisForm', {
-        //     allFaculties,
-        // });
+        const allFaculties = await getFaculties(); // Uses the helper function get all faculties into allFaculties
+        res.json({ allFaculties });
 
     } catch (error) {
         console.error('Error loading synopsis form:', error);
-        res.status(500).json({ error: 'Internal server error 1' }); // error 1 for this function
+        res.status(500).json({ error: 'Internal server error' }); // error 1 for this function
     }
 };
 
+
+// Moving synopsis data from frontend to backend and creating a synopsis
 const fillSynopsis = async (req, res) => {
     try {
         const synopsistitle = req.body.synopsistitle;
@@ -46,8 +44,7 @@ const fillSynopsis = async (req, res) => {
         const facultyname = req.body.facultyname;
         const studentrollno = req.userId;
 
-        // console.log('------> ', synopsistitle, description, facultyname, '<--');
-        const existingSynopsis = await synopsis.findOne({
+        const existingSynopsis = await synopsis.findOne({ // Find an existing synopsis by the student
             where: {
                 rollno: studentrollno,
             },
@@ -72,12 +69,12 @@ const fillSynopsis = async (req, res) => {
         const facultyid = faculty.facultyid;
 
 
-        const newSynopsis = await synopsis.create({
+        const newSynopsis = await synopsis.create({ // Creating Synopsis in the table with the following information
             synopsistitle,
             description,
             facultyid: facultyid,
             facultyname: facultyname,
-            rollno: studentrollno, //dummy for testing // should be student roll no after authentication
+            rollno: studentrollno,
             synopsisstatus: 'Pending',
 
         });
@@ -90,7 +87,6 @@ const fillSynopsis = async (req, res) => {
             attributes: ['name'],
         });
         const studentname = student.name;
-        //console.log("Faculty email : ", faculty.email);
 
         const toEmail = faculty.email;
         const subject = 'New Supervision Request';
@@ -108,7 +104,7 @@ const fillSynopsis = async (req, res) => {
 
     } catch (error) {
         console.error('Error processing synopsis form:', error);
-        res.status(500).json({ error: 'Internal server error 2' }); // error 2 for this function
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
 

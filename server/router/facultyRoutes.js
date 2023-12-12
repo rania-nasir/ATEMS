@@ -9,21 +9,20 @@ facRouter.post('/signIn', facFunctions.facultySignIn);
 
 facRouter.use(authenticate);
 
-// Supervisor Functions
-// Fetches the list of requests
-facRouter.get('/supAllRequests', facReview.getSynopsis);
-// supervisor selects 1 request out of many, fetches the synopsis details
-facRouter.get('/supReviewRequest/:synopsisId', facReview.getSynopsisDetails);
-// supervisor approves
-facRouter.post('/approve-synopsis/:synopsisId', facReview.approveSynopsis);
-// supervisor declines
-facRouter.delete('/decline-synopsis/:synopsisId', facReview.declineSynopsis);
+/* Supervisor Functions */
 
-// MSRC Functions
-facRouter.get('/msrcAllThesis', msrcReview.getAcceptedThesis);
-facRouter.get('/msrcThesisDetails/:thesisId', msrcReview.getThesisDetails);
-facRouter.post('/msrcSubmitFeedback/:thesisId', msrcReview.setThesisFeedback);
+facRouter.get('/supAllRequests', facReview.getSynopsis); // Fetches the list of requests
+facRouter.get('/supReviewRequest/:synopsisId', facReview.getSynopsisDetails); // supervisor selects 1 request out of many, fetches the synopsis details
+facRouter.post('/approve-synopsis/:synopsisId', facReview.approveSynopsis); // supervisor approves
+facRouter.delete('/decline-synopsis/:synopsisId', facReview.declineSynopsis); // supervisor declines
 
+/* MSRC */
+
+facRouter.get('/msrcAllThesis', msrcReview.getAcceptedThesis); // MSRC fetches the lists of all thesis in accepted state
+facRouter.get('/msrcThesisDetails/:thesisId', msrcReview.getThesisDetails); // MSRC fetches details of a single thesis
+facRouter.post('/msrcSubmitFeedback/:thesisId', msrcReview.setThesisFeedback); // MSRC provides feedback on a single thesis
+
+/* Feedback */
 facRouter.get('/viewAnnouncement', facFunctions.viewFacultyAnnouncements);
 
 module.exports = facRouter;

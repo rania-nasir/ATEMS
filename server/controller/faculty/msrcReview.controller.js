@@ -6,40 +6,39 @@ const { Op } = require('sequelize');
 
 /* Functions for the faculties who have MSRC roles to review and comment on accepted thesis so far by the GC */
 
+// Recieve the accepted Thesis so far
 const getAcceptedThesis = async (req, res) => {
     try {
 
         const facultyId = req.userId;
-        console.log('Passed 1');
         const faculty = await faculties.findOne({
             where: {
                 facultyid: facultyId,
                 role: {
-                    [Op.contains]: ["MSRC"]
+                    [Op.contains]: ["MSRC"] // only works for those faculties who have MSRC role
                 },
             }
         });
 
-        console.log('Passed 2');
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' }); // if MSRC role not found, display forbidden message
         }
-        console.log('Passed 3');
         const acceptedThesis = await thesis.findAll({
             where: {
-                thesisstatus: 'Approved'
+                thesisstatus: 'Approved' // searches for Approved theses
             },
             attributes: ['thesisid', 'thesistitle', 'description'],
         });
-        console.log('Passed 4');
 
         res.json({ acceptedThesis });
+
     } catch (error) {
         console.error('Error fetching accepted theses:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
 
+// Get details for a single thesis
 const getThesisDetails = async (req, res) => {
     try {
         const { thesisId } = req.params;
@@ -49,7 +48,7 @@ const getThesisDetails = async (req, res) => {
             where: {
                 facultyid: facultyId,
                 role: {
-                    [Op.contains]: ["MSRC"]
+                    [Op.contains]: ["MSRC"] // MSRC check on faculty
                 },
             }
         });
@@ -78,6 +77,7 @@ const getThesisDetails = async (req, res) => {
 
 };
 
+// Provide feedback as MSRC on the thesis
 const setThesisFeedback = async (req, res) => {
     try {
         const { thesisId } = req.params;
@@ -86,9 +86,9 @@ const setThesisFeedback = async (req, res) => {
         const faculty = await faculties.findOne({
             attributes: ['facultyid', 'name'],
             where: {
-                facultyid: facultyId, 
+                facultyid: facultyId,
                 role: {
-                    [Op.contains]: ["MSRC"]
+                    [Op.contains]: ["MSRC"] // MSRC Check
                 },
             }
         });
@@ -109,9 +109,8 @@ const setThesisFeedback = async (req, res) => {
 
         const { comment } = req.body;
 
-        console.log('Comment -> ', comment)
 
-        const existingFeedback = await feedbacks.findOne({
+        const existingFeedback = await feedbacks.findOne({ // Check if feedback with MSRC tag exists or not
             where: {
                 feedbackType: 'MSRC',
                 rollno: selectedThesis.rollno,
@@ -125,7 +124,7 @@ const setThesisFeedback = async (req, res) => {
         }
 
         // Create a new feedback entry
-        const newFeedback = await feedbacks.create({
+        const newFeedback = await feedbacks.create({ // Create a new feedback with MSRC tag
             feedbackType: 'MSRC',
             rollno: selectedThesis.rollno,
             facultyid: facultyId,

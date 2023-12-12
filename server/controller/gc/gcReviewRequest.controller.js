@@ -3,13 +3,13 @@ const { synopsis } = require("../../model/synopsis.model");
 const { thesis } = require("../../model/thesis.model");
 const { faculties } = require("../../model/faculty.model");
 
+
+// fetch all thesis for the logged in gc
 const getThesis = async (req, res) => {
     try {
-        // fetch all thesis for the logged in gc
-
         const allThesis = await thesis.findAll({
             where: {
-                thesisstatus: 'Pending'
+                thesisstatus: 'Pending' // only pending thesis will be fetched
             },
             attributes: ['thesisid', 'thesistitle', 'description'],
         });
@@ -22,6 +22,7 @@ const getThesis = async (req, res) => {
     }
 }
 
+// Function to get details of a single thesis
 const getThesisDetails = async (req, res) => {
     try {
         // gc will choose an id for review
@@ -43,7 +44,7 @@ const getThesisDetails = async (req, res) => {
         });
 
 
-        
+
         res.json({ selectedThesis, facultyList });
 
     } catch (error) {
@@ -52,11 +53,12 @@ const getThesisDetails = async (req, res) => {
     }
 };
 
+// Function to approve the fetched Thesis from above function
 const approveThesis = async (req, res) => {
     try {
         // gc will choose an id for review
         const { thesisId } = req.params;
-        const { final_internal1, final_internal2 } = req.body;
+        const { final_internal1, final_internal2 } = req.body; // if GC wants to change internals, he/she can.
 
 
         const selectedThesis = await thesis.findOne({
@@ -74,6 +76,7 @@ const approveThesis = async (req, res) => {
         });
 
         const supervisorid = selectedThesis.facultyid;
+        // fetch facultyID for selected internals by the GC
         const final_internal1id = facultyList.find(faculty => faculty.name === final_internal1)?.facultyid;
         const final_internal2id = facultyList.find(faculty => faculty.name === final_internal2)?.facultyid;
 
@@ -91,7 +94,7 @@ const approveThesis = async (req, res) => {
             return res.status(400).json({ error: 'Supervisor cannot be selected as an internal for the same thesis' });
         }
 
-        const [rowsAffected, [updatedThesis]] = await thesis.update(
+        const [rowsAffected, [updatedThesis]] = await thesis.update( // Update the thesis from state pending to approved with internals
             {
                 thesisstatus: 'Approved',
                 internals: [final_internal1, final_internal2],

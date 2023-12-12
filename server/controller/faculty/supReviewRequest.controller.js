@@ -9,15 +9,16 @@ const { sendMail } = require("../../config/mailer");
 /* Supervisor Review Requests Controller */
 /* Review Requests using synopsis submitted by Students */
 
+// fetch all synopsis for the logged in supervisor
 const getSynopsis = async (req, res) => {
     try {
-        // fetch all synopsis for the logged in supervisor
+
         const facultyId = req.userId; // obtain the logged in faculty id.
 
         const allSynopsis = await synopsis.findAll({
             where: {
                 facultyid: facultyId,
-                synopsisstatus: 'Pending'
+                synopsisstatus: 'Pending' // fetch only those where status is Pending
             },
             attributes: ['synopsisid', 'synopsistitle', 'description'],
         });
@@ -30,10 +31,11 @@ const getSynopsis = async (req, res) => {
     }
 }
 
+// Fetch Synopsis details for a single synopsis
 const getSynopsisDetails = async (req, res) => {
     try {
-        // Faculty will choose an id for review
-        const { synopsisId } = req.params;
+
+        const { synopsisId } = req.params; // Faculty will choose an id for review
         const facultyId = req.userId; // obtain the logged in faculty id.
 
         const selectedSynopsis = await synopsis.findOne({
@@ -43,7 +45,7 @@ const getSynopsisDetails = async (req, res) => {
             },
         });
 
-        const facultyList = await faculties.findAll({
+        const facultyList = await faculties.findAll({ // fetch the list of all faculties in the table to select for internal
             attributes: ['facultyid', 'name'],
         });
 
@@ -52,6 +54,7 @@ const getSynopsisDetails = async (req, res) => {
         }
 
         res.json({ selectedSynopsis, facultyList });
+
     } catch (error) {
         console.error('Error fetching synopsis details:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -215,10 +218,10 @@ Regards,`;
 };
 
 
-module.exports = 
-{ 
-    getSynopsis, 
-    getSynopsisDetails, 
-    approveSynopsis, 
-    declineSynopsis 
+module.exports =
+{
+    getSynopsis,
+    getSynopsisDetails,
+    approveSynopsis,
+    declineSynopsis
 };
