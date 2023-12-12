@@ -4,6 +4,8 @@ const Cookies = require('js-cookie');
 
 export default function GClogin() {
 
+    // const isLoggedIn = authToken && userDetails.userType;
+
     const navigate = useNavigate();
 
     const [user, setuser] = useState({
@@ -50,16 +52,14 @@ export default function GClogin() {
                 window.alert("Invalid Credentials");
                 console.log("Invalid Credentials");
             } else {
-                window.alert("GC Login Successful");
-                console.log("GC Login Successful");
                 // Set cookie using js-cookie
                 Cookies.set('jwtoken', token, { expires: 3 });
                 Cookies.set('userId', userId, { expires: 3 });
-                Cookies.set('userType', userType, { expires: 3 });
-
-                // navigate('/Dashboard');
-                navigate('/');
-            }
+                Cookies.set('userType', userType, { expires: 3 });     
+                navigate('/');       }
+                // window.alert("GC Login Successful");
+                console.log("GC Login Successful");
+                window.location.reload(); // Refresh the page      
         } else {
             window.alert("Something went wrong");
             console.log("Something went wrong");
