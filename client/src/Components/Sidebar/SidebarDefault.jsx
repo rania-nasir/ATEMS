@@ -17,12 +17,9 @@ const SidebarDefault = () => {
         },
         {
             id: 2,
-            title: 'Announcement',
-            path: '/',
-            subItems: [
-                { id: 21, title: 'Make Announcement', path: '/makeAnnouncement' },
-                { id: 22, title: 'View Announcement', path: '/viewAnnouncemet' },
-            ],
+            title: 'Make Announcement',
+            path: '/makeAnnouncement',
+            subItems: [],
         },
         {
             id: 3,

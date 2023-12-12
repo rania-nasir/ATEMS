@@ -4,7 +4,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Fdata } from './SynopsisForm'
 import Cookie from 'js-cookie';
 
-export default function FillSynopsis() {
+const FillSynopsis = () => {
 
     const navigate = useNavigate();
 
@@ -190,3 +190,4 @@ export default function FillSynopsis() {
         </>
     )
 }
+export default FillSynopsis;

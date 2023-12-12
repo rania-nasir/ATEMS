@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import Cookie from 'js-cookie'
@@ -10,10 +11,12 @@ export default function ViewFaculty() {
     useEffect(() => {
         async function fetchFacultyData() {
             try {
-                const response = await fetch('http://localhost:5000/gc/viewFaculty', {headers:{
-                    'Content-Type': 'application/json',
-                    'Authorization': `${Cookie.get('jwtoken')}`
-                }}); 
+                const response = await fetch('http://localhost:5000/gc/viewFaculty', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${Cookie.get('jwtoken')}`
+                    }
+                });
                 if (response.ok) {
                     const data = await response.json();
                     console.log(data);
@@ -31,17 +34,56 @@ export default function ViewFaculty() {
 
     return (
         <>
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                        Faculty Record
-                    </h2>
-                </div>
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                <DataTable value={FacultyData} stripedRows tableStyle={{ minWidth: '50rem' }}>
-                    <Column field="facultyid" header="Faculty IDr"></Column>
-                    <Column field="name" header="Name"></Column>
-                    <Column field="email" header="Email"></Column>
-                </DataTable>
+            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+                <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                    Faculty Record
+                </h2>
+            </div>
+            <div class="mt-6 shadow-md sm:rounded-lg">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                Faculty ID
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Faculty Name
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Email
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Roles
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {FacultyData?.map(rowData => (
+                            <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={rowData.thesisid}>
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {rowData.facultyid}
+                                </td>
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {rowData.name}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {rowData.email}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {rowData.role && rowData.role.length > 0 ? (
+                                        rowData.role.map((role, index) => (
+                                            <span key={index} className="mr-2">
+                                                {role}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <span>No roles found</span>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </>
     )

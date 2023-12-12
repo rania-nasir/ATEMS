@@ -68,117 +68,110 @@ export default function AddFacultyRecord() {
         <>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                    <h2 className="text-2xl tracking-tight text-gray-700 font-bold mt-4 mb-2">
                         Add Faculty Record
                     </h2>
                 </div>
-
-                <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form className="space-y-2" method="POST">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6">
-                            <div className="flex flex-col">
-                                <label htmlFor="facultyid" className="block text-sm font-medium leading-6 text-gray-900">
+                <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
+                    <form class="w-full max-w-lg">
+                        <div class="flex flex-wrap -mx-3 mb-6">
+                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                     Faculty ID
                                 </label>
                                 <input
+                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                                     id="facultyid"
-                                    name="facultyid"
                                     type="text"
-                                    autoComplete="off"
+                                    placeholder="1234"
+                                    name="facultyid"
                                     value={user.facultyid}
                                     onChange={handleInputs}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
-                            <div className="flex flex-col">
-                                <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
+                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                     Faculty Name
                                 </label>
                                 <input
+                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                                     id="name"
-                                    name="name"
                                     type="text"
-                                    autoComplete="off"
+                                    placeholder="Muhammad Fayyaz"
+                                    name="name"
                                     value={user.name}
                                     onChange={handleInputs}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
-
-                            <div className="flex flex-col">
-                                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                     Email
                                 </label>
                                 <input
+                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                                     id="email"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="off"
+                                    type="text"
+                                    placeholder="abc@example.com"
+                                    name='email'
                                     value={user.email}
                                     onChange={handleInputs}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
-
-                            <div className="flex flex-col">
-                                <label htmlFor="gender" className="block text-sm font-medium leading-6 text-gray-900">
+                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                     Gender
                                 </label>
                                 <input
+                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                                     id="gender"
-                                    name="gender"
                                     type="text"
-                                    autoComplete="off"
+                                    placeholder="M/F"
+                                    name='gender'
                                     value={user.gender}
-                                    onChange={handleInputs}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
+                                    onChange={handleInputs} />
                             </div>
-                            <div className="flex flex-col">
-                                <label htmlFor="mobile" className="block text-sm font-medium leading-6 text-gray-900">
+                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                     Mobile
                                 </label>
                                 <input
+                                    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
                                     id="mobile"
-                                    name="mobile"
                                     type="text"
-                                    autoComplete="off"
+                                    placeholder="12345678910"
+                                    name='mobile'
                                     value={user.mobile}
                                     onChange={handleInputs}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
-                            <div className="flex flex-col">
-                                <MultiSelect value={selectedrole} onChange={(e) => setSelectedrole(e.value)} options={role}
-                                    placeholder="Select role" maxSelectedLabels={3} className="leading-6 text-gray-900 font-medium text-sm w-full md:w-20rem" />
-                            </div>
-                            <div className="flex flex-col">
-                                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                                    Password
+                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    Roles
                                 </label>
-                                <input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    autoComplete="off"
-                                    value={user.password}
-                                    onChange={handleInputs}
-                                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
+                                <MultiSelect value={selectedrole} onChange={(e) => setSelectedrole(e.value)} options={role}
+                                    maxSelectedLabels={3}
+                                    className="mb-6 w-full bg-gray-200 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
                             </div>
                         </div>
-                        <div>
-                            <button
-                                type="button"
-                                className="flex mt-6 w-full justify-center rounded-md bg-green-700 hover:bg-green-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
-                                onClick={PostData}
-                            >
-                                Add Faculty
-                            </button>
+                        <div class="flex flex-wrap -mx-3 mb-6">
+                            <div class="w-full px-3">
+                                <button class="block w-full flex-shrink-0 bg-green-500 hover:bg-green-700 border-green-500 hover:border-green-700 text-sm border-4 text-white py-1 px-2 rounded"
+                                    type="button"
+                                    onClick={PostData}>
+                                    Add Faculty
+                                </button>
+                            </div>
                         </div>
                     </form>
-                </div>
-            </div>
+
+                    {/* <p className="mt-10 text-center text-sm text-gray-500">
+                        For description related queries contact concerned Academic Officer on  {' '}
+                        <NavLink to="#" className="font-semibold leading-6 text-green-600 hover:text-green-500">
+                            nu.edu.pk
+                        </NavLink>
+                    </p> */}
+                </div >
+            </div >
         </>
     );
 }
