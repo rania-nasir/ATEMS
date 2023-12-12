@@ -1,7 +1,8 @@
 const express = require('express');
 const gcRouter = express.Router();
 const gcFunctions = require("../controller/gc/gc.controller");
-const gcReview = require("../controller/gc/gcReviewRequest.Controller");
+//const gcReview = require("../controller/gc/gcReviewRequest.Controller");
+const gcReview = require ("../controller/gc/gcReviewRequest.controller")
 const { authenticate } = require('../middleware/authMiddleware');
 
 gcRouter.post('/signIn', gcFunctions.GCSignIn);
@@ -22,6 +23,7 @@ gcRouter.post('/ApproveRequest/:thesisId', gcReview.approveThesis); // GC approv
 
 
 gcRouter.post('/makeAnnouncement', gcFunctions.addAnnouncement); // GC makes announcement
+gcRouter.get('/viewAllThesis', gcReview.viewAllThesis); // GC makes announcement
 
 // gcRouter.put('/updateStudent', (req, res)=>{ res.send('Add student here'); });
 // gcRouter.delete('/deleteStudent', (req, res)=>{ res.send('Add student here'); });

@@ -22,6 +22,21 @@ const getThesis = async (req, res) => {
     }
 }
 
+
+const viewAllThesis = async (req, res) => {
+    try {
+        const viewallThesis = await thesis.findAll({
+            attributes: ['thesisid', 'thesistitle', 'description', 'thesisstatus'],
+        });
+
+        res.json({ viewallThesis });
+
+    } catch (error) {
+        console.error('Error fetching thesis for review:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 // Function to get details of a single thesis
 const getThesisDetails = async (req, res) => {
     try {
@@ -122,4 +137,4 @@ const approveThesis = async (req, res) => {
     }
 };
 
-module.exports = { getThesis, getThesisDetails, approveThesis };
+module.exports = { getThesis, getThesisDetails, approveThesis, viewAllThesis };
