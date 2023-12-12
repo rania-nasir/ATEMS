@@ -1,7 +1,6 @@
 const express = require('express');
 const gcRouter = express.Router();
 const gcFunctions = require("../controller/gc/gc.controller");
-//const gcReview = require("../controller/gc/gcReviewRequest.Controller");
 const gcReview = require ("../controller/gc/gcReviewRequest.controller")
 const { authenticate } = require('../middleware/authMiddleware');
 
