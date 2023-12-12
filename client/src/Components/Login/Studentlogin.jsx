@@ -51,15 +51,14 @@ export default function Studentlogin() {
                 window.alert("Invalid Credentials");
                 console.log("Invalid Credentials");
             } else {
-                window.alert("Student Login Successful");
-                console.log("Student Login Successful");
                 // Set cookie using js-cookie
-                Cookies.set('jwtoken', data.token, { expires: 3 }); // Expires in 3 days
+                Cookies.set('jwtoken', token, { expires: 3 }); // Expires in 3 days
                 Cookies.set('userId', userId, { expires: 3 });
                 Cookies.set('userType', userType, { expires: 3 });
-
-                // navigate('/studenthome');
+                window.alert("Student Login Successful");
+                console.log("Student Login Successful");
                 navigate('/');
+                window.location.reload(); // Refresh the page     
             }
         } else {
             window.alert("Something went wrong");
