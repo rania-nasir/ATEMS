@@ -164,7 +164,7 @@ const approveSynopsis = async (req, res) => {
         });
 
         // Send mail of Approval to student
-        const facultyName = selectedSynopsis.facultyName;
+        const facultyName = selectedSynopsis.facultyname;
         const toEmail = studentEmail;
         const subject = 'Synopsis Approved';
         const text = `Dear Student,
