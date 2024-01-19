@@ -16,9 +16,48 @@ const LoginPage = () => {
         userType: "student" // default to student login
     });
 
+    const [isInvalidFacultyId, setIsInvalidFacultyId] = useState(false);
+    const [isInvalidRollNo, setIsInvalidRollNo] = useState(false);
+    const [isPassword, setIsPassword] = useState(false);
+
     const handleInputs = (e) => {
         const { name, value } = e.target;
         setUser({ ...user, [name]: value });
+
+        // Validate faculty ID or roll number on each input change
+        if (name === 'facultyid') {
+            const isValidFacultyId = validateFacultyId(value);
+            setIsInvalidFacultyId(!isValidFacultyId);
+        }
+
+        if (name === 'rollno') {
+            const isValidRollNo = validateRollNo(value);
+            setIsInvalidRollNo(!isValidRollNo);
+        }
+
+        if (name === 'password') {
+            setIsPassword(!passwordExists(value));
+        }
+
+    };
+
+    const validateFacultyId = (facultyId) => {
+        const facultyIdRegex = /^\d{4}$/;
+        return facultyIdRegex.test(facultyId);
+    };
+
+    const validateRollNo = (rollNo) => {
+        const rollNoRegex = /^\d{2}[A-Za-z]-\d{4}$/;
+        return rollNoRegex.test(rollNo);
+    };
+
+    const passwordExists = (password) => {
+        if (!password) {
+            return false;
+        }
+        else {
+            return true;
+        }
     };
 
     const handleUserTypeChange = (type) => {
@@ -29,13 +68,31 @@ const LoginPage = () => {
         e.preventDefault();
         const { facultyid, rollno, password, userType } = user;
 
-        // const errorMessage = document.getElementById('errorMessage');
-        // if (!rollno || !password) {
-        //     errorMessage.innerHTML = 'Please fill all the fields';
-        //     return;
-        // } else {
-        //     errorMessage.innerHTML = '';
-        // }
+        if (userType === 'student') {
+            if (!validateRollNo(rollno)) {
+                setIsInvalidRollNo(true);
+                return;
+            }
+            else {
+                setIsInvalidRollNo(false);
+            }
+        }
+        else {
+            if (!validateFacultyId(facultyid)) {
+                setIsInvalidFacultyId(true);
+                return;
+            }
+            else {
+                setIsInvalidFacultyId(false);
+            }
+        }
+
+        if (!passwordExists(password)) {
+            setIsPassword(true);
+            return;
+        } else {
+            setIsPassword(false);
+        }
 
         var res;
 
@@ -65,18 +122,23 @@ const LoginPage = () => {
 
         if (res.status === 200) {
             if (data.message === "Invalid Credentials") {
-                window.alert("Invalid Credentials");
+                
+                document.getElementById('msg').innerHTML = 'Invalid Credentials';
+                
+                // window.alert("Invalid Credentials");
                 console.log("Invalid Credentials");
             } else {
                 Cookies.set('jwtoken', token, { expires: 3 });
                 Cookies.set('userId', userId, { expires: 3 });
                 Cookies.set('userType', userType, { expires: 3 });
-                window.alert(`${userType.charAt(0).toUpperCase() + userType.slice(1)} Login Successful`);
+                // window.alert(`${userType.charAt(0).toUpperCase() + userType.slice(1)} Login Successful`);
                 navigate('/');
                 window.location.reload();
             }
         } else {
-            window.alert("Something went wrong");
+            
+            document.getElementById('msg').innerHTML = 'Invalid Credentials';
+            // window.alert("Something went wrong");
             console.log("Something went wrong");
         }
     };
@@ -143,7 +205,10 @@ const LoginPage = () => {
                             </h2>
                         </div>
 
-                        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
+                        <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
+
+                            <span id='msg' className="justify-center flex text-red-500 font-bold italic text-xs italic mt-2"></span>
+
                             {/* Student and Faculty Login Forms */}
                             {user.userType === 'student' ? (
                                 // Student login form
@@ -151,9 +216,11 @@ const LoginPage = () => {
                                     <div class="flex flex-wrap -mx-3 mb-6">
                                         <div class="w-full px-3 mb-6 md:mb-0">
                                             <label class="block uppercase tracking-wide text-gray-900 text-xs font-bold mb-2" for="grid-first-name">
-                                                Roll Number
+                                                Roll Number {isInvalidRollNo && (
+                                                    <span className="text-red-500 text-xs italic mt-2"> Invalid Roll Number format</span>
+                                                )}
                                             </label>
-                                            <input class="appearance-none block w-full bg-gray-100 text-gray-800 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                            <input class={`appearance-none block w-full  ${isInvalidRollNo ? 'border-red-500' : 'bg-gray-100'}  bg-gray-100 text-gray-800 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500`}
                                                 value={user.rollno}
                                                 onChange={handleInputs}
                                                 required
@@ -164,10 +231,12 @@ const LoginPage = () => {
                                     </div>
                                     <div class="flex flex-wrap -mx-3 mb-6">
                                         <div class="w-full px-3">
-                                            <label class="block uppercase tracking-wide text-gray-900 text-xs font-bold mb-2" for="grid-password">
-                                                Password
+                                            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
+                                                Password {isPassword && (
+                                                    <span className="text-red-500 text-xs italic mt-2"> Please Enter Password</span>
+                                                )}
                                             </label>
-                                            <input class="appearance-none block w-full bg-gray-100 text-gray-800 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                            <input class={`appearance-none block w-full ${isPassword ? 'border-red-500' : 'bg-gray-200'} bg-gray-100 text-gray-800 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500`}
                                                 value={user.password}
                                                 onChange={handleInputs}
                                                 required
@@ -194,9 +263,11 @@ const LoginPage = () => {
                                     <div class="flex flex-wrap -mx-3 mb-6">
                                         <div class="w-full px-3 mb-6 md:mb-0">
                                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                                Faculty ID
+                                                Faculty ID {isInvalidFacultyId && (
+                                                    <span className="text-red-500 text-xs italic mt-2"> Invalid Faculty ID format</span>
+                                                )}
                                             </label>
-                                            <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                            <input class={`appearance-none block w-full ${isInvalidFacultyId ? 'border-red-500' : 'bg-gray-200'}  bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500`}
                                                 value={user.facultyid}
                                                 onChange={handleInputs}
                                                 required
@@ -208,9 +279,11 @@ const LoginPage = () => {
                                     <div class="flex flex-wrap -mx-3 mb-6">
                                         <div class="w-full px-3">
                                             <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
-                                                Password
+                                                Password {isPassword && (
+                                                    <span className="text-red-500 text-xs italic mt-2"> Please Enter Password</span>
+                                                )}
                                             </label>
-                                            <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                            <input class={`appearance-none block w-full ${isPassword ? 'border-red-500' : 'bg-gray-200'} bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500`}
                                                 value={user.password}
                                                 onChange={handleInputs}
                                                 required

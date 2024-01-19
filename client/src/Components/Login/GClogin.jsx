@@ -15,10 +15,35 @@ export default function GClogin() {
         gcid: "", password: ""
     })
 
-    const handleInputs = (e) => {
-        const { name, value } = e.target; // Destructure name and value directly from event.target
+    const [isInvalidFacultyId, setIsInvalidFacultyId] = useState(false);
+    const [isPassword, setIsPassword] = useState(false);
 
-        setuser({ ...user, [name]: value }); // Update state using the name and value of the input field
+    const handleInputs = (e) => {
+        const { name, value } = e.target;
+        setuser({ ...user, [name]: value });
+
+        // Validate faculty ID only when gcid input changes
+        if (name === 'gcid') {
+            const isValidFacultyId = validateFacultyId(value);
+            setIsInvalidFacultyId(!isValidFacultyId);
+        }
+
+        if (name === 'password') {
+            setIsPassword(!passwordExists(value));
+        }
+    };
+
+    const validateFacultyId = (facultyId) => {
+        const facultyIdRegex = /^\d{4}$/;
+        return facultyIdRegex.test(facultyId);
+    };
+    const passwordExists = (password) => {
+        if (!password) {
+            return false;
+        }
+        else {
+            return true;
+        }
     };
 
     const PostData = async (e) => {
@@ -27,14 +52,19 @@ export default function GClogin() {
 
         const { gcid, password } = user;
 
-        const errorMessage = document.getElementById('errorMessage');
-        if (!gcid || !password) {
-            errorMessage.innerHTML = 'Please fill all the fields';
+        if (!validateFacultyId(gcid)) {
+            setIsInvalidFacultyId(true);
             return;
         } else {
-            errorMessage.innerHTML = '';
+            setIsInvalidFacultyId(false);
         }
 
+        if (!passwordExists(password)) {
+            setIsPassword(true);
+            return;
+        } else {
+            setIsPassword(false);
+        }
 
         const res = await fetch("http://localhost:5000/gc/signIn", {
             method: "POST",
@@ -52,7 +82,8 @@ export default function GClogin() {
 
         if (res.status === 200) {
             if (data.message === "Invalid Credentials") {
-                window.alert("Invalid Credentials");
+                document.getElementById('msg').innerHTML = 'Invalid Credentials';
+                // window.alert("Invalid Credentials");
                 console.log("Invalid Credentials");
             } else {
                 // Set cookie using js-cookie
@@ -65,7 +96,8 @@ export default function GClogin() {
             console.log("GC Login Successful");
             window.location.reload(); // Refresh the page      
         } else {
-            window.alert("Something went wrong");
+            document.getElementById('msg').innerHTML = 'Invalid Credentials';
+            // window.alert("Something went wrong");
             console.log("Something went wrong");
         }
     }
@@ -85,28 +117,37 @@ export default function GClogin() {
                             </h2>
                         </div>
 
-                        <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
+                        <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-sm">
+
+                            <span id='msg' className="justify-center flex text-red-500 font-bold italic text-xs italic mt-2"></span>
+
                             <form class="w-full max-w-lg">
+
                                 <div class="flex flex-wrap -mx-3 mb-6">
                                     <div class="w-full px-3 mb-6 md:mb-0">
                                         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                            GC ID
+                                            GC ID {isInvalidFacultyId && (
+                                                <span className="text-red-500 text-xs italic mt-2"> Invalid Faculty ID format</span>
+                                            )}
                                         </label>
-                                        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        <input class={`appearance-none block w-full ${isInvalidFacultyId ? 'border-red-500' : 'bg-gray-200'} bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500`}
                                             value={user.gcid}
                                             onChange={handleInputs}
                                             required
                                             type="gcid"
                                             name="gcid"
                                             placeholder="1234" />
+
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap -mx-3 mb-6">
                                     <div class="w-full px-3">
                                         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
-                                            Password
+                                            Password {isPassword && (
+                                                <span className="text-red-500 text-xs italic mt-2"> Please Enter Password</span>
+                                            )}
                                         </label>
-                                        <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        <input class={`appearance-none block w-full ${isPassword ? 'border-red-500' : 'bg-gray-200'} bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500`}
                                             value={user.password}
                                             onChange={handleInputs}
                                             required
@@ -115,7 +156,7 @@ export default function GClogin() {
                                             type="password"
                                             placeholder="********" />
                                     </div>
-                                    <p id='errorMessage' class="pl-4 text-red-500 text-xs italic"></p>
+                                    {/* <p id='errorMessage' class="pl-4 text-red-500 text-xs italic"></p> */}
                                 </div>
                                 <div class="flex flex-wrap -mx-3 mb-6">
                                     <div class="w-full px-3">
