@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Cookie from 'js-cookie'
-
+import { NavLink } from 'react-router-dom';
 
 export default function ViewFaculty() {
     const [FacultyData, setFacultyData] = useState([]);
@@ -53,6 +53,12 @@ export default function ViewFaculty() {
                                 <th scope="col" class="px-6 py-3">
                                     Roles
                                 </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Update
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Delete
+                                </th>
                             </tr>
                         </thead>
                         {FacultyData.length === 0 ? (
@@ -80,6 +86,16 @@ export default function ViewFaculty() {
                                             ) : (
                                                 <span>No roles found</span>
                                             )}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <NavLink to="#" className="font-semibold leading-6 text-blue-600 hover:text-teal-600 hover:underline">
+                                                Edit
+                                            </NavLink>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <NavLink to="#" className="font-semibold leading-6 text-blue-600 hover:text-teal-600 hover:underline">
+                                                Delete
+                                            </NavLink>
                                         </td>
                                     </tr>
                                 ))}

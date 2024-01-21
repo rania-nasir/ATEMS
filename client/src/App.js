@@ -13,8 +13,10 @@ import { Route, Routes } from 'react-router-dom'
 // Landing Folder
 import LandingPage from './Components/Landing/LandingPage'
 
-// Navbar Folder
+// Other Folders
 import NavbarDefault from './Components/Navbar/NavbarDefault';
+import SidebarDefault from './Components/Sidebar/SidebarDefault';
+import RoleTabs from './Components/Faculty/RoleTabs';
 
 // Login Folder
 import LoginPage from './Components/Login/LoginPage';
@@ -48,7 +50,7 @@ import ThesisRecord from './Components/GC/ThesisRecord';
 
 // Error Folder
 import NotFoundPage from './Components/Error/NotFoundPage'
-import SidebarDefault from './Components/Sidebar/SidebarDefault';
+
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 
@@ -85,68 +87,69 @@ function App() {
         </div>) : (<></>)}
         <div className={authToken ? classesWithNavbar : classesWithoutNavbar}>
 
-        <Routes>
+          <Routes>
 
-          {/* Main Page  */}
-          {!authToken ? (
-            <>
-              <Route path='/' element={<LandingPage />} />
-              {/* Login Pages  */}
-              <Route path='/login' element={<LoginPage />} />
-              <Route path='/gclogin' element={<GClogin />} />
-            </>
-          ) : (
-            // Conditional rendering based on userType
-            <>
-              {userDetails.userType === 'faculty' && (
-                // Render faculty pages for faculty user
-                <>
-                  <Route path='/' element={<Facultyhome />} />
-                  <Route path='/supAllRequests' element={<GetSynopsis />} />
-                  <Route path='/supReviewRequest/:synopsisid' element={<GetSynopsisDetails />} />
-                  <Route path='viewAnnouncement' element={<FacultyviewAnnouncement />} />
-                  <Route path='/MSRCAllThesis' element={<MSRCAllThesis />} />
-                  <Route path='/MSRCThesisDetails/:thesisid' element={<MSRCThesisDetails />} />
-                  {/* ... (other faculty routes) */}
-                </>
-              )}
-              {userDetails.userType === 'student' && (
-                // Render student pages for student user
-                <>
-                  <Route path='/' element={<Studenthome />} />
-                  <Route path='/synopsisForm' element={<SynopsisForm />} />
-                  <Route path='/fillSynopsis' element={<FillSynopsis />} />
-                  <Route path='/viewAnnouncement' element={<StudentviewAnnouncement />} />
-                  <Route path='/viewFeedback' element={<ViewFeedback />} />
-                  {/* ... (other student routes) */}
-                </>
-              )}
-              {
-                userDetails.userType === 'gc' && (
-                  // Render gc pages for gc user
+            {/* Main Page  */}
+            {!authToken ? (
+              <>
+                <Route path='/' element={<LandingPage />} />
+                {/* Login Pages  */}
+                <Route path='/login' element={<LoginPage />} />
+                <Route path='/gclogin' element={<GClogin />} />
+              </>
+            ) : (
+              // Conditional rendering based on userType
+              <>
+                {userDetails.userType === 'faculty' && (
+                  // Render faculty pages for faculty user
                   <>
-                    <Route path='/' element={<GCDashboard />} />
-                    <Route path='/addstudentrecord' element={<AddStudentRecord />} />
-                    <Route path='/addfacultyrecord' element={<AddFacultyRecord />} />
-                    <Route path='/viewstudent' element={<ViewStudent />} />
-                    <Route path='/viewfaculty' element={<ViewFaculty />} />
-                    <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
-                    <Route path='/viewAllThesis' element={<ThesisRecord />} />
-                    <Route path='/ReviewRequest' element={<GetThesis />} />
-                    <Route path='/ReviewRequest/:thesisid' element={<GetThesisDetails />} />
-                    {/* ... (other gc routes) */}
+                    <Route path='/roletabs' element={<RoleTabs />} />
+                    <Route path='/' element={<Facultyhome />} />
+                    <Route path='/supAllRequests' element={<GetSynopsis />} />
+                    <Route path='/supReviewRequest/:synopsisid' element={<GetSynopsisDetails />} />
+                    <Route path='viewAnnouncement' element={<FacultyviewAnnouncement />} />
+                    <Route path='/MSRCAllThesis' element={<MSRCAllThesis />} />
+                    <Route path='/MSRCThesisDetails/:thesisid' element={<MSRCThesisDetails />} />
+                    {/* ... (other faculty routes) */}
                   </>
-                )
-              }
-            </>
-          )}
+                )}
+                {userDetails.userType === 'student' && (
+                  // Render student pages for student user
+                  <>
+                    <Route path='/' element={<Studenthome />} />
+                    <Route path='/synopsisForm' element={<SynopsisForm />} />
+                    <Route path='/fillSynopsis' element={<FillSynopsis />} />
+                    <Route path='/viewAnnouncement' element={<StudentviewAnnouncement />} />
+                    <Route path='/viewFeedback' element={<ViewFeedback />} />
+                    {/* ... (other student routes) */}
+                  </>
+                )}
+                {
+                  userDetails.userType === 'gc' && (
+                    // Render gc pages for gc user
+                    <>
+                      <Route path='/' element={<GCDashboard />} />
+                      <Route path='/addstudentrecord' element={<AddStudentRecord />} />
+                      <Route path='/addfacultyrecord' element={<AddFacultyRecord />} />
+                      <Route path='/viewstudent' element={<ViewStudent />} />
+                      <Route path='/viewfaculty' element={<ViewFaculty />} />
+                      <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
+                      <Route path='/viewAllThesis' element={<ThesisRecord />} />
+                      <Route path='/ReviewRequest' element={<GetThesis />} />
+                      <Route path='/ReviewRequest/:thesisid' element={<GetThesisDetails />} />
+                      {/* ... (other gc routes) */}
+                    </>
+                  )
+                }
+              </>
+            )}
 
 
-          {/* Error Pages */}
-          <Route path='*' element={<NotFoundPage />} />
-        </Routes>
-      </div>
-    </div >
+            {/* Error Pages */}
+            <Route path='*' element={<NotFoundPage />} />
+          </Routes>
+        </div>
+      </div >
     </>
   );
 }

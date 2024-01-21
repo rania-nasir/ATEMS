@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Cookie from 'js-cookie';
+import { NavLink } from 'react-router-dom';
 
 export default function ViewStudent() {
     const [studentData, setStudentData] = useState([]);
@@ -60,6 +61,12 @@ export default function ViewStudent() {
                                 <th scope="col" class="px-6 py-3">
                                     CGPA
                                 </th>
+                                <th scope="col" class="px-6 py-3">
+                                   Update
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Delete
+                                </th>
                             </tr>
                         </thead>
                         {studentData.length === 0 ? (
@@ -88,6 +95,16 @@ export default function ViewStudent() {
                                         </td>
                                         <td className="px-6 py-4">
                                             {rowData.cgpa}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <NavLink to="#" className="font-semibold leading-6 text-blue-600 hover:text-teal-600 hover:underline">
+                                                Edit
+                                            </NavLink>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <NavLink to="#" className="font-semibold leading-6 text-blue-600 hover:text-teal-600 hover:underline">
+                                                Delete
+                                            </NavLink>
                                         </td>
                                     </tr>
                                 ))}
