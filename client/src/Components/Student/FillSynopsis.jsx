@@ -70,121 +70,159 @@ const FillSynopsis = () => {
         <>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <h2 className="text-2xl tracking-tight text-gray-700 font-bold mt-4 mb-2">
+                    <h2 className="text-center text-2xl tracking-tight text-gray-950 font-bold">
                         Fill Synopsis Form
                     </h2>
                 </div>
 
-                <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form class="w-full max-w-lg">
-                        <div class="flex flex-wrap -mx-3 mb-6">
-                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                    Roll Number
-                                </label>
-                                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane" />
+                <div className="mt-6 sm:mx-auto">
+
+                    <form class="sm:mx-auto">
+                        <div className='grid grid-cols-3'>
+                            <div className='col-span-1 p-2'>
+                                <div className='w-full px-3'>
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                        for="grid-first-name">
+                                        Roll Number
+                                    </label>
+                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        id="grid-first-name" type="text" placeholder="20F-1234" />
+
+                                </div>
                             </div>
-                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                    Name
-                                </label>
-                                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane" />
+                            <div className='col-span-1 p-2'>
+                                <div className='w-full px-3'>
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                        Name
+                                    </label>
+                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        id="grid-first-name" type="text" placeholder="Muhammad Ahmad" />
+
+                                </div>
                             </div>
-                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                    CGPA
-                                </label>
-                                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane" />
+                            <div className='col-span-1 p-2'>
+                                <div className='w-full px-3'>
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                        CGPA
+                                    </label>
+                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        id="grid-first-name" type="text" placeholder="3.16" />
+
+                                </div>
                             </div>
-                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                    Email
-                                </label>
-                                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane" />
+
+                            <div className='col-span-1 p-2'>
+                                <div className='w-full px-3'>
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                        Email
+                                    </label>
+                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        id="grid-first-name" type="text" placeholder="abc@gmail.com" />
+
+
+                                </div>
                             </div>
-                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                    Mobile
-                                </label>
-                                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane" />
+                            <div className='col-span-1 p-2'>
+                                <div className='w-full px-3'>
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                        Mobile
+                                    </label>
+                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        id="grid-first-name" type="text" placeholder="12345678901" />
+
+                                </div>
                             </div>
-                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                    Semester
-                                </label>
-                                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane" />
+                            <div className='col-span-1 p-2'>
+                                <div className='w-full px-3'>
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                        Semester
+                                    </label>
+                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        id="grid-first-name" type="text" placeholder="8" />
+
+                                </div>
                             </div>
-                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                    Program Name
-                                </label>
-                                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane" />
+
+                            <div className='col-span-1 p-2'>
+                                <div className='w-full px-3'>
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                        Program Name
+                                    </label>
+                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        id="grid-first-name" type="text" placeholder="Computer Science" />
+
+                                </div>
                             </div>
-                            <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                    Date
-                                </label>
-                                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane" />
-                            </div>
-                            <hr class="w-48 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-700" />
-                            <div className="w-full px-3 mb-6 md:mb-0">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                    Select facultyname
-                                </label>
-                                <Dropdown
-                                    value={selectedfacultyname}
-                                    onChange={(e) => setSelectedfacultyname(e.value)}
-                                    options={facultyname}
-                                    className="mb-6 w-full bg-gray-200 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
-                            </div>
-                            <div class="w-full px-3 mb-6 md:mb-0">
-                                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                    Synopsis Title
-                                </label>
-                                <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    value={user.synopsistitle}
-                                    onChange={handleInputs}
-                                    required
-                                    type="synopsistitle"
-                                    name="synopsistitle"
-                                    placeholder="Title here.." />
+                            <div className='col-span-1 p-2'>
+                                <div className='w-full px-3'>
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                        Date
+                                    </label>
+                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        id="grid-first-name" type="text" placeholder="01-01-2024" />
+
+                                </div>
                             </div>
                         </div>
-                        <div class="flex flex-wrap -mx-3 mb-6">
+
+                        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+
+                        <div className='grid grid-cols-2'>
+                            <div className='col-span-1 p-2'>
+
+                                <div className='w-full px-3'>
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                        Synopsis Title
+                                    </label>
+                                    <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        value={user.synopsistitle}
+                                        onChange={handleInputs}
+                                        required
+                                        type="synopsistitle"
+                                        name="synopsistitle"
+                                        placeholder="Synopsis Title here.." />
+                                </div>
+
+                            </div>
+                            <div className='col-span-1 p-2'>
+                                <div className='w-full px-3'>
+                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                        Select facultyname
+                                    </label>
+                                    <Dropdown
+                                        value={selectedfacultyname}
+                                        onChange={(e) => setSelectedfacultyname(e.value)}
+                                        options={facultyname}
+                                        className="mb-6 w-full bg-gray-200 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div className='p-2'>
                             <div class="w-full px-3">
                                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-description">
                                     Description
                                 </label>
-                                <textarea class="resize-none h-96 rounded-md appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                <textarea class="resize-none h-56 rounded-md appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     value={user.description}
                                     onChange={handleInputs}
                                     required
                                     id="description"
                                     name="description"
                                     type="description"
-                                    placeholder="description here..."
+                                    placeholder="Synopsis Description here..."
                                 >
                                 </textarea>
                             </div>
-                            <p id='errorMessage' class="pl-4 text-red-500 text-xs italic"></p>
                         </div>
-                        <div class="flex flex-wrap -mx-3 mb-6">
-                            <div class="w-full px-3">
-                                <button class="block w-full flex-shrink-0 bg-green-500 hover:bg-green-700 border-green-500 hover:border-green-700 text-sm border-4 text-white py-1 px-2 rounded"
-                                    type="button"
-                                    onClick={PostData}>
-                                    Submit Synopsis
-                                </button>
-                            </div>
+                        <div class="m-2 px-3">
+                            <button class="block flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                                type="button"
+                                onClick={PostData}>
+                                Submit Synopsis
+                            </button>
                         </div>
                     </form>
-
-                    {/* <p className="mt-10 text-center text-sm text-gray-500">
-                        For description related queries contact concerned Academic Officer on  {' '}
-                        <NavLink to="#" className="font-semibold leading-6 text-green-600 hover:text-green-500">
-                            nu.edu.pk
-                        </NavLink>
-                    </p> */}
                 </div >
             </div >
         </>
