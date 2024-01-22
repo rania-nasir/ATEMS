@@ -5,9 +5,9 @@ const synopsisController = require("../controller/synopsis/synopsis.controller")
 const { authenticate } = require('../middleware/authMiddleware');
 
 stdRouter.post('/signIn', stdFunctions.stdSignIn);
-
 stdRouter.use(authenticate);
 
+stdRouter.get('/showStdData', stdFunctions.showStdData);
 /* Student Functions */
 
 stdRouter.get("/synopsisForm", synopsisController.sendFaculties); // Render the synopsis form with faculties

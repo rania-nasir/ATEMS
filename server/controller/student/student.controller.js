@@ -95,9 +95,31 @@ const viewFeedback = async (req, res) => {
   }
 };
 
+const showStdData = async (req, res) => {
+  try {
+    const rollno = req.body.rollno; 
+
+    const studentData = await students.findOne({
+      where: { rollno },
+      attributes: { exclude: ['password'] } 
+    });
+
+    if (studentData) {
+      res.status(200).json({ data: studentData });
+    } else {
+      res.status(404).json({ message: 'Student not found' });
+    }
+  }
+  catch (error) {
+     console.error('Error retrieving student data:', error);
+    res.status(500).json({ message: 'An error occurred while retrieving student data' });
+  }
+}
+
 module.exports =
 {
   stdSignIn,
   viewStudentAnnouncements,
-  viewFeedback
+  viewFeedback,
+  showStdData
 };
