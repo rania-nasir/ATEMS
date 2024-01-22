@@ -6,9 +6,8 @@ const msrcReview = require('../controller/faculty/msrcReview.controller');
 const { authenticate } = require('../middleware/authMiddleware');
 
 facRouter.post('/signIn', facFunctions.facultySignIn);
-
 facRouter.use(authenticate);
-
+facRouter.get('/showFacData', facFunctions.showFacData);
 /* Supervisor Functions */
 
 facRouter.get('/supAllRequests', facReview.getSynopsis); // Fetches the list of requests
