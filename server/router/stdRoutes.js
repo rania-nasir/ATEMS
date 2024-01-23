@@ -7,7 +7,7 @@ const { authenticate } = require('../middleware/authMiddleware');
 stdRouter.post('/signIn', stdFunctions.stdSignIn);
 stdRouter.use(authenticate);
 
-stdRouter.get('/showStdData', stdFunctions.showStdData);
+stdRouter.get('/showStdData/:rollno', stdFunctions.showStdData);
 /* Student Functions */
 
 stdRouter.get("/synopsisForm", synopsisController.sendFaculties); // Render the synopsis form with faculties

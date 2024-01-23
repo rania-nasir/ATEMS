@@ -7,7 +7,7 @@ const { authenticate } = require('../middleware/authMiddleware');
 
 facRouter.post('/signIn', facFunctions.facultySignIn);
 facRouter.use(authenticate);
-facRouter.get('/showFacData', facFunctions.showFacData);
+facRouter.get('/showFacData/:facultyid', facFunctions.showFacData);
 /* Supervisor Functions */
 
 facRouter.get('/supAllRequests', facReview.getSynopsis); // Fetches the list of requests

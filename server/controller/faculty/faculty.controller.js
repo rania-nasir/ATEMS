@@ -75,19 +75,20 @@ const viewFacultyAnnouncements = async (req, res) => {
 
 const showFacData = async (req, res) => {
   try {
-    const facultyid = req.body.facultyid;
+    const { facultyid } = req.params;
+    // const facultyid = req.body.facultyid;
     const facultyData = await faculties.findOne({
-      where: { facultyid },
-      attributes: { exclude: ['password'] } 
+      where: { facultyid: facultyid },
+      // attributes: { exclude: ['password'] }
     });
 
     if (facultyData) {
-      res.status(200).json({ data: facultyData });
+      res.status(200).json(facultyData);
     } else {
       res.status(404).json({ message: 'Faculty member not found' });
     }
   } catch (error) {
-    
+
     console.error('Error retrieving faculty data:', error);
     res.status(500).json({ message: 'An error occurred while retrieving faculty data' });
   }

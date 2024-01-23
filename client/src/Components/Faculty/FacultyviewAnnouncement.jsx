@@ -31,13 +31,13 @@ export default function StudentviewAnnouncement() {
 
     return (
         <>
-            <div className='m-2'>
+            <div className='mx-6'>
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <h2 className="m-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                    <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                         Announcements
                     </h2>
                 </div>
-                <div className="m-6 shadow-md sm:rounded-lg">
+                <div className="my-8 shadow-md sm:rounded-lg">
                     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 
                         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

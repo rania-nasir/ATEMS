@@ -1,10 +1,39 @@
 import { useNavigate } from 'react-router-dom'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Dropdown } from 'primereact/dropdown';
 import { Fdata } from './SynopsisForm'
-import Cookie from 'js-cookie';
+import Cookies from 'js-cookie';
 
 const FillSynopsis = () => {
+    const userId = Cookies.get('userId');
+
+    const [rollno, setrollno] = useState([]);
+
+    useEffect(() => {
+        async function fetchrollno() {
+            try {
+                const response = await fetch(`http://localhost:5000/std/showStdData/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${Cookies.get('jwtoken')}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data);
+                    setrollno(data);
+                } else {
+                    throw new Error('Failed to fetch data');
+                }
+            } catch (error) {
+                console.error('Failed to retrieve data: ', error);
+            }
+        }
+
+        fetchrollno();
+    }, [userId]);
 
     const navigate = useNavigate();
 
@@ -43,7 +72,7 @@ const FillSynopsis = () => {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `${Cookie.get('jwtoken')}`
+                'Authorization': `${Cookies.get('jwtoken')}`
             },
             body: JSON.stringify(synopsisData)
 
@@ -86,7 +115,7 @@ const FillSynopsis = () => {
                                         Roll Number
                                     </label>
                                     <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                        id="grid-first-name" type="text" placeholder="20F-1234" />
+                                        id="grid-first-name" type="text" placeholder="20F-1234" value={rollno.rollno} />
 
                                 </div>
                             </div>
@@ -96,7 +125,7 @@ const FillSynopsis = () => {
                                         Name
                                     </label>
                                     <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                        id="grid-first-name" type="text" placeholder="Muhammad Ahmad" />
+                                        id="grid-first-name" type="text" placeholder="Muhammad Ahmad" value={rollno.name} />
 
                                 </div>
                             </div>
@@ -106,7 +135,7 @@ const FillSynopsis = () => {
                                         CGPA
                                     </label>
                                     <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                        id="grid-first-name" type="text" placeholder="3.16" />
+                                        id="grid-first-name" type="text" placeholder="3.16" value={rollno.cgpa} />
 
                                 </div>
                             </div>
@@ -117,7 +146,7 @@ const FillSynopsis = () => {
                                         Email
                                     </label>
                                     <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                        id="grid-first-name" type="text" placeholder="abc@gmail.com" />
+                                        id="grid-first-name" type="text" placeholder="abc@gmail.com" value={rollno.email}/>
 
 
                                 </div>
@@ -128,7 +157,7 @@ const FillSynopsis = () => {
                                         Mobile
                                     </label>
                                     <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                        id="grid-first-name" type="text" placeholder="12345678901" />
+                                        id="grid-first-name" type="text" placeholder="12345678901" value={rollno.mobile}/>
 
                                 </div>
                             </div>
@@ -138,7 +167,7 @@ const FillSynopsis = () => {
                                         Semester
                                     </label>
                                     <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                        id="grid-first-name" type="text" placeholder="8" />
+                                        id="grid-first-name" type="text" placeholder="8" value={rollno.semester}/>
 
                                 </div>
                             </div>
@@ -149,11 +178,11 @@ const FillSynopsis = () => {
                                         Program Name
                                     </label>
                                     <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                        id="grid-first-name" type="text" placeholder="Computer Science" />
+                                        id="grid-first-name" type="text" placeholder="Computer Science" value={rollno.program}/>
 
                                 </div>
                             </div>
-                            <div className='col-span-1 p-2'>
+                            {/* <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
                                     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Date
@@ -162,7 +191,7 @@ const FillSynopsis = () => {
                                         id="grid-first-name" type="text" placeholder="01-01-2024" />
 
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
 
                         <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
