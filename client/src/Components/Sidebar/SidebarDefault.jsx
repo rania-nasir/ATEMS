@@ -83,16 +83,19 @@ const SidebarDefault = () => {
         },
         {
             id: 2,
-            title: 'Supervision Request',
-            path: '/supAllRequests',
-            iconsrc: "https://img.icons8.com/ios-filled/50/737373/invite.png",
-            // subItems: [],
-        },
-        {
-            id: 3,
             title: 'View Announcement',
             path: '/viewAnnouncement',
             iconsrc: "https://img.icons8.com/ios-filled/50/737373/commercial.png",
+            // subItems: [],
+        },
+    ];
+
+    const SupervisorSidebarItems = [
+        {
+            id: 3,
+            title: 'Supervision Request',
+            path: '/supAllRequests',
+            iconsrc: "https://img.icons8.com/ios-filled/50/737373/invite.png",
             // subItems: [],
         },
         {
@@ -102,9 +105,21 @@ const SidebarDefault = () => {
             iconsrc: "https://img.icons8.com/ios-filled/50/737373/giving.png",
             // subItems: [],
         },
+    ];
+
+    const InternalSidebarItems = [
 
     ];
 
+    const MSRCSidebarItems = [
+        {
+            id: 3,
+            title: 'MSRC',
+            path: '/MSRCAllThesis',
+            iconsrc: "https://img.icons8.com/ios-filled/50/737373/giving.png",
+            // subItems: [],
+        },
+    ];
     const studentSidebarItems = [
         {
             id: 1,
@@ -183,8 +198,8 @@ const SidebarDefault = () => {
                 <div className="text-gray-800 border-r border-gray-350 w-full pt-2 p-2 flex flex-col">
                     {menuItems.map((menuItem) => (
                         <div className="w-full pr-1" key={menuItem.id}
-                            >
-                            <NavLink 
+                        >
+                            <NavLink
                                 to={menuItem.path}
                                 onClick={() => handleMenuClick(menuItem.path, menuItem.id)}
                                 className={`flex items-left w-full my-1 p-2 py-3 px-5 hover:bg-gray-200 ${activeMenu === menuItem.id ? 'bg-gray-200' : ''}`}

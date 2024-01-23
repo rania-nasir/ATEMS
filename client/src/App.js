@@ -24,11 +24,11 @@ import GClogin from './Components/Login/GClogin';
 
 // Faculty Folder
 import Facultyhome from './Components/Faculty/Facultyhome'
-import GetSynopsis from './Components/Faculty/GetSynopsis';
-import GetSynopsisDetails from './Components/Faculty/GetSynopsisDetails';
+// import GetSynopsis from './Components/Faculty/GetSynopsis';
+// import GetSynopsisDetails from './Components/Faculty/GetSynopsisDetails';
 import FacultyviewAnnouncement from './Components/Faculty/FacultyviewAnnouncement'
-import MSRCAllThesis from './Components/Faculty/MSRCAllThesis';
-import MSRCThesisDetails from './Components/Faculty/MSRCThesisDetails';
+// import MSRCAllThesis from './Components/Faculty/MSRCAllThesis';
+// import MSRCThesisDetails from './Components/Faculty/MSRCThesisDetails';
 
 // Student Folder
 import Studenthome from './Components/Student/Studenthome'
@@ -86,6 +86,7 @@ function App() {
           <SidebarDefault />
         </div>) : (<></>)}
         <div className={authToken ? classesWithNavbar : classesWithoutNavbar}>
+          {userDetails.userType === 'faculty' ? <RoleTabs /> : <></>}
 
           <Routes>
 
@@ -103,13 +104,14 @@ function App() {
                 {userDetails.userType === 'faculty' && (
                   // Render faculty pages for faculty user
                   <>
-                    <Route path='/roletabs' element={<RoleTabs />} />
+
                     <Route path='/' element={<Facultyhome />} />
-                    <Route path='/supAllRequests' element={<GetSynopsis />} />
-                    <Route path='/supReviewRequest/:synopsisid' element={<GetSynopsisDetails />} />
                     <Route path='viewAnnouncement' element={<FacultyviewAnnouncement />} />
-                    <Route path='/MSRCAllThesis' element={<MSRCAllThesis />} />
+                    {/* <Route path='/MSRCAllThesis' element={<MSRCAllThesis />} />
                     <Route path='/MSRCThesisDetails/:thesisid' element={<MSRCThesisDetails />} />
+                    <Route path='/supAllRequests' element={<GetSynopsis />} />
+                    <Route path='/supReviewRequest/:synopsisid' element={<GetSynopsisDetails />} /> */}
+
                     {/* ... (other faculty routes) */}
                   </>
                 )}
