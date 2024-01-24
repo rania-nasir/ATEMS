@@ -34,6 +34,10 @@ const students = sequelize.define("students", {
         type: DataTypes.STRING,
         allowNull: false
     },
+    credithours: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     cgpa: {
         type: DataTypes.FLOAT,
         allowNull: false
