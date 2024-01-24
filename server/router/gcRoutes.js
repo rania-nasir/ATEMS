@@ -28,11 +28,11 @@ gcRouter.get('/viewAllThesis', gcReview.viewAllThesis); // GC makes announcement
 
 // gcRouter.get('/assignRoles', (req, res)=>{ res.send('GC assign faculty roles here'); });
 
-gcRouter.put('/updateStudent', gcFunctions.updateStudent); // GC updates student
-gcRouter.put('/updateFaculty', gcFunctions.updateFaculty); // GC updates faculty
+gcRouter.put('/updateStudent/:rollno', gcFunctions.updateStudent); // GC updates student
+gcRouter.put('/updateFaculty/:facultyid', gcFunctions.updateFaculty); // GC updates faculty
  
-gcRouter.delete('/deleteStudent', gcFunctions.deleteStudent);// GC deletes student
-gcRouter.delete('/deleteFaculty', gcFunctions.deleteFaculty);// GC deletes faculty
+gcRouter.delete('/deleteStudent/:rollno', gcFunctions.deleteStudent);// GC deletes student
+gcRouter.delete('/deleteFaculty/:facultyid', gcFunctions.deleteFaculty);// GC deletes faculty
 
 
 module.exports = gcRouter;
