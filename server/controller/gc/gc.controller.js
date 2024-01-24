@@ -282,10 +282,10 @@ const viewStudents = async (req, res) => {
 
 const updateStudent = async (req, res) => {
   try {
-    const { rollno, updatedData } = req.body;
+    const rollno = req.params.rollno;
+    const updatedData = req.body;
     delete updatedData.password;
 
-    // an asynchronous update operation
     const [updatedRowsCount, updatedStudents] = await students.update(updatedData, {
       where: { rollno },
       returning: true, // to ensures that the updated student data is returned
@@ -311,10 +311,11 @@ const updateStudent = async (req, res) => {
 
 const updateFaculty = async (req, res) => {
   try {
-    const { facultyid, updatedData } = req.body;
+    const facultyid = req.params.facultyid;
+    const updatedData = req.body;
     delete updatedData.password;
 
-    // asynchronous update operation
+    //asynchronous update operation
     const [updatedRowsCount, updatedFaculties] = await faculties.update(updatedData, {
       where: { facultyid },
       returning: true, // to ensures that the updated faculty data is returned
@@ -330,6 +331,7 @@ const updateFaculty = async (req, res) => {
     } else {
       res.status(404).json({ message: 'Faculty with the specified faculty ID not found' });
     }
+
   } catch (error) {
     // any errors during the update operation
     console.error('Error updating faculty data:', error);
@@ -341,7 +343,7 @@ const updateFaculty = async (req, res) => {
 // Delete Student
 const deleteStudent = async (req, res) => {
   try {
-    const { rollno } = req.body;
+    const rollno = req.params.rollno;
 
     //asynchronous delete operation
     const deletedRowsCount = await students.destroy({
@@ -364,7 +366,7 @@ const deleteStudent = async (req, res) => {
 // Delete Faculty
 const deleteFaculty = async (req, res) => {
   try {
-    const { facultyid } = req.body;
+    const { facultyid } = req.params.facultyid;
 
     // Assuming you are using a database, you can perform an asynchronous delete operation
     const deletedRowsCount = await faculties.destroy({
