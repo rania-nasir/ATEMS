@@ -1,8 +1,11 @@
 const express = require('express');
+const multer = require('multer');
 const gcRouter = express.Router();
 const gcFunctions = require("../controller/gc/gc.controller");
 const gcReview = require ("../controller/gc/gcReviewRequest.controller")
 const { authenticate } = require('../middleware/authMiddleware');
+const upload = multer({ dest: 'uploads/' });
+const uploadMiddleware = upload.single('file');
 
 gcRouter.post('/signIn', gcFunctions.GCSignIn);
 
@@ -10,9 +13,11 @@ gcRouter.use(authenticate);
 
 /* GC Functions */
 
+gcRouter.post('/uploadStdData',uploadMiddleware ,gcFunctions.uploadStdData.uploadStd); // GC uploads student data
+gcRouter.post('/uploadFacData',uploadMiddleware ,gcFunctions.uploadFacData.uploadFac); // GC uploads faculty data
 
-gcRouter.post('/addStudent', gcFunctions.addStudent); // GC adds student
-gcRouter.post('/addFaculty', gcFunctions.addFaculty); // GC adds faculty
+//gcRouter.post('/addStudent', gcFunctions.addStudent); // GC adds student
+//gcRouter.post('/addFaculty', gcFunctions.addFaculty); // GC adds faculty
 
 gcRouter.get('/viewFaculty', gcFunctions.viewFaculty); // GC views faculty
 gcRouter.get('/viewStudents', gcFunctions.viewStudents); // GC views student record
