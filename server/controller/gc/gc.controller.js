@@ -149,18 +149,6 @@ const addStudent = async (req, res) => {
   }
 };
 
-// View All Present students in the system
-const viewStudents = async (req, res) => {
-  try {
-    const studentsnData = await students.findAll({
-      attributes: ['rollno', 'name', 'email', 'batch', 'semester', 'program', 'cgpa']
-    });
-    res.json(studentsnData);
-  } catch (error) {
-    console.error('Failed to retrieve data: ', error);
-    res.status(500).send.json('Internal Server Error');
-  }
-}
 
 // Adding Faculty members
 const addFaculty = async (req, res) => {
@@ -216,18 +204,6 @@ const addFaculty = async (req, res) => {
   }
 }
 
-// View All Faculty Members
-const viewFaculty = async (req, res) => {
-  try {
-    const facultyMembers = await faculties.findAll({
-      attributes: ['facultyid', 'name', 'email', 'role']
-    });
-    res.json(facultyMembers);
-  } catch (error) {
-    console.error('Failed to retrieve data: ', error);
-    res.status(500).json('Internal Server Error');
-  }
-};
 
 // Add Announcement
 const addAnnouncement = async (req, res) => {
@@ -275,6 +251,138 @@ const addAnnouncement = async (req, res) => {
   }
 };
 
+
+// View All Faculty Members
+const viewFaculty = async (req, res) => {
+  try {
+    const facultyMembers = await faculties.findAll({
+      attributes: ['facultyid', 'name', 'email', 'role']
+    });
+    res.json(facultyMembers);
+  } catch (error) {
+    console.error('Failed to retrieve data: ', error);
+    res.status(500).json('Internal Server Error');
+  }
+};
+
+
+// View All Present students in the system
+const viewStudents = async (req, res) => {
+  try {
+    const studentsnData = await students.findAll({
+      attributes: ['rollno', 'name', 'email', 'batch', 'semester', 'program', 'cgpa']
+    });
+    res.json(studentsnData);
+  } catch (error) {
+    console.error('Failed to retrieve data: ', error);
+    res.status(500).send.json('Internal Server Error');
+  }
+}
+
+
+const updateStudent = async (req, res) => {
+  try {
+    const { rollno, updatedData } = req.body;
+    delete updatedData.password;
+
+    // an asynchronous update operation
+    const [updatedRowsCount, updatedStudents] = await students.update(updatedData, {
+      where: { rollno },
+      returning: true, // to ensures that the updated student data is returned
+
+    });
+    const sanitizedUpdatedStudents = updatedStudents.map(student => {
+      const { password, ...sanitizedStudentData } = student.dataValues;
+      return sanitizedStudentData;
+    });
+
+    if (updatedRowsCount > 0) {
+      res.status(200).json({ message: 'Student data updated successfully', data: sanitizedUpdatedStudents });
+    } else {
+      res.status(404).json({ message: 'Student with the specified roll number not found' });
+    }
+  } catch (error) {
+    // any errors during the update operation
+    console.error('Error updating student data:', error);
+    res.status(500).json({ message: 'An error occurred while updating student data' });
+  }
+}
+
+
+const updateFaculty = async (req, res) => {
+  try {
+    const { facultyid, updatedData } = req.body;
+    delete updatedData.password;
+
+    // asynchronous update operation
+    const [updatedRowsCount, updatedFaculties] = await faculties.update(updatedData, {
+      where: { facultyid },
+      returning: true, // to ensures that the updated faculty data is returned
+    });
+
+    const sanitizedUpdatedFaculties = updatedFaculties.map(faculty => {
+      const { password, ...sanitizedFacultyData } = faculty.dataValues;
+      return sanitizedFacultyData;
+    });
+
+    if (updatedRowsCount > 0) {
+      res.status(200).json({ message: 'Faculty data updated successfully', data: sanitizedUpdatedFaculties });
+    } else {
+      res.status(404).json({ message: 'Faculty with the specified faculty ID not found' });
+    }
+  } catch (error) {
+    // any errors during the update operation
+    console.error('Error updating faculty data:', error);
+    res.status(500).json({ message: 'An error occurred while updating faculty data' });
+  }
+}
+
+
+// Delete Student
+const deleteStudent = async (req, res) => {
+  try {
+    const { rollno } = req.body;
+
+    //asynchronous delete operation
+    const deletedRowsCount = await students.destroy({
+      where: { rollno },
+    });
+
+    if (deletedRowsCount > 0) {
+      res.status(200).json({ message: 'Student deleted successfully' });
+    } else {
+      res.status(404).json({ message: 'Student with the specified roll number not found' });
+    }
+  } catch (error) {
+    // any errors during the delete operation
+    console.error('Error deleting student:', error);
+    res.status(500).json({ message: 'An error occurred while deleting student' });
+  }
+}
+
+
+// Delete Faculty
+const deleteFaculty = async (req, res) => {
+  try {
+    const { facultyid } = req.body;
+
+    // Assuming you are using a database, you can perform an asynchronous delete operation
+    const deletedRowsCount = await faculties.destroy({
+      where: { facultyid },
+    });
+
+    if (deletedRowsCount > 0) {
+      res.status(200).json({ message: 'Faculty member deleted successfully' });
+    } else {
+      res.status(404).json({ message: 'Faculty member with the specified faculty ID not found' });
+    }
+  } catch (error) {
+    // Handle any errors that occur during the delete operation
+    console.error('Error deleting faculty member:', error);
+    res.status(500).json({ message: 'An error occurred while deleting faculty member' });
+  }
+}
+
 module.exports =
 {
   GCSignIn,
@@ -282,5 +390,9 @@ module.exports =
   viewStudents,
   addFaculty,
   viewFaculty,
-  addAnnouncement
+  addAnnouncement,
+  updateStudent,
+  updateFaculty,
+  deleteStudent,
+  deleteFaculty
 };
