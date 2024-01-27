@@ -12,7 +12,7 @@ gcRouter.post('/signIn', gcFunctions.GCSignIn);
 gcRouter.use(authenticate);
 
 /* GC Functions */
-
+gcRouter.get('/showgcData/:gcid', gcFunctions.showgcData);
 gcRouter.post('/uploadStdData',uploadMiddleware ,gcFunctions.uploadStdData.uploadStd); // GC uploads student data
 gcRouter.post('/uploadFacData',uploadMiddleware ,gcFunctions.uploadFacData.uploadFac); // GC uploads faculty data
 
