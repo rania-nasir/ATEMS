@@ -23,7 +23,27 @@ const faculties = sequelize.define("faculties", {
   },
   role: {
     type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: false
+    allowNull: false,
+    validate: {
+      isValidRole(value) {
+        const allowedRoles = ['Supervisor', 'Internal', 'External', 'HOD', 'GC', 'MSRC'];
+        for (const role of value) {
+          if (!allowedRoles.includes(role)) {
+            throw new Error(`Invalid role: ${role}. Role must be one of Supervisor, Internal, External, HOD, GC, MSRC`);
+          }
+        }
+        // Check for unique "HOD" role
+        const hodCount = value.filter(role => role === 'HOD').length;
+        if (hodCount > 1) {
+          throw new Error('Only one faculty member can have the role of HOD');
+        }
+        // Check for unique "GC" role
+        const gcCount = value.filter(role => role === 'GC').length;
+        if (hodCount > 1) {
+          throw new Error('Only one faculty member can have the role of GC');
+        }
+      },
+    },
   },
   mobile: {
     type: DataTypes.STRING,

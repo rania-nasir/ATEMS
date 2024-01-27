@@ -10,8 +10,8 @@ const synopsis = sequelize.define('synopsis', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    description: {
-        type: DataTypes.TEXT,
+    potentialareas: {
+        type: DataTypes.STRING,
         allowNull: false
     },
     rollno: {
@@ -27,12 +27,24 @@ const synopsis = sequelize.define('synopsis', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    proposalfilename: {
+        type: DataTypes.STRING, 
+        allowNull: false, 
+    },
     synopsisstatus: {
         type: DataTypes.STRING,
         allowNull: true,
         validate: {
             isIn: [['Pending', 'Rejected', 'Approved']]
         }
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
     }
 });
 

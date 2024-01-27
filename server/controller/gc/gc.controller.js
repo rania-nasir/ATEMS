@@ -67,6 +67,12 @@ function generateRandomPassword(length) {
 const uploadStdData = {
   uploadStd: async (req, res) => {
     const file = req.file;
+    if (
+      file.mimetype !== 'application/vnd.ms-excel' &&
+      file.mimetype !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ) {
+      return res.status(400).json({ error: 'Invalid file type. Please upload an Excel file' });
+    }
     const filePath = file.path;
 
     try {
@@ -124,6 +130,12 @@ const uploadStdData = {
 const uploadFacData = {
   uploadFac: async (req, res) => {
     const file = req.file;
+    if (
+      file.mimetype !== 'application/vnd.ms-excel' &&
+      file.mimetype !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ) {
+      return res.status(400).json({ error: 'Invalid file type. Please upload an Excel file' });
+    }
     const filePath = file.path;
 
     try {
@@ -137,7 +149,7 @@ const uploadFacData = {
 
       data.forEach(async (row) => {
         const existingFaculty = await faculties.findOne({
-          where: { facultyid: row.facultyid }
+          where: { facultyid: String(row.facultyid) }
         });
         if (!existingFaculty) {
           // row.role is a string containing roles separated by commas
@@ -397,6 +409,8 @@ const updateStudent = async (req, res) => {
     const rollno = req.params.rollno;
     const updatedData = req.body;
     delete updatedData.password;
+    delete updatedData.rollno;
+   
 
     const [updatedRowsCount, updatedStudents] = await students.update(updatedData, {
       where: { rollno },
@@ -426,6 +440,7 @@ const updateFaculty = async (req, res) => {
     const facultyid = req.params.facultyid;
     const updatedData = req.body;
     delete updatedData.password;
+    delete updatedData.facultyid;
 
     //asynchronous update operation
     const [updatedRowsCount, updatedFaculties] = await faculties.update(updatedData, {
