@@ -10,8 +10,8 @@ export default function NotFoundPage() {
     return (
         <>
             <header className="App-header">
-                <img src={notfound} className="App-logo" alt="logo" />
-                <h2 className='mt-2 text-3xl text-center font-bold leading-9 tracking-tight text-gray-900'>
+                <img src={notfound} className="App-logo" width={100} alt="logo" />
+                <h2 className='my-2 text-3xl text-center font-bold leading-9 tracking-tight text-gray-900'>
                     WE ARE SORRY, PAGE NOT FOUND!
                 </h2>
                 <p className='text-sm m-4 p-2'>

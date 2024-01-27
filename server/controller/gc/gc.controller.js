@@ -493,7 +493,7 @@ const deleteStudent = async (req, res) => {
 // Delete Faculty
 const deleteFaculty = async (req, res) => {
   try {
-    const { facultyid } = req.params.facultyid;
+    const facultyid = req.params.facultyid;
 
     // Assuming you are using a database, you can perform an asynchronous delete operation
     const deletedRowsCount = await faculties.destroy({
@@ -512,6 +512,30 @@ const deleteFaculty = async (req, res) => {
   }
 }
 
+const showgcData = async (req, res) => {
+  try {
+    const { gcid } = req.params;
+    
+    const gcData = await faculties.findOne({
+      where: { facultyid: gcid }, 
+      role: {
+        [Op.contains]: ["GC"] // searching in faculties table for GC role
+      },
+      // attributes: { exclude: ['password'] }
+    });
+
+    if (gcData) {
+      res.status(200).json(gcData);
+    } else {
+      res.status(404).json({ message: 'Faculty member not found' });
+    }
+  } catch (error) {
+
+    console.error('Error retrieving faculty data:', error);
+    res.status(500).json({ message: 'An error occurred while retrieving faculty data' });
+  }
+}
+
 module.exports =
 {
   GCSignIn,
@@ -525,5 +549,6 @@ module.exports =
   updateStudent,
   updateFaculty,
   deleteStudent,
-  deleteFaculty
+  deleteFaculty,
+  showgcData
 };
