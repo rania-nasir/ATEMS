@@ -404,6 +404,62 @@ const viewStudents = async (req, res) => {
 }
 
 
+const viewSelectedFaculty = async (req, res) => {
+
+  try {
+
+    const { facultyid } = req.params;
+
+    // Fetch the selected faculty from the database
+    const selectedFaculty = await faculties.findOne({
+      where: { facultyid }
+    });
+
+    if (!selectedFaculty) {
+      return res.status(404).json({ error: 'Faculty not found' });
+    }
+
+    res.json({ selectedFaculty });
+
+  } catch (error) {
+
+    console.error('Error fetching selected faculty:', error);
+    res.status(500).json({ error: 'Internal server error' });
+
+  }
+
+}
+
+
+
+const viewSelectedStudent = async (req, res) => {
+
+  try {
+
+    const { rollno } = req.params;
+
+    // Fetch the selected student from the database
+    const selectedStudent = await students.findOne({
+      where: { rollno }
+    });
+
+    if (!selectedStudent) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    res.json({ selectedStudent });
+
+  } catch (error) {
+
+    console.error('Error fetching selected student:', error);
+    res.status(500).json({ error: 'Internal server error' });
+
+  }
+
+}
+
+
+
 const updateStudent = async (req, res) => {
   try {
     const rollno = req.params.rollno;
@@ -545,6 +601,8 @@ module.exports =
   viewStudents,
   //addFaculty,
   viewFaculty,
+  viewSelectedFaculty,
+  viewSelectedStudent,
   addAnnouncement,
   updateStudent,
   updateFaculty,
