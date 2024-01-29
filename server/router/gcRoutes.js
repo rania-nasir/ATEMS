@@ -7,9 +7,10 @@ const { authenticate } = require('../middleware/authMiddleware');
 const upload = multer({ dest: 'uploads/' });
 const uploadMiddleware = upload.single('file');
 
-gcRouter.post('/signIn', gcFunctions.GCSignIn);
 
+gcRouter.post('/signIn', gcFunctions.GCSignIn);
 gcRouter.use(authenticate);
+
 
 /* GC Functions */
 gcRouter.get('/showgcData/:gcid', gcFunctions.showgcData);
@@ -21,6 +22,11 @@ gcRouter.post('/uploadFacData',uploadMiddleware ,gcFunctions.uploadFacData.uploa
 
 gcRouter.get('/viewFaculty', gcFunctions.viewFaculty); // GC views faculty
 gcRouter.get('/viewStudents', gcFunctions.viewStudents); // GC views student record
+
+
+gcRouter.get('/viewFaculty/:facultyid', gcFunctions.viewSelectedFaculty);
+gcRouter.get('/viewStudent/:rollno', gcFunctions.viewSelectedStudent);
+
 
 gcRouter.get('/ReviewRequest', gcReview.getThesis); // GC fetches all accepted synopsis
 gcRouter.get('/ReviewRequest/:thesisId', gcReview.getThesisDetails); // GC fetches details of a single accepted synopsis
