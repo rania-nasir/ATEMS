@@ -1,10 +1,14 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Cookie from 'js-cookie';
 import { NavLink } from 'react-router-dom';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
 import AddStudent from './AddStudent';
 
 export default function ViewStudent() {
     const [studentData, setStudentData] = useState([]);
+    const [visible, setVisible] = useState(false);
+    const [selectedRollNo, setSelectedRollNo] = useState(null);
 
     useEffect(() => {
         async function fetchStudentData() {
@@ -18,6 +22,7 @@ export default function ViewStudent() {
                 if (response.ok) {
                     const data = await response.json();
                     setStudentData(data);
+                    console.log("Data fetched successfully: ", data);
                 } else {
                     throw new Error('Failed to fetch data');
                 }
@@ -27,7 +32,7 @@ export default function ViewStudent() {
         }
 
         fetchStudentData();
-    }, []); // Empty dependency array to execute only once on component mount
+    }, []);
 
     const deleteStudent = async (rollno) => {
         try {
@@ -42,8 +47,8 @@ export default function ViewStudent() {
                 const updatedData = studentData.filter(row => row.rollno !== rollno);
                 setStudentData(updatedData);
                 console.log("Data deleted successfully: ", updatedData);
+                setVisible(false); // Close the dialog after successful deletion
             } else {
-                // Handle errors, show an error message, or log the error
                 const errorMessage = await response.text();
                 console.error('Error deleting student:', errorMessage);
             }
@@ -53,9 +58,26 @@ export default function ViewStudent() {
         }
     }
 
+    const headerElement = (
+        <div className="inline-flex align-items-center justify-content-center gap-2">
+            <span className="font-bold white-space-nowrap">Confirmation</span>
+        </div>
+    );
+
+    const footerContent = (
+        <div>
+            <Button label="Cancel" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
+            <Button label="Delete" icon="pi pi-check" onClick={() => deleteStudent(selectedRollNo)} autoFocus />
+        </div>
+    );
     return (
         <>
             <div className='m-2'>
+                <Dialog visible={visible} modal header={headerElement} footer={footerContent} style={{ width: '30rem' }} onHide={() => setVisible(false)}>
+                    <p className="m-0">
+                        Are you sure you want to delete this student?
+                    </p>
+                </Dialog>
                 <div className="mx-4 w-full">
                     <h2 className="my-4 text-left text-xl font-bold tracking-tight text-gray-950">
                         Student Record
@@ -74,6 +96,15 @@ export default function ViewStudent() {
                                 </th>
                                 <th scope="col" class="px-3 py-3">
                                     Email
+                                </th>
+                                {/* <th scope="col" class="px-3 py-3">
+                                    Mobile
+                                </th> */}
+                                <th scope="col" class="px-3 py-3">
+                                    Credit Hours
+                                </th>
+                                <th scope="col" class="px-3 py-3">
+                                    Gender
                                 </th>
                                 <th scope="col" class="px-3 py-3">
                                     Batch
@@ -110,6 +141,15 @@ export default function ViewStudent() {
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.email}
                                         </td>
+                                        {/* <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
+                                            {rowData.mobile}
+                                        </td> */}
+                                        <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
+                                            {rowData.credithours}
+                                        </td>
+                                        <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
+                                            {rowData.gender}
+                                        </td>
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.batch}
                                         </td>
@@ -123,12 +163,14 @@ export default function ViewStudent() {
                                             {rowData.cgpa}
                                         </td>
                                         <td className="px-3 py-4">
-                                            <NavLink to="/updatestudent" className="font-semibold leading-6 text-blue-600 hover:text-teal-600 hover:underline">
+                                            <NavLink to={`/updateStudent/${rowData.rollno}`} onClick={() => { setSelectedRollNo(rowData.rollno); }}
+                                                className="font-semibold leading-6 text-blue-600 hover:underline">
                                                 Edit
                                             </NavLink>
                                         </td>
                                         <td className="px-3 py-4">
-                                            <NavLink to="#" onClick={() => deleteStudent(rowData.rollno)} className="font-semibold leading-6 text-blue-600 hover:text-teal-600 hover:underline">
+                                            <NavLink href="#" onClick={() => { setSelectedRollNo(rowData.rollno); setVisible(true); }}
+                                                className="font-semibold leading-6 text-red-600 hover:underline">
                                                 Delete
                                             </NavLink>
                                         </td>

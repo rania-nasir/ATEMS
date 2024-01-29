@@ -19,7 +19,7 @@ const students = sequelize.define("students", {
         type: DataTypes.CHAR,
         allowNull: false,
         validate: {
-            isIn: [['M', 'F']]
+            isIn: [['Male', 'Female']]
         }
     },
     batch: {
