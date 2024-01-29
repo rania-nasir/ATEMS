@@ -380,7 +380,7 @@ const addAnnouncement = async (req, res) => {
 const viewFaculty = async (req, res) => {
   try {
     const facultyMembers = await faculties.findAll({
-      attributes: ['facultyid', 'name', 'email', 'role']
+      attributes: ['facultyid', 'name', 'email', 'mobile', 'gender', 'role']
     });
     res.json(facultyMembers);
   } catch (error) {
@@ -394,7 +394,7 @@ const viewFaculty = async (req, res) => {
 const viewStudents = async (req, res) => {
   try {
     const studentsnData = await students.findAll({
-      attributes: ['rollno', 'name', 'email', 'batch', 'semester', 'program', 'cgpa']
+      attributes: ['rollno', 'name', 'email', 'gender', 'credithours', 'mobile', 'batch', 'semester', 'program', 'cgpa']
     });
     res.json(studentsnData);
   } catch (error) {
@@ -419,7 +419,7 @@ const viewSelectedFaculty = async (req, res) => {
       return res.status(404).json({ error: 'Faculty not found' });
     }
 
-    res.json({ selectedFaculty });
+    res.json( selectedFaculty );
 
   } catch (error) {
 
@@ -447,7 +447,7 @@ const viewSelectedStudent = async (req, res) => {
       return res.status(404).json({ error: 'Student not found' });
     }
 
-    res.json({ selectedStudent });
+    res.json(selectedStudent);
 
   } catch (error) {
 
@@ -457,8 +457,6 @@ const viewSelectedStudent = async (req, res) => {
   }
 
 }
-
-
 
 const updateStudent = async (req, res) => {
   try {

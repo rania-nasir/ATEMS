@@ -1,63 +1,102 @@
-import React, { useState } from 'react'
 import { Dropdown } from 'primereact/dropdown'
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import Cookie from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 function UpdateStudent() {
+
+    const { rollno } = useParams();
 
     const navigate = useNavigate();
 
     const [selectedgender, setSelectedgender] = useState('');
+    const [studentData, setStudentData] = useState({});
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        gender: '',
+        batch: '',
+        semester: '',
+        program: '',
+        cgpa: '',
+        mobile: '',
+        credithours: '',
+    });
 
-    const [user, setuser] = useState({
-        rollno: "", name: "", email: "",
-        gender: selectedgender, batch: "", semester: "",
-        program: "", cgpa: "", mobile: ""
-    })
-    const handleInputs = (e) => {
-        const { name, value } = e.target
-        setuser({ ...user, [name]: value })
-    }
+    useEffect(() => {
+        async function fetchStudentData() {
+            try {
+                const response = await fetch(`http://localhost:5000/gc/viewStudent/${rollno}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${Cookie.get('jwtoken')}`,
+                    },
+                });
 
-    const PostData = async (e) => {
-        e.preventDefault();
+                if (response.ok) {
+                    const data = await response.json();
+                    setStudentData(data);
+                    // console.log(data);
+                    // Pre-fill form data
+                    setFormData({
+                        name: data.name,
+                        email: data.email,
+                        gender: data.gender,
+                        batch: data.batch,
+                        semester: data.semester,
+                        program: data.program,
+                        cgpa: data.cgpa,
+                        mobile: data.mobile,
+                        credithours: data.credithours
+                    });
+                    console.log(formData);
+                } else {
+                    throw new Error('Failed to fetch student data');
+                }
+            } catch (error) {
+                console.error('Failed to retrieve student data: ', error);
+            }
+        }
 
-        const { rollno, name, email, batch, semester, program, cgpa, mobile } = user;
-        const gender = selectedgender;
+        fetchStudentData();
+    }, [rollno]); // Update the dependency to 'rollno' directly
 
+    const handleInputChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleUpdate = async () => {
         try {
-            const res = await fetch("http://localhost:5000/gc/addstudent", {
-                method: "POST",
+            const response = await fetch(`http://localhost:5000/gc/updateStudent/${rollno}`, {
+                method: 'PUT',
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `${Cookie.get('jwtoken')}`
+                    'Content-Type': 'application/json',
+                    'Authorization': `${Cookie.get('jwtoken')}`,
                 },
-                body: JSON.stringify({
-                    rollno, name, email, gender, batch, semester, program, cgpa, mobile
-                })
+                body: JSON.stringify(formData),
             });
 
-            const data = await res.json();
-            console.log("Response data:", data);
-
-            if (res.ok) {
-                if (data.message === "Invalid Credentials") {
-                    window.alert("Invalid Credentials");
-                    console.log("Invalid Credentials");
-                } else {
-                    window.alert("Student Added Successfully");
-                    console.log("Student Added Successfully");
-                    navigate('/');
-                }
+            if (response.ok) {
+                const updatedData = await response.json();
+                console.log('Student data updated successfully: ', updatedData);
+                window.alert('Student data updated successfully');
+                navigate('/viewStudent')
+                // Handle success, e.g., show a success message, redirect, etc.
             } else {
-                window.alert("Something went wrong");
-                console.log("Something went wrong");
+                const errorMessage = await response.text();
+                console.error('Error updating student data:', errorMessage);
+                // Handle error, e.g., show an error message to the user
+                window.alert('Error updating student data: ' + errorMessage);
             }
         } catch (error) {
-            console.error("Error occurred:", error);
-            window.alert("Error occurred. Please try again.");
+            console.error('Failed to update student data: ', error);
         }
     };
+
 
     return (
         <>
@@ -71,148 +110,154 @@ function UpdateStudent() {
 
                 <div className="mt-6 sm:mx-auto">
 
-                    <form class="sm:mx-auto">
+                    <form className="sm:mx-auto">
                         <div className='w-64 mx-4'>
-                            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                                 for="grid-first-name">
                                 Roll Number
                             </label>
-                            <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                            <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                 id="grid-first-name" type="text" placeholder="20F-1234"
-                                onChange={handleInputs}
-                                value={user.rollno}
+                                value={rollno}
+                                readOnly
                             />
 
                         </div>
-                        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+                        <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
                         <div className='grid grid-cols-3'>
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Name
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="Muhammad Ahmad"
-                                        onChange={handleInputs}
-                                        value={user.name} />
+                                        name='name'
+                                        value={formData.name}
+                                        onChange={(e) => handleInputChange(e, 'name')} />
 
                                 </div>
                             </div>
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Email
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="abc@gmail.com"
-                                        onChange={handleInputs}
-                                        value={user.email} />
+                                        name='email'
+                                        value={formData.email}
+                                        onChange={(e) => handleInputChange(e)} />
                                 </div>
                             </div>
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Select Gender
                                     </label>
                                     <Dropdown
                                         options={[
-                                            { label: 'Male', value: 'M' },
-                                            { label: 'Female', value: 'F' }
+                                            { label: 'Male', value: 'Male' },
+                                            { label: 'Female', value: 'Female' }
                                         ]}
-                                        value={selectedgender}
-                                        onChange={(e) => setSelectedgender(e.value)}
+                                        name='gender'
+                                        value={formData.gender}
+                                        onChange={(e) => handleInputChange({ target: { name: 'gender', value: e.value } })}
+
                                         className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
 
                                 </div>
                             </div>
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Mobile
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="12345678901"
-
-                                        onChange={handleInputs}
-                                        value={user.mobile} />
+                                        name='mobile'
+                                        value={formData.mobile}
+                                        onChange={(e) => handleInputChange(e)} />
 
                                 </div>
                             </div>
 
-
-
-
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         CGPA
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="3.16"
-
-                                        onChange={handleInputs}
-                                        value={user.cgpa} />
+                                        name='cgpa'
+                                        value={formData.cgpa}
+                                        onChange={(e) => handleInputChange(e)}
+                                    />
 
                                 </div>
                             </div>
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Credit Hours
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="100"
-
-                                        onChange={handleInputs}
-                                        value={user.credithours} />
+                                        name='credithours'
+                                        value={formData.credithours}
+                                        onChange={(e) => handleInputChange(e)}
+                                    />
 
                                 </div>
                             </div>
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Program Name
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="CS"
-
-                                        onChange={handleInputs}
-                                        value={user.program} />
+                                        name='program'
+                                        value={formData.program}
+                                        onChange={(e) => handleInputChange(e)}
+                                    />
 
                                 </div>
                             </div>
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Batch
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="20"
-
-                                        onChange={handleInputs}
-                                        value={user.batch} />
+                                        name='batch'
+                                        value={formData.batch}
+                                        onChange={(e) => handleInputChange(e)}
+                                    />
 
                                 </div>
                             </div>
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Semester
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="8"
-
-                                        onChange={handleInputs}
-                                        value={user.semester} />
+                                        name='semester'
+                                        value={formData.semester}
+                                        onChange={(e) => handleInputChange(e)}
+                                    />
 
                                 </div>
                             </div>
                         </div>
 
-                        <div class="my-4 px-4">
-                            <button class="block flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                        <div className="my-4 px-4">
+                            <button className="block flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
                                 type="button"
-                                onClick={PostData}
+                                onClick={handleUpdate}
                             >
                                 Update Student
                             </button>

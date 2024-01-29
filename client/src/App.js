@@ -231,8 +231,8 @@ function App() {
                             <Route path='/addfaculty' element={<AddFaculty />} />
                             <Route path='/viewstudent' element={<ViewStudent />} />
                             <Route path='/viewfaculty' element={<ViewFaculty />} />
-                            <Route path='/updatefaculty' element={<UpdateFaculty />} />
-                            <Route path='/updatestudent' element={<UpdateStudent />} />
+                            <Route path='/updateFaculty/:facultyid' element={<UpdateFaculty />} />
+                            <Route path='/updateStudent/:rollno' element={<UpdateStudent />} />
                             <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
                             <Route path='/viewAllThesis' element={<ThesisRecord />} />
                             <Route path='/ReviewRequest' element={<GetThesis />} />
