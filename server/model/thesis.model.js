@@ -10,10 +10,6 @@ const thesis = sequelize.define('thesis', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    description: {
-        type: DataTypes.TEXT,
-        allowNull: false
-    },
     rollno: {
         type: DataTypes.STRING,
         allowNull: false
@@ -32,9 +28,29 @@ const thesis = sequelize.define('thesis', {
         defaultValue: [],
         allowNull: false
     },
-    thesisstatus: {
+    researcharea: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        defaultValue: [],
+        allowNull: false
+    },
+    potentialareas: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false
+    },
+    proposalfilename: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    gcApproval: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            isIn: [['Pending', 'Approved']]
+        }
+    },
+    hodapproval: {
+        type: DataTypes.STRING,
+        allowNull: false,
         validate: {
             isIn: [['Pending', 'Approved']]
         }

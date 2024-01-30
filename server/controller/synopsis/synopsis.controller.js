@@ -3,6 +3,7 @@ const { sendMail } = require("../../config/mailer");
 const { students } = require("../../model/student.model");
 const { faculties } = require("../../model/faculty.model");
 const { synopsis } = require("../../model/synopsis.model");
+const { Op, Model } = require('sequelize');
 const multer = require ('multer');
 const upload = require('../../middleware/multer');
 
@@ -70,7 +71,7 @@ const fillSynopsis = async (req, res) => {
             const faculty = await faculties.findOne({
                 where: {
                     name: facultyname,
-                    role: 'Supervisor',
+                    role: { [Op.contains]: ['Supervisor'] },
                 },
                 attributes: ['facultyid', 'email'], // fetches id and email of faculty which the student wants to send request to
             });
