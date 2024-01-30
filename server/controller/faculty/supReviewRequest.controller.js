@@ -4,6 +4,7 @@ const { thesis } = require("../../model/thesis.model");
 const { faculties } = require("../../model/faculty.model");
 const { students } = require("../../model/student.model");
 const { sendMail } = require("../../config/mailer");
+const { Op, Model } = require('sequelize');
 
 
 /* Supervisor Review Requests Controller */
@@ -20,7 +21,7 @@ const getSynopsis = async (req, res) => {
                 facultyid: facultyId,
                 synopsisstatus: 'Pending' // fetch only those where status is Pending
             },
-            attributes: ['synopsisid', 'synopsistitle', 'description'],
+            attributes: ['synopsisid', 'rollno', 'synopsistitle', 'potentialareas'],
         });
 
         res.json({ allSynopsis });
@@ -46,12 +47,18 @@ const getSynopsisDetails = async (req, res) => {
         });
 
         const facultyList = await faculties.findAll({ // fetch the list of all faculties in the table to select for internal
-            attributes: ['facultyid', 'name'],
+            attributes: ['facultyid', 'name', 'role'],
+            where: {
+                role: { [Op.contains]: ['Internal'] }
+            }
         });
 
         if (!selectedSynopsis) {
             return res.status(404).json({ error: 'Synopsis not found' });
         }
+
+        const fileURL = `/uploads/${selectedSynopsis.proposalfilename}`; // Construct the file URL
+        selectedSynopsis.dataValues.fileURL = fileURL; // Add the file URL to the selectedSynopsis object
 
         res.json({ selectedSynopsis, facultyList });
 
@@ -66,8 +73,7 @@ const approveSynopsis = async (req, res) => {
     try {
         const { synopsisId } = req.params;
         const facultyId = req.userId;
-        const { internal1, internal2 } = req.body; // fetch the names of the internals from the frontend
-
+        const { internal1, internal2, researcharea1, researcharea2 } = req.body; // fetch the names of the internals from the frontend
         //console.log('Internals are : ', internal1, ', ', internal2)
 
         const existingApprovedSynopsis = await synopsis.findOne({ // check for existing approved synopsis, if it is already existing display error
@@ -152,16 +158,21 @@ const approveSynopsis = async (req, res) => {
 
 
 
-
+        console.log(researcharea1, researcharea2)
         const newThesis = await thesis.create({ // Create thesis with internal members name and id and set status to pending
             thesistitle: selectedSynopsis.synopsistitle,
-            description: selectedSynopsis.description,
             rollno: selectedSynopsis.rollno,
             facultyid: selectedSynopsis.facultyid,
             internals: [internal1, internal2],
             internalsid: [internal1id, internal2id],
-            thesisstatus: 'Pending'
+            researcharea: [researcharea1, researcharea2],
+            potentialareas: selectedSynopsis.potentialareas,
+            proposalfilename: selectedSynopsis.proposalfilename,
+            gcApproval: 'Pending',
+            hodapproval: 'Pending',
         });
+
+
 
         // Send mail of Approval to student
         const facultyName = selectedSynopsis.facultyname;
@@ -170,7 +181,9 @@ const approveSynopsis = async (req, res) => {
         const text = `Dear Student,
 
         Your synopsis has been accepted by ${facultyName} (Faculty ID: ${facultyId}).
+        Your thesis internal examineers will be ${internal1} and ${internal2}.
 
+        Your request is being forwarded to Graduate Coordinator.
         Regards,`;
 
         sendMail(toEmail, subject, text);

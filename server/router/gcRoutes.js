@@ -35,7 +35,7 @@ gcRouter.post('/ApproveRequest/:thesisId', gcReview.approveThesis); // GC approv
 
 
 gcRouter.post('/makeAnnouncement', gcFunctions.addAnnouncement); // GC makes announcement
-gcRouter.get('/viewAllThesis', gcReview.viewAllThesis); // GC makes announcement
+gcRouter.get('/viewAllThesis', gcReview.viewAllThesis); 
 
 // gcRouter.get('/assignRoles', (req, res)=>{ res.send('GC assign faculty roles here'); });
 

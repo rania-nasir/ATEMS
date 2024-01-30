@@ -2,6 +2,7 @@ const { sequelize } = require("../../config/sequelize");
 const { synopsis } = require("../../model/synopsis.model");
 const { thesis } = require("../../model/thesis.model");
 const { faculties } = require("../../model/faculty.model");
+const { Op, Model } = require('sequelize');
 
 
 // fetch all thesis for the logged in gc
@@ -9,9 +10,9 @@ const getThesis = async (req, res) => {
     try {
         const allThesis = await thesis.findAll({
             where: {
-                thesisstatus: 'Pending' // only pending thesis will be fetched
+                gcApproval: 'Pending' // only pending thesis will be fetched
             },
-            attributes: ['thesisid', 'thesistitle', 'description'],
+            attributes: ['thesisid', 'rollno', 'facultyid' , 'thesistitle', 'potentialareas'],
         });
 
         res.json({ allThesis });
@@ -26,7 +27,7 @@ const getThesis = async (req, res) => {
 const viewAllThesis = async (req, res) => {
     try {
         const viewallThesis = await thesis.findAll({
-            attributes: ['thesisid', 'thesistitle', 'description', 'thesisstatus'],
+            attributes: ['thesisid', 'thesistitle', 'potentialareas', 'gcApproval', 'hodapproval'],
         });
 
         res.json({ viewallThesis });
@@ -54,8 +55,16 @@ const getThesisDetails = async (req, res) => {
             return res.status(404).json({ error: 'thesis not found' });
         }
 
+
+        const fileURL = `/uploads/${selectedThesis.proposalfilename}`; // Construct the file URL
+        selectedThesis.dataValues.fileURL = fileURL; // Add the file URL to the slectedThesis object
+
+
         const facultyList = await faculties.findAll({
-            attributes: ['facultyid', 'name'],
+            attributes: ['facultyid', 'name', 'role'],
+            where: {
+                role: { [Op.contains]: ['Internal'] }
+            }
         });
 
 
@@ -109,9 +118,9 @@ const approveThesis = async (req, res) => {
             return res.status(400).json({ error: 'Supervisor cannot be selected as an internal for the same thesis' });
         }
 
-        const [rowsAffected, [updatedThesis]] = await thesis.update( // Update the thesis from state pending to approved with internals
+        const [rowsAffected, [updatedThesis]] = await thesis.update( // Update the thesis internals
             {
-                thesisstatus: 'Approved',
+                gcApproval: 'Approved',
                 internals: [final_internal1, final_internal2],
                 internalsid: [final_internal1id, final_internal2id]
             },
