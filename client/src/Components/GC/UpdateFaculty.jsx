@@ -1,22 +1,32 @@
-import { Dropdown } from 'primereact/dropdown';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { Checkbox } from "primereact/checkbox";
 import Cookie from 'js-cookie';
+
+// ... (your import statements)
 
 function UpdateFaculty() {
     const { facultyid } = useParams();
-
     const navigate = useNavigate();
 
-    const [facultyData, setFacultyData] = useState({});
+    const [FacultyData, setFacultyData] = useState({});
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         mobile: '',
-        gender: '',
-        role: ''
+        role: [],
     });
+
+    const categories = [
+        { name: 'HOD', key: 'HOD' },
+        { name: 'Supervisor', key: 'Supervisor' },
+        { name: 'MSRC', key: 'MSRC' },
+        { name: 'Internal', key: 'Internal' },
+        // { name: 'External', key: 'External' },
+    ];
+
+    const [selectedCategories, setSelectedCategories] = useState([]);
 
     useEffect(() => {
         async function fetchFacultyData() {
@@ -31,14 +41,14 @@ function UpdateFaculty() {
                 if (response.ok) {
                     const data = await response.json();
                     setFacultyData(data);
-                    // Pre-fill form data
                     setFormData({
                         name: data.name,
                         email: data.email,
                         mobile: data.mobile,
-                        gender: data.gender,
-                        role: data.role
+                        role: data.role || [],
                     });
+                    // Pre-fill the selected roles
+                    setSelectedCategories(data.role || []);
                 } else {
                     throw new Error('Failed to fetch Faculty data');
                 }
@@ -48,7 +58,18 @@ function UpdateFaculty() {
         }
 
         fetchFacultyData();
-    }, [facultyid]); // Update the dependency to 'facultyid' directly
+    }, [facultyid]);
+
+    console.log('Selected Categories: ', selectedCategories);
+
+    const onCategoryChange = (e) => {
+        const { checked, value } = e.target;
+        if (checked) {
+            setSelectedCategories([...selectedCategories, value]);
+        } else {
+            setSelectedCategories(selectedCategories.filter(category => category !== value));
+        }
+    };
 
     const handleInputChange = (e) => {
         setFormData({
@@ -58,6 +79,10 @@ function UpdateFaculty() {
     };
 
     const handleUpdate = async () => {
+        // setFormData({ ...formData, role: selectedCategories });
+        const updatedFormData = { ...formData, role: selectedCategories };
+
+
         try {
             const response = await fetch(`http://localhost:5000/gc/updateFaculty/${facultyid}`, {
                 method: 'PUT',
@@ -65,7 +90,7 @@ function UpdateFaculty() {
                     'Content-Type': 'application/json',
                     'Authorization': `${Cookie.get('jwtoken')}`,
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(updatedFormData),
             });
 
             if (response.ok) {
@@ -73,12 +98,10 @@ function UpdateFaculty() {
                 console.log('Faculty data updated successfully: ', updatedData);
                 window.alert('Faculty data updated successfully');
                 navigate('/viewFaculty');
-                // Handle success, e.g., show a success message, redirect, etc.
             } else {
                 const errorMessage = await response.text();
                 console.error('Error updating Faculty data:', errorMessage);
                 window.alert('Error updating faculty data: ' + errorMessage);
-                // Handle error, e.g., show an error message to the user
             }
         } catch (error) {
             console.error('Failed to update Faculty data: ', error);
@@ -140,23 +163,6 @@ function UpdateFaculty() {
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
                                     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                        Select Gender
-                                    </label>
-                                    <Dropdown
-                                        options={[
-                                            { label: 'Male', value: 'Male' },
-                                            { label: 'Female', value: 'Female' }
-                                        ]}
-                                        name='gender'
-                                        value={formData.gender}
-                                        onChange={(e) => handleInputChange({ target: { name: 'gender', value: e.value } })}
-                                        className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    />
-                                </div>
-                            </div>
-                            <div className='col-span-1 p-2'>
-                                <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Mobile
                                     </label>
                                     <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -167,21 +173,36 @@ function UpdateFaculty() {
 
                                 </div>
                             </div>
-
-                            <div className='col-span-1 p-2'>
-                                <div className='w-full px-3'>
+                            <div className='col-span-3 p-2'>
+                                <div className='px-3'>
                                     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Role
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                        id="grid-first-name" type="text" placeholder="3.16"
-                                        name='role'
-                                        value={formData.role}
-                                        onChange={(e) => handleInputChange(e)} />
-
+                                    <div
+                                        className="card flex justify-content-center bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 items-center">
+                                        <div className="flex flex-column gap-3">
+                                            {categories.map((category) => {
+                                                return (
+                                                    <div key={category.key} className="flex align-items-center mr-4">
+                                                        <Checkbox
+                                                            inputId={category.key}
+                                                            name="category"
+                                                            value={category.key}
+                                                            onChange={onCategoryChange}
+                                                            checked={selectedCategories.includes(category.key)}
+                                                        />
+                                                        <label htmlFor={category.key} className="ml-2">
+                                                            {category.name}
+                                                        </label>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
 
                         <div class="my-4 px-4">
                             <button class="block flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
@@ -198,4 +219,4 @@ function UpdateFaculty() {
     )
 }
 
-export default UpdateFaculty
+export default UpdateFaculty;

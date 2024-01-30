@@ -66,7 +66,7 @@ export default function ViewStudent() {
 
     const footerContent = (
         <div>
-            <Button label="Cancel" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
+            {/* <Button label="Cancel" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" /> */}
             <Button label="Delete" icon="pi pi-check" onClick={() => deleteStudent(selectedRollNo)} autoFocus />
         </div>
     );
@@ -99,13 +99,13 @@ export default function ViewStudent() {
                                 </th>
                                 {/* <th scope="col" class="px-3 py-3">
                                     Mobile
-                                </th> */}
+                                </th>
                                 <th scope="col" class="px-3 py-3">
                                     Credit Hours
                                 </th>
                                 <th scope="col" class="px-3 py-3">
                                     Gender
-                                </th>
+                                </th> */}
                                 <th scope="col" class="px-3 py-3">
                                     Batch
                                 </th>
@@ -115,9 +115,9 @@ export default function ViewStudent() {
                                 <th scope="col" class="px-3 py-3">
                                     Program
                                 </th>
-                                <th scope="col" class="px-3 py-3">
+                                {/* <th scope="col" class="px-3 py-3">
                                     CGPA
-                                </th>
+                                </th> */}
                                 <th scope="col" class="px-3 py-3">
                                     Update
                                 </th>
@@ -143,13 +143,13 @@ export default function ViewStudent() {
                                         </td>
                                         {/* <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.mobile}
-                                        </td> */}
+                                        </td>
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.credithours}
                                         </td>
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.gender}
-                                        </td>
+                                        </td> */}
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.batch}
                                         </td>
@@ -159,9 +159,9 @@ export default function ViewStudent() {
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.program}
                                         </td>
-                                        <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
+                                        {/* <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.cgpa}
-                                        </td>
+                                        </td> */}
                                         <td className="px-3 py-4">
                                             <NavLink to={`/updateStudent/${rowData.rollno}`} onClick={() => { setSelectedRollNo(rowData.rollno); }}
                                                 className="font-semibold leading-6 text-blue-600 hover:underline">
