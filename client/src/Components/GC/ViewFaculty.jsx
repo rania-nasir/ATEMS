@@ -65,7 +65,7 @@ export default function ViewFaculty() {
 
     const footerContent = (
         <div>
-            <Button label="Cancel" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
+            {/* <Button label="Cancel" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" /> */}
             <Button label="Delete" icon="pi pi-check" onClick={() => deleteFaculty(selectedFacultyId)} autoFocus />
         </div>
     );

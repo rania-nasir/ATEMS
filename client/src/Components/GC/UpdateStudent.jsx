@@ -1,4 +1,3 @@
-import { Dropdown } from 'primereact/dropdown'
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Cookie from 'js-cookie';
@@ -10,12 +9,10 @@ function UpdateStudent() {
 
     const navigate = useNavigate();
 
-    const [selectedgender, setSelectedgender] = useState('');
     const [studentData, setStudentData] = useState({});
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        gender: '',
         batch: '',
         semester: '',
         program: '',
@@ -42,7 +39,6 @@ function UpdateStudent() {
                     setFormData({
                         name: data.name,
                         email: data.email,
-                        gender: data.gender,
                         batch: data.batch,
                         semester: data.semester,
                         program: data.program,
@@ -153,24 +149,6 @@ function UpdateStudent() {
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
                                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
-                                        Select Gender
-                                    </label>
-                                    <Dropdown
-                                        options={[
-                                            { label: 'Male', value: 'Male' },
-                                            { label: 'Female', value: 'Female' }
-                                        ]}
-                                        name='gender'
-                                        value={formData.gender}
-                                        onChange={(e) => handleInputChange({ target: { name: 'gender', value: e.value } })}
-
-                                        className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
-
-                                </div>
-                            </div>
-                            <div className='col-span-1 p-2'>
-                                <div className='w-full px-3'>
-                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Mobile
                                     </label>
                                     <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -252,6 +230,7 @@ function UpdateStudent() {
 
                                 </div>
                             </div>
+                            
                         </div>
 
                         <div className="my-4 px-4">
