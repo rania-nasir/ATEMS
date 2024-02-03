@@ -7,9 +7,9 @@ const Contactsection = () =>{
         <>
          {/* style={{backgroundImage: `url(${cap})`, opacity: 0.8, backgroundSize: 'cover', backgroundPosition: 'center'}} */}
               <section class="mt-12">
-              <h2 class="mb-8 lg:mb-10 text-4xl tracking-tight font-extrabold text-center text-gray-800 dark:text-white">Contact Us</h2>
-              <p class="mb-8 font-light text-center text-gray-800 dark:text-gray-400 sm:text-xl">Have something to say? We are here to help.</p>
-                        <div class="py-8 lg:py-10 px-4 mx-auto max-w-screen-md shadow shadow-gray-500 border-t-2 rounded-md" >
+              <h2 class="mb-2 lg:mb-10 text-4xl tracking-tight font-extrabold text-center text-gray-800 dark:text-white">Contact Us</h2>
+              <p class="mb-5 font-light text-center text-gray-800 dark:text-gray-400 sm:text-xl">Have something to say? We are here to help.</p>
+                        <div class="py-6 lg:py-10 px-4 mx-auto max-w-screen-md shadow shadow-gray-500 border-t-2 rounded-md" >
                             <form action="#" class="space-y-8">  
                                 <div>
                                     <label for="email" class="block mb-2 text-sm font-medium text-gray-800 dark:text-gray-400">Your email</label>

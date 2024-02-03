@@ -1,65 +1,58 @@
-// Requiring CSS and PrimeReact 
-"use client"
+"use client"  // Requiring CSS and PrimeReact 
 import './App.css';
 import "primereact/resources/themes/lara-light-indigo/theme.css";  //theme
 import "primereact/resources/primereact.min.css";
-import { RoleContext } from './context/RoleContext';
-//core css
-// import "primeicons/primeicons.css";                                //icons
 
-// Requiring React-Router-Dom Configurations
-import { Route, Routes } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
-// Landing Folder
+// Landing Components
 import LandingPage from './Components/Landing/LandingPage'
 
-// Other Folders
+// Side Components
 import NavbarDefault from './Components/Navbar/NavbarDefault';
 import SidebarDefault from './Components/Sidebar/SidebarDefault';
-// import RoleTabs from './Components/Faculty/RoleTabs';
 
-// Login Folder
+// Login Components
 import LoginPage from './Components/Login/LoginPage';
 import GClogin from './Components/Login/GClogin';
 
-// Faculty Folder
+// Faculty Components
 import RoleTabs from './Components/Faculty/RoleTabs'
-// import FacultyPage from './Components/Faculty/FacultyPage';
+import SupervisorComp from './Components/Faculty/Supervisor/SupervisorComp';
+import MSRCComp from './Components/Faculty/MSRC/MSRCComp';
+import InternalComp from './Components/Faculty/Internal/InternalComp';
 import Facultyhome from './Components/Faculty/Facultyhome'
-import UpdateFaculty from './Components/GC/UpdateFaculty';
-import UpdateStudent from './Components/GC/UpdateStudent';
 import GetSynopsis from './Components/Faculty/GetSynopsis';
 import GetSynopsisDetails from './Components/Faculty/GetSynopsisDetails';
 import FacultyviewAnnouncement from './Components/Faculty/FacultyviewAnnouncement'
 import MSRCAllThesis from './Components/Faculty/MSRCAllThesis';
 import MSRCThesisDetails from './Components/Faculty/MSRCThesisDetails';
 
-// Student Folder
+// Student Components
 import Studenthome from './Components/Student/Studenthome'
 import SynopsisForm from './Components/Student/SynopsisForm';
 import FillSynopsis from './Components/Student/FillSynopsis';
 import StudentviewAnnouncement from './Components/Student/StudentviewAnnouncement'
 import ViewFeedback from './Components/Student/ViewFeedback';
 
-// GC Folder
+// GC Components
 import GCDashboard from './Components/GC/GCDashboard';
 import AddStudent from './Components/GC/AddStudent'
 import AddFaculty from './Components/GC/AddFaculty'
 import ViewStudent from './Components/GC/ViewStudent';
 import ViewFaculty from './Components/GC/ViewFaculty';
+import UpdateFaculty from './Components/GC/UpdateFaculty';
+import UpdateStudent from './Components/GC/UpdateStudent';
 import MakeAnnouncement from './Components/GC/MakeAnnouncement';
 import GetThesis from './Components/GC/GetThesis';
 import GetThesisDetails from './Components/GC/GetThesisDetails';
 import ThesisRecord from './Components/GC/ThesisRecord';
 
-// Error Folder
+// Other Components
 import NotFoundPage from './Components/Error/NotFoundPage'
-
-import { useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
-import SupervisorComp from './Components/Faculty/Supervisor/SupervisorComp';
-import MSRCComp from './Components/Faculty/MSRC/MSRCComp';
-import InternalComp from './Components/Faculty/Internal/InternalComp';
+import { RoleContext } from './context/RoleContext';
 
 
 function App() {
@@ -158,102 +151,119 @@ function App() {
 
 
     <>
-      <NavbarDefault />
-      <div className='mr-2'>
+      {showFirstDiv ? (
+        <header className="App-header">
+          <div role="status">
 
-        <RoleContext.Provider value={{ role, setRole }}>
-          <div style={{ display: "flex" }}>
-
-            <SidebarDefault />
-
-            <div className='w-full'>
-              <div className='w-full'>
-                <Routes>
-
-                  {/* Main Page  */}
-                  {!authToken ? (
-                    <>
-                      <Route path='/' element={<LandingPage />} />
-                      {/* Login Pages  */}
-                      <Route path='/login' element={<LoginPage />} />
-                      <Route path='/gclogin' element={<GClogin />} />
-                    </>
-                  ) : (
-                    // Conditional rendering based on userType
-                    <>
-                      {userDetails.userType === 'faculty' && (
-                        // Render faculty pages for faculty user
-
-                        <>
-
-                          <Route path='/' element={<Facultyhome />} />
-                          <Route path='viewAnnouncement' element={<FacultyviewAnnouncement />} />
-                          <Route path='/Supervisor' element={<SupervisorComp />} />
-                          <Route path='/MSRC' element={<MSRCComp />} />
-                          <Route path='/Internal' element={<InternalComp />} />
-
-                          {isSupervisor && (
-                            <>
-                              <Route path='/supAllRequests' element={<GetSynopsis />} />
-                              <Route path='/supReviewRequest/:synopsisid' element={<GetSynopsisDetails />} />
-                            </>
-                          )}
-                          {isMSRC && (
-                            <>
-                              <Route path='/MSRCAllThesis' element={<MSRCAllThesis />} />
-                              <Route path='/MSRCThesisDetails/:thesisid' element={<MSRCThesisDetails />} />
-                            </>
-                          )}
-                          {isInternal && (
-                            <>
-                            </>
-                          )}
-                          <Route path='/RoleTabs' element={<RoleTabs />} />
-                        </>
-                      )}
-                      {userDetails.userType === 'student' && (
-                        // Render student pages for student user
-                        <>
-                          <Route path='/' element={<Studenthome />} />
-                          <Route path='/synopsisForm' element={<SynopsisForm />} />
-                          <Route path='/fillSynopsis' element={<FillSynopsis />} />
-                          <Route path='/viewAnnouncement' element={<StudentviewAnnouncement />} />
-                          <Route path='/viewFeedback' element={<ViewFeedback />} />
-                          {/* ... (other student routes) */}
-                        </>
-                      )}
-                      {
-                        userDetails.userType === 'gc' && (
-                          // Render gc pages for gc user
-                          <>
-                            <Route path='/' element={<GCDashboard />} />
-                            <Route path='/addstudent' element={<AddStudent />} />
-                            <Route path='/addfaculty' element={<AddFaculty />} />
-                            <Route path='/viewstudent' element={<ViewStudent />} />
-                            <Route path='/viewfaculty' element={<ViewFaculty />} />
-                            <Route path='/updateFaculty/:facultyid' element={<UpdateFaculty />} />
-                            <Route path='/updateStudent/:rollno' element={<UpdateStudent />} />
-                            <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
-                            <Route path='/viewAllThesis' element={<ThesisRecord />} />
-                            <Route path='/ReviewRequest' element={<GetThesis />} />
-                            <Route path='/ReviewRequest/:thesisid' element={<GetThesisDetails />} />
-                            {/* ... (other gc routes) */}
-                          </>
-                        )
-                      }
-                    </>
-                  )}
-
-
-                  {/* Error Pages */}
-                  <Route path='*' element={<NotFoundPage />} />
-                </Routes>
-
-              </div>
+            <div role="status">
+              <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-teal-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+              </svg>
+              <span class="sr-only">Loading...</span>
             </div>
           </div>
-        </RoleContext.Provider>
-      </div>
+        </header>
+      ) : (
+        <>
+          <NavbarDefault />
+          <div className='mr-2'>
+
+            <RoleContext.Provider value={{ role, setRole }}>
+              <div style={{ display: "flex" }}>
+
+                <SidebarDefault />
+
+                <div className='w-full'>
+                  <div className='w-full'>
+                    <Routes>
+
+                      {/* Main Page  */}
+                      {!authToken ? (
+                        <>
+                          <Route path='/' element={<LandingPage />} />
+                          {/* Login Pages  */}
+                          <Route path='/login' element={<LoginPage />} />
+                          <Route path='/gclogin' element={<GClogin />} />
+                        </>
+                      ) : (
+                        // Conditional rendering based on userType
+                        <>
+                          {userDetails.userType === 'faculty' && (
+                            // Render faculty pages for faculty user
+
+                            <>
+
+                              <Route path='/' element={<Facultyhome />} />
+                              <Route path='viewAnnouncement' element={<FacultyviewAnnouncement />} />
+                              <Route path='/Supervisor' element={<SupervisorComp />} />
+                              <Route path='/MSRC' element={<MSRCComp />} />
+                              <Route path='/Internal' element={<InternalComp />} />
+
+                              {isSupervisor && (
+                                <>
+                                  <Route path='/supAllRequests' element={<GetSynopsis />} />
+                                  <Route path='/supReviewRequest/:synopsisid' element={<GetSynopsisDetails />} />
+                                </>
+                              )}
+                              {isMSRC && (
+                                <>
+                                  <Route path='/MSRCAllThesis' element={<MSRCAllThesis />} />
+                                  <Route path='/MSRCThesisDetails/:thesisid' element={<MSRCThesisDetails />} />
+                                </>
+                              )}
+                              {isInternal && (
+                                <>
+                                </>
+                              )}
+                              <Route path='/RoleTabs' element={<RoleTabs />} />
+                            </>
+                          )}
+                          {userDetails.userType === 'student' && (
+                            // Render student pages for student user
+                            <>
+                              <Route path='/' element={<Studenthome />} />
+                              <Route path='/synopsisForm' element={<SynopsisForm />} />
+                              <Route path='/fillSynopsis' element={<FillSynopsis />} />
+                              <Route path='/viewAnnouncement' element={<StudentviewAnnouncement />} />
+                              <Route path='/viewFeedback' element={<ViewFeedback />} />
+                              {/* ... (other student routes) */}
+                            </>
+                          )}
+                          {
+                            userDetails.userType === 'gc' && (
+                              // Render gc pages for gc user
+                              <>
+                                <Route path='/' element={<GCDashboard />} />
+                                <Route path='/addstudent' element={<AddStudent />} />
+                                <Route path='/addfaculty' element={<AddFaculty />} />
+                                <Route path='/viewstudent' element={<ViewStudent />} />
+                                <Route path='/viewfaculty' element={<ViewFaculty />} />
+                                <Route path='/updateFaculty/:facultyid' element={<UpdateFaculty />} />
+                                <Route path='/updateStudent/:rollno' element={<UpdateStudent />} />
+                                <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
+                                <Route path='/viewAllThesis' element={<ThesisRecord />} />
+                                <Route path='/ReviewRequest' element={<GetThesis />} />
+                                <Route path='/ReviewRequest/:thesisid' element={<GetThesisDetails />} />
+                                {/* ... (other gc routes) */}
+                              </>
+                            )
+                          }
+                        </>
+                      )}
+
+
+                      {/* Error Pages */}
+                      <Route path='*' element={<NotFoundPage />} />
+                    </Routes>
+
+                  </div>
+                </div>
+              </div>
+            </RoleContext.Provider>
+          </div>
+        </>
+      )}
     </>
   );
 }

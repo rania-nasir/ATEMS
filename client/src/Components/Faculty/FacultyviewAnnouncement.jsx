@@ -31,13 +31,14 @@ export default function StudentviewAnnouncement() {
 
     return (
         <>
-            <div className='mx-6'>
+            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                        Announcements
+                    <h2 className="text-center text-2xl tracking-tight text-gray-950 font-bold">
+                    View Announcement
                     </h2>
                 </div>
-                <div className="my-8 shadow-md sm:rounded-lg">
+
+                <div className="mt-6">
                     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 
                         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

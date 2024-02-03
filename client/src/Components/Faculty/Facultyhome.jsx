@@ -37,7 +37,7 @@ const Facultyhome = () => {
 
     return (
         <>
-            <div className='mx-8'>
+            <div className='my-8 mx-8'>
                 <div>
                     <h3 className="text-lg mb-6 leading-6 font-semibold text-grey-800">
                         Faculty Profile

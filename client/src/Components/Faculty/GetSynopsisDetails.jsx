@@ -119,15 +119,69 @@ export default function GetSynopsisDetails() {
                 <div className=""
                 >
 
-                    {synopsisData.selectedSynopsis && (
-                        <Card title={"Synopsis Request Detail"}>
-                            <h3>Synopsis ID: {synopsisData.selectedSynopsis.synopsisid}</h3>
-                            <h3>Synopsis Title: {synopsisData.selectedSynopsis.synopsistitle}</h3>
-                            <p>Description: {synopsisData.selectedSynopsis.description}</p>
-                            <p>Roll No: {synopsisData.selectedSynopsis.rollno}</p>
-                            <p>Synopsis Status: {synopsisData.selectedSynopsis.synopsisstatus}</p>
-                        </Card>
-                    )}
+                    <div className="mt-2 bg-teal-500 shadow overflow-hidden sm:rounded-lg">
+
+                        <div className="px-4 py-5 sm:px-6">
+                            <p className="max-w-2xl text-md text-white">
+                                Thesis Registration Synopsis Request Details
+                            </p>
+                        </div>
+                        {synopsisData.selectedSynopsis && (
+
+                            <div className="border-t border-gray-200">
+                                <dl>
+                                    <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                        
+                                        <div className="sm:col-span-1">
+                                            <dt className="text-sm font-medium text-gray-500">
+                                                Thesis ID:
+                                            </dt>
+                                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                                {synopsisData.selectedSynopsis.synopsisid}
+                                            </dd>
+                                        </div>
+                                        <div className="sm:col-span-1">
+                                            <dt className="text-sm font-medium text-gray-500">
+                                                Thesis Title:
+                                            </dt>
+                                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                                {synopsisData.selectedSynopsis.synopsistitle}
+                                            </dd>
+                                        </div>
+                                        <div className="sm:col-span-1">
+                                            <dt className="text-sm font-medium text-gray-500">
+                                                Roll Number
+                                            </dt>
+                                            <dd className="text-sm text-gray-900">
+                                            {synopsisData.selectedSynopsis.rollno}
+
+                                            </dd>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <div className="sm:col-span-1">
+                                            <dt className="text-sm font-medium text-gray-500">
+                                                Thesis Status
+                                            </dt>
+                                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                                {synopsisData.selectedSynopsis.synopsisstatus}
+                                            </dd>
+                                        </div>
+                                        <div className="sm:col-span-1">
+                                            <dt className="text-sm font-medium text-gray-500">
+                                                Potential Areas
+                                            </dt>
+                                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                                {synopsisData.selectedSynopsis.potentialareas}
+                                            </dd>
+                                        </div>
+                                        
+                                    </div>
+                                </dl>
+                            </div>
+
+                        )}
+                    </div>
                 </div>
 
                 <div className='mt-4 w-full flex justify-center'>
@@ -159,7 +213,7 @@ export default function GetSynopsisDetails() {
 
                         </div>
                         <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-sm flex flex-row gap-3"
-                         >
+                        >
                             <div className="grid grid-cols-2 w-full">
                                 <button className="col-span-1 flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2"
                                     type="button"
@@ -168,7 +222,7 @@ export default function GetSynopsisDetails() {
                                 >
                                     APPROVE
                                 </button>
-                                <button className="col-span-1 flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2"
+                                <button className="col-span-1 flex-shrink-0 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-md shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-3 py-2.5 text-center me-2 mb-2"
                                     type="button"
                                     name='declinedata'
                                     onClick={declineData}

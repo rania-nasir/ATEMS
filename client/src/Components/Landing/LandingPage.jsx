@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-// Requiring React-Router-DOM Configurations
-
 import Mainsection from './Mainsection';
 import Aboutsection from './Aboutsection'
 import Contactsection from './Contactsection';
