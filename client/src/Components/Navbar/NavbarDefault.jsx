@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import atems_logo from '../../Images/atems-favicon-color (1).png';
+import atems_logo from '../../Images/atems-logo.png'
 import ATEMS from './ATEMS';
 import Navlist from './Navlist'
 import {
@@ -58,7 +58,7 @@ const NavbarDefault = () => {
                 >
                     <div className="flex justify-between items-center">
                         <NavLink to='/'>
-                            <img src={atems_logo} className="w-10" alt="logo" />
+                            <img src={atems_logo} className="w-14" alt="logo" />
                         </NavLink>
                         <ATEMS />
                     </div>

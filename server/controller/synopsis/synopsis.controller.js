@@ -16,6 +16,9 @@ const getFaculties = async () => {
         // Fetch all faculties
         const allFaculties = await faculties.findAll({
             attributes: ['facultyid', 'name'],
+            where: {
+                role: { [Op.contains]: ['Supervisor'] }
+            }
         });
 
         return allFaculties;
@@ -57,7 +60,6 @@ const fillSynopsis = async (req, res) => {
             const potentialareas = req.body.potentialareas;
             const proposalfilename = req.file.filename;
             
-
             const existingSynopsis = await synopsis.findOne({ // Find an existing synopsis by the student
                 where: {
                     rollno: studentrollno,

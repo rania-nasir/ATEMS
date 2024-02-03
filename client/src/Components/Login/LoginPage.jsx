@@ -122,9 +122,9 @@ const LoginPage = () => {
 
         if (res.status === 200) {
             if (data.message === "Invalid Credentials") {
-                
+
                 document.getElementById('msg').innerHTML = 'Invalid Credentials';
-                
+
                 // window.alert("Invalid Credentials");
                 console.log("Invalid Credentials");
             } else {
@@ -136,7 +136,7 @@ const LoginPage = () => {
                 window.location.reload();
             }
         } else {
-            
+
             document.getElementById('msg').innerHTML = 'Invalid Credentials';
             // window.alert("Something went wrong");
             console.log("Something went wrong");
@@ -246,6 +246,11 @@ const LoginPage = () => {
                                                 placeholder="********" />
                                         </div>
                                         <p id='errorMessage' class="pl-4 text-red-500 text-xs italic"></p>
+                                        <div className="flex px-4 justify-end w-full">
+                                            <NavLink to="#" className="text-sm text-teal-800 leading-6 hover:underline hover:text-gray-800">
+                                                Forget Password?
+                                            </NavLink>
+                                        </div>
                                     </div>
                                     <div class="flex flex-wrap -mx-3 mb-6">
                                         <div class="w-full px-3">
@@ -273,7 +278,7 @@ const LoginPage = () => {
                                                 required
                                                 type="facultyid"
                                                 name="facultyid"
-                                                placeholder="F-1234" />
+                                                placeholder="1234" />
                                         </div>
                                     </div>
                                     <div class="flex flex-wrap -mx-3 mb-6">
@@ -293,6 +298,13 @@ const LoginPage = () => {
                                                 placeholder="********" />
                                         </div>
                                         <p id='errorMessage' class="pl-4 text-red-500 text-xs italic"></p>
+                                        <div className="flex px-4 justify-end w-full">
+                                            <NavLink to="#" className="text-sm text-teal-800 leading-6 hover:underline hover:text-gray-800">
+                                                Forget Password?
+                                            </NavLink>
+                                        </div>
+
+
                                     </div>
                                     <div class="flex flex-wrap -mx-3 mb-6">
                                         <div class="w-full px-3">
