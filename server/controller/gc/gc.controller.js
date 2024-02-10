@@ -2,11 +2,13 @@ const { sequelize } = require("../../config/sequelize");
 const { faculties } = require("../../model/faculty.model");
 const { students } = require("../../model/student.model");
 const { announcements } = require("../../model/announcement.model");
+const { panels } = require("../../model/panel.model");
 const { sendMail } = require("../../config/mailer");
 const { generateToken } = require('../../middleware/authMiddleware');
 const { Op, Model } = require('sequelize');
 const xlsx = require('xlsx');
 const { errorMonitor } = require("nodemailer/lib/xoauth2");
+const { thesis } = require("../../model/thesis.model");
 
 
 //GC login
@@ -419,7 +421,7 @@ const viewSelectedFaculty = async (req, res) => {
       return res.status(404).json({ error: 'Faculty not found' });
     }
 
-    res.json( selectedFaculty );
+    res.json(selectedFaculty);
 
   } catch (error) {
 
@@ -464,7 +466,7 @@ const updateStudent = async (req, res) => {
     const updatedData = req.body;
     delete updatedData.password;
     delete updatedData.rollno;
-   
+
 
     const [updatedRowsCount, updatedStudents] = await students.update(updatedData, {
       where: { rollno },
@@ -569,9 +571,9 @@ const deleteFaculty = async (req, res) => {
 const showgcData = async (req, res) => {
   try {
     const { gcid } = req.params;
-    
+
     const gcData = await faculties.findOne({
-      where: { facultyid: gcid }, 
+      where: { facultyid: gcid },
       role: {
         [Op.contains]: ["GC"] // searching in faculties table for GC role
       },
@@ -590,6 +592,63 @@ const showgcData = async (req, res) => {
   }
 }
 
+
+const panelTime = async (req, res) => {
+  try {
+
+    const panelDataArray = req.body.panels;
+
+    const assignedPanels = [];
+
+    for (const panelData of panelDataArray) {
+
+      const {
+        thesisid,
+        rollno,
+        stdname,
+        thesistitle,
+        supervisorname,
+        internals,
+        timeslot,
+        evaluation } = panelData;
+
+      const studentExists = await students.findOne({ where: { rollno, name: stdname } });
+      const thesisExists = await thesis.findByPk(thesisid);
+
+      if (!studentExists || !thesisExists) {
+        return res.status(400).json({ error: 'Student or thesis does not exist' });
+      }
+
+
+      const existingPanel = await panels.findOne({ where: { rollno, thesisid } });
+      if (existingPanel) {
+        return res.status(400).json({ error: 'Panel entry for this student and thesis already exists' });
+      }
+
+      
+      // Create the panel entry in the database
+      const newPanel = await panels.create({
+        thesisid,
+        rollno,
+        stdname,
+        thesistitle,
+        supervisorname,
+        internals,
+        timeslot,
+        evaluation
+      });
+
+      assignedPanels.push(newPanel);
+    }
+
+    res.json({ message: 'Time slots assigned successfully', panels: assignedPanels });
+  } catch (error) {
+    console.error('Error assigning time slots:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
 module.exports =
 {
   GCSignIn,
@@ -606,5 +665,6 @@ module.exports =
   updateFaculty,
   deleteStudent,
   deleteFaculty,
-  showgcData
+  showgcData,
+  panelTime
 };
