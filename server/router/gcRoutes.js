@@ -34,6 +34,8 @@ gcRouter.get('/ReviewRequest/:thesisId', gcReview.getThesisDetails); // GC fetch
 gcRouter.post('/ApproveRequest/:thesisId', gcReview.approveThesis); // GC approves synopsis which creates thesis
 
 
+gcRouter.post('/panelTime', gcFunctions.panelTime); // GC updates panel time
+
 gcRouter.post('/makeAnnouncement', gcFunctions.addAnnouncement); // GC makes announcement
 gcRouter.get('/viewAllThesis', gcReview.viewAllThesis); 
 
