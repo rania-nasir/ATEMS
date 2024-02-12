@@ -1,5 +1,6 @@
 const { sequelize, DataTypes } = require("../config/sequelize");
 const { synopsis } = require("./synopsis.model");
+const { thesis } = require("./thesis.model");
 
 const students = sequelize.define("students", {
     rollno: {
@@ -50,6 +51,23 @@ const students = sequelize.define("students", {
         type: DataTypes.STRING,
         allowNull: true
     },
+    thesisstatus: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+            isIn: {
+                args: [[1, 2]],
+                msg: "Thesis status must be 1 or 2"
+            }
+        }
+    },
+    comingevaluation: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            isIn: [['Proposal', 'Mid', 'Final']]
+        }
+    },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: true,
@@ -72,6 +90,13 @@ const students = sequelize.define("students", {
 //     foreignKey: 'rollno',
 //     sourceKey: 'rollno',
 //     as: 'students',
+// });
+
+
+// students.hasMany(thesis, {
+//     foreignKey: 'rollno',
+//     sourceKey: 'rollno',
+//     as: 'theses',
 // });
 
 sequelize.sync().then(() => {

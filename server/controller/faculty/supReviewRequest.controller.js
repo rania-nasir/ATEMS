@@ -272,10 +272,74 @@ const declineSynopsis = async (req, res) => {
 };
 
 
+const allProposalEvalations = async (req, res) => {
+    try {
+        const loggedInFacultyId = parseInt(req.userId);
+        
+        // Retrieve students with thesis status 1 and coming evaluation as Proposal
+        const proposalEvaluationStudents = await students.findAll({
+            where: {
+                thesisstatus: 1,
+                comingevaluation: 'Proposal'
+            },
+            attributes: ['rollno', 'name', 'batch', 'semester', 'program']
+        });
+
+        // Extract roll numbers of students
+        const rollnos = proposalEvaluationStudents.map(student => student.rollno);
+
+        // Retrieve thesis details for the selected students
+        const thesisDetails = await thesis.findAll({
+            where: {
+                [Op.or]: [
+                    { facultyid: loggedInFacultyId },
+                    { internalsid: { [Op.contains]: [loggedInFacultyId] } } // Check if loggedInFacultyId is in internalsid array
+                ]
+            },
+            attributes: ['rollno', 'thesistitle', 'facultyid', 'internalsid', 'potentialareas', 'gcapproval', 'hodapproval']
+        });
+
+        // Check if any thesis has pending approval
+        const pendingThesis = thesisDetails.find(thesis =>
+            thesis.gcapproval === 'Pending' || thesis.hodapproval === 'Pending'
+        );
+
+        if (pendingThesis) {
+            // If any thesis has pending approval, send appropriate message
+            res.json({ message: 'One or more theses have pending approval. Please wait for approval before viewing details.' });
+            return;
+        }
+
+        // Find the student whose rollno matches the faculty's thesis details
+        const studentThesis = proposalEvaluationStudents.find(student =>
+            thesisDetails.some(thesis => thesis.rollno === student.rollno)
+        );
+
+        // Merge student and thesis details
+        const result = studentThesis ? [{
+            ...studentThesis.toJSON(),
+            thesis: thesisDetails.find(thesis => thesis.rollno === studentThesis.rollno) || {} // Add thesis details or empty object if not found
+        }] : [];
+
+        if (result.length === 0) {
+            res.json({ message: "You are not a supervisor of any thesis" });
+        } else {
+            res.json({ students: result });
+        }
+
+    } catch (error) {
+        console.error('Error fetching students with thesis status 1 and proposal evaluation:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+
 module.exports =
 {
     getSynopsis,
     getSynopsisDetails,
     approveSynopsis,
-    declineSynopsis
+    declineSynopsis,
+    allProposalEvalations
 };
