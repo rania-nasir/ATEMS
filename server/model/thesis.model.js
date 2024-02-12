@@ -1,4 +1,5 @@
 const { sequelize, DataTypes } = require("../config/sequelize");
+const { students } = require("./student.model");
 
 const thesis = sequelize.define('thesis', {
     thesisid: {
@@ -15,7 +16,7 @@ const thesis = sequelize.define('thesis', {
         allowNull: false
     },
     facultyid: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     internals: {
@@ -41,7 +42,7 @@ const thesis = sequelize.define('thesis', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    gcApproval: {
+    gcapproval: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
@@ -54,6 +55,14 @@ const thesis = sequelize.define('thesis', {
         validate: {
             isIn: [['Pending', 'Approved']]
         }
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
     }
 });
 
