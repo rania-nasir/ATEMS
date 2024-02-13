@@ -19,10 +19,12 @@ const port = process.env.port || 3001
 const gcRoute = require("./router/gcRoutes")
 const stdRoute = require("./router/stdRoutes")
 const facultyRoute = require("./router/facultyRoutes")
+const forgetPasswordRoutes = require("./router/forgetPasswordRoutes")
 
 app.use("/gc", gcRoute)
 app.use("/std", stdRoute)
 app.use("/faculty", facultyRoute)
+app.use("/password", forgetPasswordRoutes)
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}/`);
