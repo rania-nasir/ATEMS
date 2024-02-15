@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import React, { useState } from 'react'
 
-import signincover from '../../Images/logincover.png'
+import signincover from '../../Images/admincover.jpg'
 
 const Cookies = require('js-cookie');
 
