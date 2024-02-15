@@ -76,7 +76,7 @@ export default function MakeAnnouncement() {
                         </h2>
                     </div>
 
-                    <div className="mt-6 sm:mx-auto w-full">
+                    <div className="mt-6 w-[80%]">
                         <form className="sm:mx-auto">
                             <div className="grid grid-cols-4">
                                 <div className='col-span-1 p-2 flex flex-wrap -mx-3 mb-6'>

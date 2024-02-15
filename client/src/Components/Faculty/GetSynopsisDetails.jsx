@@ -91,7 +91,6 @@ export default function GetSynopsisDetails() {
                 'Content-Type': 'application/json',
                 'Authorization': `${Cookie.get('jwtoken')}`
             }
-
         });
 
         const data = await res.json();
