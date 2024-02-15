@@ -6,27 +6,31 @@ const { students } = require('../model/student.model');
 
 
 const forgetPassword = async (req, res) => {
-    const { email } = req.body; 
+    
+    const { id, email } = req.body; 
 
     let user;
-    user = await faculties.findOne({ where: { email } });
+    user = await faculties.findOne({ where: { facultyid: id, email } });
+
     if (!user) {
-        user = await students.findOne({ where: { email } });
+        user = await students.findOne({ where: { rollno: id, email } });
     }
 
     if (!user) {
-        return res.status(404).json({ message: 'Email not registered in the system' });
+        return res.status(404).json({ message: 'ID and email combination not found in the system' });
     }
 
-    
+
     try {
-        
-        await sendMail(email, 'Password Recovery', `Your password is: ${user.password}`); // Send the password via email
+
+        await sendMail(email, 'Password Recovery', `Your password for ID: ${id} is: ${user.password}`); // Send the password via email
         return res.status(200).json({ message: 'Password sent successfully' });
 
     } catch (error) {
+
         console.error('Error sending email:', error);
         return res.status(500).json({ message: 'Failed to send email' }); 
+
     }
 };
 
