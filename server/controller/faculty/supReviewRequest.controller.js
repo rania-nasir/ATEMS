@@ -334,6 +334,50 @@ const allProposalEvalations = async (req, res) => {
 };
 
 
+const selectedProposalDetails = async (req, res) => {
+    try {
+
+        const loggedInFacultyId = parseInt(req.userId);
+        const selectedStudentRollNo = req.params.rollno;
+        
+
+        const selectedStudentDetails = await students.findOne({
+            where: {
+                rollno: selectedStudentRollNo
+            },
+            attributes: ['rollno', 'name', 'batch', 'semester', 'program']
+        });
+
+
+        // Retrieve the thesis details for the selected student
+        const selectedThesisDetails = await thesis.findOne({
+            where: {
+                rollno: selectedStudentRollNo,
+                [Op.or]: [
+                    { facultyid: loggedInFacultyId },
+                    { internalsid: { [Op.contains]: [loggedInFacultyId] } } // Check if loggedInFacultyId is in internalsid array
+                ]
+            },
+            attributes: ['thesistitle', 'facultyid', 'internalsid', 'potentialareas', 'gcapproval', 'hodapproval']
+        });
+
+
+        if (!selectedStudentDetails || !selectedThesisDetails) {
+            res.json({ message: "Selected student or thesis details not found" });
+        } else {
+            res.json({ student: selectedStudentDetails, thesis: selectedThesisDetails });
+        }
+
+    } catch (error) {
+
+        console.error('Error fetching selected proposal details:', error);
+        res.status(500).json({ error: 'Internal server error' });
+
+    }
+
+};
+
+
 
 module.exports =
 {
@@ -341,5 +385,6 @@ module.exports =
     getSynopsisDetails,
     approveSynopsis,
     declineSynopsis,
-    allProposalEvalations
+    allProposalEvalations,
+    selectedProposalDetails
 };

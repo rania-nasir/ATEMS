@@ -21,7 +21,7 @@ facRouter.get('/supReviewRequest/:synopsisId', facReview.getSynopsisDetails); //
 facRouter.post('/approve-synopsis/:synopsisId', facReview.approveSynopsis); // supervisor approves
 facRouter.delete('/decline-synopsis/:synopsisId', facReview.declineSynopsis); // supervisor declines
 facRouter.get('/propsaleEvaluationStudents', facReview.allProposalEvalations); 
-
+facRouter.get('/selectedProposal/:rollno', facReview.selectedProposalDetails);
 /* MSRC */
 
 facRouter.get('/msrcAllThesis', msrcReview.getAcceptedThesis); // MSRC fetches the lists of all thesis in accepted state
