@@ -10,8 +10,8 @@ const getThesis = async (req, res) => {
     try {
         const allThesis = await thesis.findAll({
             where: {
-                gcApproval: 'Pending' // only pending thesis will be fetched
-            },
+                gcapproval: 'Pending' // only pending thesis will be fetched
+            }, 
             attributes: ['thesisid', 'rollno', 'facultyid' , 'thesistitle', 'potentialareas'],
         });
 
@@ -120,7 +120,7 @@ const approveThesis = async (req, res) => {
 
         const [rowsAffected, [updatedThesis]] = await thesis.update( // Update the thesis internals
             {
-                gcApproval: 'Approved',
+                gcapproval: 'Approved',
                 internals: [final_internal1, final_internal2],
                 internalsid: [final_internal1id, final_internal2id]
             },

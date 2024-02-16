@@ -45,6 +45,7 @@ const thesis = sequelize.define('thesis', {
     gcapproval: {
         type: DataTypes.STRING,
         allowNull: false,
+        defaultValue:'Pending',
         validate: {
             isIn: [['Pending', 'Approved']]
         }
@@ -52,6 +53,7 @@ const thesis = sequelize.define('thesis', {
     hodapproval: {
         type: DataTypes.STRING,
         allowNull: false,
+        defaultValue:'Pending',
         validate: {
             isIn: [['Pending', 'Approved']]
         }
