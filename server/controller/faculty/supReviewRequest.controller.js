@@ -168,8 +168,8 @@ const approveSynopsis = async (req, res) => {
             researcharea: [researcharea1, researcharea2],
             potentialareas: selectedSynopsis.potentialareas,
             proposalfilename: selectedSynopsis.proposalfilename,
-            gcApproval: 'Pending',
-            hodapproval: 'Pending',
+            // gcApproval: 'Pending',
+            // hodapproval: 'Pending',
         });
 
 

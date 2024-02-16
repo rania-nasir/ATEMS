@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const path = require('path');
 
 const { Sequelize, DataTypes } = require('./config/sequelize.js')
 
@@ -15,6 +16,9 @@ const sequelize = require('./config/sequelize.js')
 
 require('dotenv').config()
 const port = process.env.port || 3001
+
+// Serve static files from the 'uploads' directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const gcRoute = require("./router/gcRoutes")
 const stdRoute = require("./router/stdRoutes")

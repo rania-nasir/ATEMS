@@ -49,10 +49,16 @@ export default function GetThesis() {
                                     Thesis ID
                                 </th>
                                 <th scope="col" class="px-6 py-3">
+                                    Student Roll No.
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Supervisor ID
+                                </th>
+                                <th scope="col" class="px-6 py-3">
                                     Thesis Title
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Description
+                                    Potential Areas
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Action
@@ -69,10 +75,16 @@ export default function GetThesis() {
                                             {rowData.thesisid}
                                         </td>
                                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {rowData.rollno}
+                                        </td>
+                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {rowData.facultyid}
+                                        </td>
+                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {rowData.thesistitle}
                                         </td>
                                         <td className="px-6 py-4">
-                                            {rowData.description}
+                                            {rowData.potentialareas}
                                         </td>
                                         <td className="px-6 py-4">
                                             <NavLink to={`/ReviewRequest/${rowData.thesisid}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
