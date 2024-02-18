@@ -1,7 +1,7 @@
 const { sequelize, DataTypes } = require("../config/sequelize");
 
 
-const proposalEvaluations = sequelize.define('proposalEvaluations', {
+const proposalevaluations = sequelize.define('proposalevaluations', {
     rollno: {
         type: DataTypes.STRING,
         allowNull: false
@@ -82,4 +82,4 @@ sequelize.sync().then(() => {
 });
 
 // Export the Proposal Evaluaton model
-module.exports = { proposalEvaluations };
+module.exports = { proposalevaluations };
