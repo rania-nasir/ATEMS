@@ -3,6 +3,7 @@ const { synopsis } = require("../../model/synopsis.model");
 const { thesis } = require("../../model/thesis.model");
 const { faculties } = require("../../model/faculty.model");
 const { students } = require("../../model/student.model");
+const { proposalEvaluations } = require("../../model/proposalevaluaton.model");
 const { sendMail } = require("../../config/mailer");
 const { Op, Model } = require('sequelize');
 
@@ -379,6 +380,54 @@ const selectedProposalDetails = async (req, res) => {
 
 
 
+const evaluateProposal = async (req, res) => {
+    try {
+        // Extract evaluation details from the request
+        const {
+            rollno,
+            stdname,
+            batch,
+            semester,
+            thesistitle,
+            facultyid,
+            facname,
+            significance,
+            understanding,
+            statement,
+            rationale,
+            timeline,
+            bibliography,
+            comments,
+            gcpermission
+        } = req.body;
+
+        // Create a new proposal evaluation record
+        const newEvaluation = await proposalevaluations.create({
+            rollno,
+            stdname,
+            batch,
+            semester,
+            thesistitle,
+            facultyid,
+            facname,
+            significance,
+            understanding,
+            statement,
+            rationale,
+            timeline,
+            bibliography,
+            comments,
+            gcpermission
+        });
+
+        res.json({ message: 'Proposal evaluation stored successfully', evaluation: newEvaluation });
+    } catch (error) {
+        console.error('Error evaluating proposal:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
 module.exports =
 {
     getSynopsis,
@@ -386,5 +435,7 @@ module.exports =
     approveSynopsis,
     declineSynopsis,
     allProposalEvalations,
-    selectedProposalDetails
+    selectedProposalDetails,
+    evaluateProposal
 };
+
