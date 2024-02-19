@@ -3,7 +3,7 @@ const { synopsis } = require("../../model/synopsis.model");
 const { thesis } = require("../../model/thesis.model");
 const { faculties } = require("../../model/faculty.model");
 const { students } = require("../../model/student.model");
-const { proposalEvaluations } = require("../../model/proposalevaluaton.model");
+const { proposalevaluations } = require("../../model/proposalEvaluaton.model");
 const { sendMail } = require("../../config/mailer");
 const { Op, Model } = require('sequelize');
 
@@ -169,8 +169,6 @@ const approveSynopsis = async (req, res) => {
             researcharea: [researcharea1, researcharea2],
             potentialareas: selectedSynopsis.potentialareas,
             proposalfilename: selectedSynopsis.proposalfilename,
-            // gcApproval: 'Pending',
-            // hodapproval: 'Pending',
         });
 
 
@@ -335,49 +333,49 @@ const allProposalEvalations = async (req, res) => {
 };
 
 
+
 const selectedProposalDetails = async (req, res) => {
     try {
 
-        const loggedInFacultyId = parseInt(req.userId);
-        const selectedStudentRollNo = req.params.rollno;
-        
-
-        const selectedStudentDetails = await students.findOne({
-            where: {
-                rollno: selectedStudentRollNo
-            },
-            attributes: ['rollno', 'name', 'batch', 'semester', 'program']
-        });
-
-
-        // Retrieve the thesis details for the selected student
-        const selectedThesisDetails = await thesis.findOne({
-            where: {
-                rollno: selectedStudentRollNo,
-                [Op.or]: [
-                    { facultyid: loggedInFacultyId },
-                    { internalsid: { [Op.contains]: [loggedInFacultyId] } } // Check if loggedInFacultyId is in internalsid array
-                ]
-            },
-            attributes: ['thesistitle', 'facultyid', 'internalsid', 'potentialareas', 'gcapproval', 'hodapproval']
-        });
-
-
-        if (!selectedStudentDetails || !selectedThesisDetails) {
-            res.json({ message: "Selected student or thesis details not found" });
-        } else {
-            res.json({ student: selectedStudentDetails, thesis: selectedThesisDetails });
-        }
-
+      const loggedInFacultyId = parseInt(req.userId);
+      const selectedStudentRollNo = req.params.rollno;
+  
+      const selectedStudentDetails = await students.findOne({
+        where: {
+          rollno: selectedStudentRollNo
+        },
+        attributes: ['rollno', 'name', 'batch', 'semester', 'program']
+      });
+  
+      if (!selectedStudentDetails) {
+        res.json({ message: "Student data not found for the selected roll number" });
+        return;
+      }
+  
+      const selectedThesisDetails = await thesis.findOne({
+        where: {
+          rollno: selectedStudentRollNo,
+          facultyid: loggedInFacultyId,
+          [Op.or]: [
+            { gcproposalpermission: 'Granted'}
+          ]
+        },
+        attributes: ['thesistitle', 'facultyid', 'internalsid', 'potentialareas', 'gcapproval', 'hodapproval']
+      });
+  
+      if (!selectedThesisDetails) {
+        res.json({ message: "Proposal Evaluations are not open yet" });
+        return;
+      } 
+  
+      res.json({ student: selectedStudentDetails, thesis: selectedThesisDetails });
+  
     } catch (error) {
-
-        console.error('Error fetching selected proposal details:', error);
-        res.status(500).json({ error: 'Internal server error' });
-
+      console.error('Error fetching selected proposal details:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
 
 };
-
 
 
 const evaluateProposal = async (req, res) => {
@@ -417,7 +415,6 @@ const evaluateProposal = async (req, res) => {
             timeline,
             bibliography,
             comments,
-            gcpermission
         });
 
         res.json({ message: 'Proposal evaluation stored successfully', evaluation: newEvaluation });

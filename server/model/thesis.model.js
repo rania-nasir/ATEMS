@@ -58,6 +58,14 @@ const thesis = sequelize.define('thesis', {
             isIn: [['Pending', 'Approved']]
         }
     },
+    gcproposalpermission: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'Revoke',
+        validate: {
+            isIn: [['Granted', 'Revoke']]
+        }
+    },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: true,

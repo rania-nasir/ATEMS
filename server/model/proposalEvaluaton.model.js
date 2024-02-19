@@ -58,13 +58,6 @@ const proposalevaluations = sequelize.define('proposalevaluations', {
         type: DataTypes.TEXT('long'),
         allowNull: false
     },
-    gcpermission: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            isIn: [['Granted', 'Revoke']]
-        }
-    },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: true,
