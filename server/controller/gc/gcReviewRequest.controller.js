@@ -2,6 +2,7 @@ const { sequelize } = require("../../config/sequelize");
 const { synopsis } = require("../../model/synopsis.model");
 const { thesis } = require("../../model/thesis.model");
 const { faculties } = require("../../model/faculty.model");
+const { proposalEvaluations }  = require("../../model/proposalEvaluaton.model");
 const { Op, Model } = require('sequelize');
 
 
@@ -11,8 +12,8 @@ const getThesis = async (req, res) => {
         const allThesis = await thesis.findAll({
             where: {
                 gcapproval: 'Pending' // only pending thesis will be fetched
-            }, 
-            attributes: ['thesisid', 'rollno', 'facultyid' , 'thesistitle', 'potentialareas'],
+            },
+            attributes: ['thesisid', 'rollno', 'facultyid', 'thesistitle', 'potentialareas'],
         });
 
         res.json({ allThesis });
@@ -146,4 +147,62 @@ const approveThesis = async (req, res) => {
     }
 };
 
-module.exports = { getThesis, getThesisDetails, approveThesis, viewAllThesis };
+
+const grantPropEvalPermission = async (req, res) => {
+    try {
+
+        const updateResult = await thesis.update(
+            { gcproposalpermission: 'Granted' },
+            { where: {} } // Set gcpermission to 'Granted' for all records
+        );
+
+        if (updateResult) {
+
+            res.json({ message: "GC permission granted for all proposal evaluations" });
+
+        } else {
+
+            res.json({ message: "Failed to grant GC permission for proposal evaluations" });
+
+        }
+
+    } catch (error) {
+        console.error('Error granting GC permission for proposal evaluations:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+const revokePropEvalPermission = async (req, res) => {
+    try {
+
+        const updateResult = await thesis.update(
+            { gcproposalpermission: 'Revoke' },
+            { where: {} } // Set gcpermission to 'Revoke' for all records
+        );
+
+        if (updateResult) {
+
+            res.json({ message: "GC permission revoked for all proposal evaluations" });
+
+        } else {
+
+            res.json({ message: "Failed to revoke GC permission for proposal evaluations" });
+
+        }
+
+    } catch (error) {
+        console.error('Error granting GC permission for proposal evaluations:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+module.exports =
+{
+    getThesis,
+    getThesisDetails,
+    approveThesis,
+    viewAllThesis,
+    grantPropEvalPermission,
+    revokePropEvalPermission
+};

@@ -5,14 +5,13 @@ const { students } = require("../../model/student.model");
 const { sendMail } = require("../../config/mailer");
 
 
-
 const getThesis = async (req, res) => {
     try {
         const allThesis = await thesis.findAll({
             where: {
                 hodapproval: 'Pending' // only pending thesis will be fetched
             },
-            attributes: ['thesisid', 'rollno', 'facultyid', 'thesistitle', 'potentialareas', 'gcApproval'],
+            attributes: ['thesisid', 'rollno', 'facultyid', 'thesistitle', 'potentialareas', 'gcapproval'],
         });
 
         res.json({ allThesis });
@@ -50,27 +49,27 @@ const onethesisDetails = async (req, res) => {
 
         const facultyRole = faculty.role;
 
-        // if (facultyRole === 'HOD') {
-        //     // Functionality for HOD
-        //     const selectedThesis = await thesis.findOne({
-        //         where: {
-        //             thesisid: thesisId
-        //         },
-        //     });
+        if (facultyRole.includes('HOD')) {
+            // Functionality for HOD
+            const selectedThesis = await thesis.findOne({
+                where: {
+                    thesisid: thesisId
+                },
+            });
 
-        if (!selectedThesis) {
-            return res.status(404).json({ error: 'Thesis not found' });
+            if (!selectedThesis) {
+                return res.status(404).json({ error: 'Thesis not found' });
+            }
+
+            const fileURL = `/uploads/${selectedThesis.proposalfilename}`; // Construct the file URL
+            selectedThesis.dataValues.fileURL = fileURL; // Add the file URL to the selectedThesis object
+
+            res.json({ selectedThesis });
+
+        } else {
+            // If the faculty does not have the role of HOD
+            return res.status(403).json({ error: 'Access forbidden. Only HOD can perform this functionality' });
         }
-
-        const fileURL = `/uploads/${selectedThesis.proposalfilename}`; // Construct the file URL
-        selectedThesis.dataValues.fileURL = fileURL; // Add the file URL to the selectedThesis object
-
-        res.json({ selectedThesis });
-
-        // } else {
-        //     // If the faculty does not have the role of HOD
-        //     return res.status(403).json({ error: 'Access forbidden. Only HOD can perform this functionality' });
-        // }
 
     } catch (error) {
 
@@ -103,6 +102,7 @@ const hodapproveThesis = async (req, res) => {
         }
 
         const facultyRole = faculty.role;
+        console.log('facultyRole:', facultyRole);
 
         if (facultyRole.includes('HOD')) {
             const selectedThesis = await thesis.findOne({
@@ -115,7 +115,7 @@ const hodapproveThesis = async (req, res) => {
                 return res.status(404).json({ error: 'Thesis not found' });
             }
 
-            if (selectedThesis.gcApproval !== 'Approved') {
+            if (selectedThesis.gcapproval !== 'Approved') {
                 return res.status(403).json({ message: 'GC approval is required before HOD approval' });
             }
 

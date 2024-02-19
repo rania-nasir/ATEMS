@@ -41,6 +41,9 @@ gcRouter.get('/viewAllThesis', gcReview.viewAllThesis);
 
 // gcRouter.get('/assignRoles', (req, res)=>{ res.send('GC assign faculty roles here'); });
 
+gcRouter.put('/grantPropEvalPermission', gcReview.grantPropEvalPermission);
+gcRouter.put('/revokePropEvalPermission', gcReview.revokePropEvalPermission);
+
 gcRouter.put('/updateStudent/:rollno', gcFunctions.updateStudent); // GC updates student
 gcRouter.put('/updateFaculty/:facultyid', gcFunctions.updateFaculty); // GC updates faculty
  
