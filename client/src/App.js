@@ -23,6 +23,8 @@ import RoleTabs from './Components/Faculty/RoleTabs'
 import SupervisorComp from './Components/Faculty/Supervisor/SupervisorComp';
 import MSRCComp from './Components/Faculty/MSRC/MSRCComp';
 import InternalComp from './Components/Faculty/Internal/InternalComp';
+import HODComp from './Components/Faculty/HOD/HODComp';
+import HODGetThesisDetails from './Components/Faculty/HOD/GetThesisDetails';
 import Facultyhome from './Components/Faculty/Facultyhome'
 import GetSynopsis from './Components/Faculty/GetSynopsis';
 import GetSynopsisDetails from './Components/Faculty/GetSynopsisDetails';
@@ -121,6 +123,7 @@ function App() {
   const [isSupervisor, setIsSupervisor] = useState(false);
   const [isInternal, setIsInternal] = useState(false);
   const [isMSRC, setIsMSRC] = useState(false);
+  const [isHOD, setIsHOD] = useState(false);
 
   useEffect(() => {
     console.log(facultyData.role)
@@ -137,6 +140,10 @@ function App() {
       if (facultyData.role.includes("MSRC")) {
         setIsMSRC(true);
         // console.log("This is an MSRC role.");
+      }
+      if (facultyData.role.includes("HOD")) {
+        setIsHOD(true);
+        // console.log("This is an HOD role.");
       }
     } else {
       // Handle the case when facultyData or facultyData.role is undefined or null
@@ -199,6 +206,7 @@ function App() {
                               <Route path='/Supervisor' element={<SupervisorComp />} />
                               <Route path='/MSRC' element={<MSRCComp />} />
                               <Route path='/Internal' element={<InternalComp />} />
+                              <Route path='/HOD' element={<HODComp />} />
 
                               {isSupervisor && (
                                 <>
@@ -214,6 +222,11 @@ function App() {
                               )}
                               {isInternal && (
                                 <>
+                                </>
+                              )}
+                              {isHOD && (
+                                <>
+                                  <Route path='/reviewThesis/:thesisid' element={<HODGetThesisDetails />} />
                                 </>
                               )}
                               <Route path='/RoleTabs' element={<RoleTabs />} />

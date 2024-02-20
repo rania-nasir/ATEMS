@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import atems_logo from '../../Images/atems-logo.png'
 import ATEMS from './ATEMS';
@@ -9,6 +9,7 @@ import {
     IconButton
 } from "@material-tailwind/react";
 import Cookies from 'js-cookie';
+import { Toast } from 'primereact/toast';
 
 const LogoutButton = ({ onLogout }) => {
     const navigate = useNavigate();
@@ -34,9 +35,14 @@ const LogoutButton = ({ onLogout }) => {
 const NavbarDefault = () => {
     const [openNav, setOpenNav] = React.useState(false);
     const [isLoggedIn, setIsLoggedIn] = React.useState(!!Cookies.get('jwtoken'));
-
+    const toast = useRef(null);
+    
     const handleLogout = () => {
         setIsLoggedIn(false);
+    };
+
+    const showGetStartedToast = () => {
+        toast.current.show({ severity: 'info', detail: 'Please log in to get started.', life: 1000 });
     };
 
     React.useEffect(() => {
@@ -48,6 +54,7 @@ const NavbarDefault = () => {
 
     return (
         <div className="mx-auto py-2 px-4 lg:px-8 lg:py-4 shadow" >
+        <Toast ref={toast} style={{ width: '100%' }}/>
             <div className="container mx-auto flex items-center justify-between text-blue-gray-900">
 
                 <Typography
@@ -73,8 +80,9 @@ const NavbarDefault = () => {
                     {isLoggedIn ? (
                         <LogoutButton onLogout={handleLogout} />
                     ) : (
-                        <NavLink className="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-                            to="/login">Get Started</NavLink>
+                        <NavLink className="p-button-info text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                            to="/login" label="Info"
+                            onClick={showGetStartedToast}>Get Started</NavLink>
                     )}
                 </div>
 

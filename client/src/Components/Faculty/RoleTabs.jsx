@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import { RoleContext } from '../../context/RoleContext';
 import GetSynopsis from './GetSynopsis';
 import MSRCAllThesis from './MSRCAllThesis';
+import HODGetThesis from './HOD/GetThesis'
 
 const RoleTabs = () => {
     const { role } = useContext(RoleContext);
@@ -13,6 +14,7 @@ const RoleTabs = () => {
         { role: 'Supervisor', panels: ['Registration', 'Thesis Requests'] },
         { role: 'Internal', panels: ['Evaluation', 'Feedback'] },
         { role: 'MSRC', panels: ['MSRC Requests'] },
+        { role: 'HOD', panels: ['Thesis Approval Requests'] },
     ];
 
     const userTabs = tabs.find((tab) => tab.role === role);
@@ -41,6 +43,9 @@ const RoleTabs = () => {
                                     )}
                                     {panel === "MSRC Requests" && (
                                         <MSRCAllThesis/>
+                                    )}
+                                    {panel === "Thesis Approval Requests" && (
+                                        <HODGetThesis/>
                                     )}
                                 </div>
                             </TabPanel>

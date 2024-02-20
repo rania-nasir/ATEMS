@@ -112,6 +112,12 @@ const SidebarDefault = () => {
             path: '/MSRC',
             iconsrc: "https://img.icons8.com/ios-filled/50/737373/giving.png",
         },
+        {
+            id: 6,
+            title: 'HOD Management',
+            path: '/HOD',
+            iconsrc: "https://img.icons8.com/ios-filled/50/737373/invite.png",
+        },
     ];
 
     const studentSidebarItems = [
@@ -158,6 +164,7 @@ const SidebarDefault = () => {
     const [isSupervisor, setIsSupervisor] = useState(false);
     const [isInternal, setIsInternal] = useState(false);
     const [isMSRC, setIsMSRC] = useState(false);
+    const [isHOD, setIsHOD] = useState(false);
 
     useEffect(() => {
         console.log(facultyData.role)
@@ -174,6 +181,10 @@ const SidebarDefault = () => {
             if (facultyData.role.includes("MSRC")) {
                 setIsMSRC(true);
                 console.log("This is an MSRC role.");
+            }
+            if (facultyData.role.includes("HOD")) {
+                setIsHOD(true);
+                console.log("This is an HOD role.");
             }
         } else {
             // Handle the case when facultyData or facultyData.role is undefined or null
@@ -196,37 +207,39 @@ const SidebarDefault = () => {
                 setRole("Internal");
             } else if ((id === 5 && isMSRC)) {
                 setRole("MSRC");
-            }
+            } else if ((id === 6 && isHOD)) {
+            setRole("HOD");
         }
-    };
+    }
+};
 
-    return (
-        <>
-            <div className="flex min-w-max">
-                <div className="text-gray-800 px-2 flex flex-col">
-                    {menuItems.map((menuItem) => {
+return (
+    <>
+        <div className="flex min-w-max">
+            <div className="text-gray-800 px-2 flex flex-col">
+                {menuItems.map((menuItem) => {
 
-                        console.log('role = ', role);
-                        console.log('role = ', role.includes("Supervisor"));
+                    console.log('role = ', role);
+                    console.log('role = ', role.includes("Supervisor"));
 
-                        return (
-                            <div className="w-full pr-1 border-r border-gray-350" key={menuItem.id}>
-                                <NavLink
-                                    to={menuItem.path}
-                                    onClick={() => handleMenuClick(menuItem.path, menuItem.id)}
-                                    className={`flex items-left w-full my-1 p-2 py-3 px-5 hover:bg-gray-200 ${activeMenu === menuItem.id ? 'bg-gray-200' : ''}`}
-                                    style={{ borderRadius: "14px" }}
-                                >
-                                    <img className="mr-4" width="28" height="28" src={menuItem.iconsrc} alt="icon" />
-                                    {menuItem.title}
-                                </NavLink>
-                            </div>
-                        );
-                    })}
-                </div>
+                    return (
+                        <div className="w-full pr-1 border-r border-gray-350" key={menuItem.id}>
+                            <NavLink
+                                to={menuItem.path}
+                                onClick={() => handleMenuClick(menuItem.path, menuItem.id)}
+                                className={`flex items-left w-full my-1 p-2 py-3 px-5 hover:bg-gray-200 ${activeMenu === menuItem.id ? 'bg-gray-200' : ''}`}
+                                style={{ borderRadius: "14px" }}
+                            >
+                                <img className="mr-4" width="28" height="28" src={menuItem.iconsrc} alt="icon" />
+                                {menuItem.title}
+                            </NavLink>
+                        </div>
+                    );
+                })}
             </div>
-        </>
-    );
+        </div>
+    </>
+);
 };
 
 export default SidebarDefault;
