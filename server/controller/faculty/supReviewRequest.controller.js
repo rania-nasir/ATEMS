@@ -274,12 +274,15 @@ const declineSynopsis = async (req, res) => {
 const allProposalEvalations = async (req, res) => {
     try {
         const loggedInFacultyId = parseInt(req.userId);
-        
+
         // Retrieve students with thesis status 1 and coming evaluation as Proposal
         const proposalEvaluationStudents = await students.findAll({
             where: {
                 thesisstatus: 1,
-                comingevaluation: 'Proposal'
+                [Op.or]: [
+                    { comingevaluation: 'Proposal' },
+                    { comingevaluation: 'Proposal', reevaluationstatus: true }
+                ],
             },
             attributes: ['rollno', 'name', 'batch', 'semester', 'program']
         });
@@ -337,42 +340,42 @@ const allProposalEvalations = async (req, res) => {
 const selectedProposalDetails = async (req, res) => {
     try {
 
-      const loggedInFacultyId = parseInt(req.userId);
-      const selectedStudentRollNo = req.params.rollno;
-  
-      const selectedStudentDetails = await students.findOne({
-        where: {
-          rollno: selectedStudentRollNo
-        },
-        attributes: ['rollno', 'name', 'batch', 'semester', 'program']
-      });
-  
-      if (!selectedStudentDetails) {
-        res.json({ message: "Student data not found for the selected roll number" });
-        return;
-      }
-  
-      const selectedThesisDetails = await thesis.findOne({
-        where: {
-          rollno: selectedStudentRollNo,
-          facultyid: loggedInFacultyId,
-          [Op.or]: [
-            { gcproposalpermission: 'Granted'}
-          ]
-        },
-        attributes: ['thesistitle', 'facultyid', 'internalsid', 'potentialareas', 'gcapproval', 'hodapproval']
-      });
-  
-      if (!selectedThesisDetails) {
-        res.json({ message: "Proposal Evaluations are not open yet" });
-        return;
-      } 
-  
-      res.json({ student: selectedStudentDetails, thesis: selectedThesisDetails });
-  
+        const loggedInFacultyId = parseInt(req.userId);
+        const selectedStudentRollNo = req.params.rollno;
+
+        const selectedStudentDetails = await students.findOne({
+            where: {
+                rollno: selectedStudentRollNo
+            },
+            attributes: ['rollno', 'name', 'batch', 'semester', 'program']
+        });
+
+        if (!selectedStudentDetails) {
+            res.json({ message: "Student data not found for the selected roll number" });
+            return;
+        }
+
+        const selectedThesisDetails = await thesis.findOne({
+            where: {
+                rollno: selectedStudentRollNo,
+                facultyid: loggedInFacultyId,
+                [Op.or]: [
+                    { gcproposalpermission: 'Granted' }
+                ]
+            },
+            attributes: ['thesistitle', 'facultyid', 'internalsid', 'potentialareas', 'gcapproval', 'hodapproval']
+        });
+
+        if (!selectedThesisDetails) {
+            res.json({ message: "Proposal Evaluations are not open yet" });
+            return;
+        }
+
+        res.json({ student: selectedStudentDetails, thesis: selectedThesisDetails });
+
     } catch (error) {
-      console.error('Error fetching selected proposal details:', error);
-      res.status(500).json({ error: 'Internal server error' });
+        console.error('Error fetching selected proposal details:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 
 };
@@ -396,28 +399,38 @@ const evaluateProposal = async (req, res) => {
             timeline,
             bibliography,
             comments,
-            gcpermission
         } = req.body;
 
-        // Create a new proposal evaluation record
-        const newEvaluation = await proposalevaluations.create({
-            rollno,
-            stdname,
-            batch,
-            semester,
-            thesistitle,
-            facultyid,
-            facname,
-            significance,
-            understanding,
-            statement,
-            rationale,
-            timeline,
-            bibliography,
-            comments,
-        });
+        const existingEvaluation = await proposalevaluations.findOne({ where: { facultyid } });
 
-        res.json({ message: 'Proposal evaluation stored successfully', evaluation: newEvaluation });
+        if (existingEvaluation) {
+
+            res.status(400).json({ error: 'You have already evaluated the thesis proposal' });
+        }
+        else {
+
+            // Create a new proposal evaluation record
+            const newEvaluation = await proposalevaluations.create({
+                rollno,
+                stdname,
+                batch,
+                semester,
+                thesistitle,
+                facultyid,
+                facname,
+                significance,
+                understanding,
+                statement,
+                rationale,
+                timeline,
+                bibliography,
+                comments,
+            });
+
+            res.json({ message: 'Proposal evaluation stored successfully', evaluation: newEvaluation });
+
+        }
+
     } catch (error) {
         console.error('Error evaluating proposal:', error);
         res.status(500).json({ error: 'Internal server error' });

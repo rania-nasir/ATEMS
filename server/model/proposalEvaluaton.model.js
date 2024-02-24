@@ -58,6 +58,14 @@ const proposalevaluations = sequelize.define('proposalevaluations', {
         type: DataTypes.TEXT('long'),
         allowNull: false
     },
+    gccommentsreview: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'Pending',
+        validate: {
+            isIn: [['Pending', 'Approved', 'Rejected']]
+        }
+    },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: true,

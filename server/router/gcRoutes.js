@@ -51,4 +51,9 @@ gcRouter.delete('/deleteStudent/:rollno', gcFunctions.deleteStudent);// GC delet
 gcRouter.delete('/deleteFaculty/:facultyid', gcFunctions.deleteFaculty);// GC deletes faculty
 
 
+gcRouter.get('/gcViewPendingProposals', gcReview.gcAllPendingProposals);
+gcRouter.get('/viewPendingProposal/:rollno', gcReview.gcSelectedProposalDetails);
+gcRouter.put('/approveProposalComments/:rollno', gcReview.gcApproveProposal);
+gcRouter.put('/rejectProposalComments/:rollno', gcReview.gcRejectProposal);
+
 module.exports = gcRouter;

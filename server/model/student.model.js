@@ -65,8 +65,13 @@ const students = sequelize.define("students", {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            isIn: [['Proposal', 'Mid', 'Final']]
+            isIn: [['Proposal', 'Mid1', 'Final1', 'Mid2', 'Final2']]
         }
+    },
+    reevaluationstatus: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     },
     createdAt: {
         type: DataTypes.DATE,
