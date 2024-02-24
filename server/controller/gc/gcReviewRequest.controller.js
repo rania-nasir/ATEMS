@@ -1,8 +1,10 @@
 const { sequelize } = require("../../config/sequelize");
 const { synopsis } = require("../../model/synopsis.model");
 const { thesis } = require("../../model/thesis.model");
+const { students } = require("../../model/student.model");
 const { faculties } = require("../../model/faculty.model");
-const { proposalEvaluations }  = require("../../model/proposalEvaluaton.model");
+const { proposalevaluations } = require("../../model/proposalEvaluaton.model");
+const { sendMail } = require("../../config/mailer");
 const { Op, Model } = require('sequelize');
 
 
@@ -197,6 +199,161 @@ const revokePropEvalPermission = async (req, res) => {
     }
 };
 
+const gcAllPendingProposals = async (req, res) => {
+    try {
+        const pendingProposals = await proposalevaluations.findAll({
+            where: {
+                gccommentsreview: 'Pending'
+            }
+        });
+
+        res.json({ pendingProposals });
+    } catch (error) {
+        console.error('Error fetching pending proposals:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+}
+
+
+const gcSelectedProposalDetails = async (req, res) => {
+
+    try {
+        const { rollno } = req.params;
+
+        const selectedProposal = await proposalevaluations.findOne({
+            where: {
+                rollno
+            }
+        });
+
+        if (selectedProposal) {
+            res.json({ selectedProposal });
+        } else {
+            res.status(404).json({ error: 'Proposal not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching proposal details:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+}
+
+
+const gcApproveProposal = async (req, res) => {
+    try {
+        const { rollno } = req.params;
+
+        // Update the proposal evaluation
+        const [updatedRows, [updatedProposal]] = await proposalevaluations.update(
+            { gccommentsreview: 'Approved' },
+            { where: { rollno }, returning: true }
+        );
+
+        if (updatedRows === 1) {
+            // Update the comingevaluation status in the students model
+            const updatedStudent = await students.update(
+                { comingevaluation: 'Mid1' },
+                // { where: { rollno, gccommentsreview: 'Approved' } }
+                { where: { rollno } }
+            );
+
+            if (updatedStudent[0] === 1) {
+                // Get student details
+                const student = await students.findOne({ where: { rollno } });
+
+                if (student) {
+                    // Send approval email to student
+                    const subject = 'Proposal Approval';
+                    const text = 'Your proposal has been approved. Congratulations!';
+                    await sendMail(student.email, subject, text);
+
+                    res.json({ message: 'Proposal approved, comingevaluation status updated, and email sent to student' });
+                }
+                else {
+
+                    res.status(404).json({ error: 'Student not found' });
+                }
+
+            } else {
+
+                res.status(404).json({ error: 'Student not found or proposal not approved' });
+            }
+
+        } else {
+
+            res.status(404).json({ error: 'Proposal not found or not approved' });
+        }
+
+    } catch (error) {
+
+        console.error('Error approving proposal:', error);
+        res.status(500).json({ error: 'Internal server error' });
+
+    }
+
+};
+
+
+
+const gcRejectProposal = async (req, res) => {
+    try {
+        const { rollno } = req.params;
+
+        // Update the proposal evaluation to 'Rejected'
+        const [updatedRows, [updatedProposal]] = await proposalevaluations.update(
+            {
+                gccommentsreview: 'Rejected',
+            },
+            { where: { rollno }, returning: true }
+
+        );
+
+        if (updatedRows === 1) {
+            // Update the comingevaluation status in the students model
+            const updatedStudent = await students.update(
+                {
+                    comingevaluation: 'Proposal',
+                    reevaluationstatus: true
+                },
+                { where: { rollno } }
+            );
+
+            if (updatedStudent[0] === 1) {
+                // Get student details
+                const student = await students.findOne({ where: { rollno } });
+
+                if (student) {
+                    // Send rejection email to student
+                    const subject = 'Proposal Rejection';
+                    const text = 'Your proposal has been rejected.';
+                    await sendMail(student.email, subject, text);
+
+                    res.json({ message: 'Proposal rejected, comingevaluation status updated, and email sent to student' });
+                }
+                else {
+
+                    res.status(404).json({ error: 'Student not found' });
+                }
+
+            } else {
+
+                res.status(404).json({ error: 'Student not found or proposal not rejected' });
+            }
+
+        } else {
+
+            res.status(404).json({ error: 'Proposal not found or not rejected' });
+        }
+
+    } catch (error) {
+
+        console.error('Error rejecting proposal:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+
 module.exports =
 {
     getThesis,
@@ -204,5 +361,9 @@ module.exports =
     approveThesis,
     viewAllThesis,
     grantPropEvalPermission,
-    revokePropEvalPermission
+    revokePropEvalPermission,
+    gcAllPendingProposals,
+    gcSelectedProposalDetails,
+    gcApproveProposal,
+    gcRejectProposal
 };
