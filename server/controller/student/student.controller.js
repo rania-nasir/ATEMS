@@ -3,6 +3,7 @@ const { sequelize } = require("../../config/sequelize");
 const { students } = require("../../model/student.model");
 const { generateToken } = require('../../middleware/authMiddleware');
 const { announcements } = require('../../model/announcement.model');
+const { proposalevaluations } = require('../../model/proposalEvaluaton.model');
 const { Op } = require('sequelize');
 const { all } = require("../../router/stdRoutes");
 const { feedbacks } = require("../../model/feedback.model");
@@ -78,6 +79,8 @@ const viewStudentAnnouncements = async (req, res) => {
   }
 };
 
+
+
 // Function for student to view their feedback 
 const viewFeedback = async (req, res) => {
   try {
@@ -88,12 +91,29 @@ const viewFeedback = async (req, res) => {
         feedbackType: 'MSRC' // Assuming the feedback type for MSRC members is 'MSRC' 
       }
     });
-    res.json(feedbackList);
+
+    // Fetch proposal comments approved by GC
+    const proposalComments = await proposalevaluations.findAll({
+      where: {
+        rollno: rollno,
+        gccommentsreview: 'Approved',
+      }
+    });
+
+    // Combine both types of comments into a single array
+    const combinedComments = {
+      feedback: feedbackList,
+      proposalComments: proposalComments
+    };
+
+    res.json(combinedComments);
   } catch (error) {
     console.error('Error fetching feedback:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+
 
 const showStdData = async (req, res) => {
   try {

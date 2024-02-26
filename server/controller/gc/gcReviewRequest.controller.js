@@ -253,7 +253,10 @@ const gcApproveProposal = async (req, res) => {
         if (updatedRows === 1) {
             // Update the comingevaluation status in the students model
             const updatedStudent = await students.update(
-                { comingevaluation: 'Mid1' },
+                {
+                    comingevaluation: 'Mid1',
+                    reevaluationstatus: 'false'
+                },
                 // { where: { rollno, gccommentsreview: 'Approved' } }
                 { where: { rollno } }
             );
