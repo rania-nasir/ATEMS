@@ -401,36 +401,69 @@ const evaluateProposal = async (req, res) => {
             comments,
         } = req.body;
 
-        const existingEvaluation = await proposalevaluations.findOne({ where: { facultyid } });
+        const student = await students.findOne({ where: { rollno } });
 
-        if (existingEvaluation) {
+        if (student && student.reevaluationstatus) {
+            // Update the existing proposal evaluation record
+            const existingEvaluation = await proposalevaluations.findOne({ where: { facultyid } });
 
-            res.status(400).json({ error: 'You have already evaluated the thesis proposal' });
+            if (existingEvaluation) {
+                // Update the existing proposal evaluation
+                const updatedEvaluation = await proposalevaluations.update({
+                    rollno,
+                    stdname,
+                    batch,
+                    semester,
+                    thesistitle,
+                    facultyid,
+                    facname,
+                    significance,
+                    understanding,
+                    statement,
+                    rationale,
+                    timeline,
+                    bibliography,
+                    comments,
+                    gccommentsreview: 'Pending',
+                }, { where: { facultyid } });
+
+
+                await students.update({ reevaluationstatus: false }, { where: { rollno } });
+
+                const updatedEvaluationdata = await proposalevaluations.findOne({ where: { facultyid } });
+
+                res.json({ message: 'Proposal re-evaluation stored successfully', evaluation: updatedEvaluationdata });
+                //students.reevaluationstatus = false;
+            } else {
+                res.status(404).json({ error: 'No existing evaluation found for re-evaluation' });
+            }
+        } else {
+            const existingEvaluation = await proposalevaluations.findOne({ where: { facultyid } });
+
+            if (existingEvaluation) {
+                res.status(400).json({ error: 'You have already evaluated the thesis proposal' });
+            } else {
+                // Create a new proposal evaluation record
+                const newEvaluation = await proposalevaluations.create({
+                    rollno,
+                    stdname,
+                    batch,
+                    semester,
+                    thesistitle,
+                    facultyid,
+                    facname,
+                    significance,
+                    understanding,
+                    statement,
+                    rationale,
+                    timeline,
+                    bibliography,
+                    comments,
+                });
+
+                res.json({ message: 'Proposal evaluation stored successfully', evaluation: newEvaluation });
+            }
         }
-        else {
-
-            // Create a new proposal evaluation record
-            const newEvaluation = await proposalevaluations.create({
-                rollno,
-                stdname,
-                batch,
-                semester,
-                thesistitle,
-                facultyid,
-                facname,
-                significance,
-                understanding,
-                statement,
-                rationale,
-                timeline,
-                bibliography,
-                comments,
-            });
-
-            res.json({ message: 'Proposal evaluation stored successfully', evaluation: newEvaluation });
-
-        }
-
     } catch (error) {
         console.error('Error evaluating proposal:', error);
         res.status(500).json({ error: 'Internal server error' });
