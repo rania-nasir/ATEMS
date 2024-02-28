@@ -19,6 +19,10 @@ const thesis = sequelize.define('thesis', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    supervisorname: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     internals: {
         type: DataTypes.ARRAY(DataTypes.STRING),
         defaultValue: [],
@@ -58,6 +62,11 @@ const thesis = sequelize.define('thesis', {
             isIn: [['Pending', 'Approved']]
         }
     },
+    // msrccomments: {
+    //     type: DataTypes.BOOLEAN,
+    //     allowNull: false,
+    //     defaultValue: false
+    // },
     gcproposalpermission: {
         type: DataTypes.STRING,
         allowNull: false,
