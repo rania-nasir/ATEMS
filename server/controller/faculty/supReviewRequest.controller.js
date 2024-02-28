@@ -164,6 +164,7 @@ const approveSynopsis = async (req, res) => {
             thesistitle: selectedSynopsis.synopsistitle,
             rollno: selectedSynopsis.rollno,
             facultyid: selectedSynopsis.facultyid,
+            supervisorname: selectedSynopsis.facultyname,
             internals: [internal1, internal2],
             internalsid: [internal1id, internal2id],
             researcharea: [researcharea1, researcharea2],
@@ -298,7 +299,7 @@ const allProposalEvalations = async (req, res) => {
                     { internalsid: { [Op.contains]: [loggedInFacultyId] } } // Check if loggedInFacultyId is in internalsid array
                 ]
             },
-            attributes: ['rollno', 'thesistitle', 'facultyid', 'internalsid', 'potentialareas', 'gcapproval', 'hodapproval']
+            attributes: ['rollno', 'thesistitle', 'facultyid', 'supervisorname',  'internalsid', 'internals','potentialareas', 'gcapproval', 'hodapproval']
         });
 
         // Check if any thesis has pending approval
@@ -363,7 +364,7 @@ const selectedProposalDetails = async (req, res) => {
                     { gcproposalpermission: 'Granted' }
                 ]
             },
-            attributes: ['thesistitle', 'facultyid', 'internalsid', 'potentialareas', 'gcapproval', 'hodapproval']
+            attributes: ['thesistitle', 'facultyid', 'supervisorname',  'internalsid', 'internals', 'potentialareas', 'gcapproval', 'hodapproval']
         });
 
         if (!selectedThesisDetails) {
@@ -438,7 +439,8 @@ const evaluateProposal = async (req, res) => {
                 res.status(404).json({ error: 'No existing evaluation found for re-evaluation' });
             }
         } else {
-            const existingEvaluation = await proposalevaluations.findOne({ where: { facultyid } });
+            const existingEvaluation = await proposalevaluations.findOne({ where: { facultyid, rollno } });
+            console.log(existingEvaluation);
 
             if (existingEvaluation) {
                 res.status(400).json({ error: 'You have already evaluated the thesis proposal' });

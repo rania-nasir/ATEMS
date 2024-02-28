@@ -25,10 +25,16 @@ const getAcceptedThesis = async (req, res) => {
         }
         const acceptedThesis = await thesis.findAll({
             where: {
-                thesisstatus: 'Approved' // searches for Approved theses
+                gcapproval: 'Approved',
+                hodapproval: 'Approved' // searches for Approved theses
             },
-            attributes: ['thesisid', 'thesistitle', 'description'],
+            attributes: ['thesisid', 'thesistitle', 'potentialareas', 'facultyid', 'supervisorname', 'gcapproval', 'hodapproval'],
         });
+
+
+        if (acceptedThesis.length === 0) {
+            return res.status(200).json({ message: 'No thesis found with both approvals' }); // if no theses found with both approvals
+        }
 
         res.json({ acceptedThesis });
 
@@ -66,6 +72,9 @@ const getThesisDetails = async (req, res) => {
         if (!selectedThesis) {
             return res.status(404).json({ error: 'Thesis not found' });
         }
+
+        const fileURL = `/uploads/${selectedThesis.proposalfilename}`; // Construct the file URL
+        selectedThesis.dataValues.fileURL = fileURL;
 
         res.json({ selectedThesis });
 

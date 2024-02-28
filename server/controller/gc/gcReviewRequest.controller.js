@@ -15,7 +15,7 @@ const getThesis = async (req, res) => {
             where: {
                 gcapproval: 'Pending' // only pending thesis will be fetched
             },
-            attributes: ['thesisid', 'rollno', 'facultyid', 'thesistitle', 'potentialareas'],
+            attributes: ['thesisid', 'rollno', 'facultyid', 'supervisorname',  'thesistitle', 'potentialareas'],
         });
 
         res.json({ allThesis });
