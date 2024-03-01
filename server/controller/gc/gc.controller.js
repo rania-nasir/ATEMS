@@ -597,6 +597,64 @@ const showgcData = async (req, res) => {
   }
 }
 
+// Helper function to generate a global panel table
+function generateTableHtml(panels) {
+  let tableHtml = `
+    <table border="1">
+      <tr>
+        <th>Sr. No.</th>
+        <th>Roll No</th>
+        <th>Name</th>
+        <th>Supervisor</th>
+        <th>Evaluator 1</th>
+        <th>Evaluator 2</th>
+        <th>Time/Venue</th>
+      </tr>`;
+
+  panels.forEach((panel, index) => {
+    tableHtml += `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${panel.rollno}</td>
+        <td>${panel.stdname}</td>
+        <td>${panel.supervisorname}</td>
+        <td>${panel.internals[0]}</td>
+        <td>${panel.internals[1]}</td>
+        <td>${panel.timeslot}</td>
+      </tr>`;
+  });
+
+  tableHtml += `</table>`;
+  return tableHtml;
+}
+
+// Helper function to generate an individual panel table
+function generateIndividualTableHtml(panelData) {
+  // Generate HTML table for a single panel
+  const individualTableHtml = `
+    <table border="1">
+      <tr>
+        <th>Roll No</th>
+        <th>Name</th>
+        <th>Thesis Title</th>
+        <th>Supervisor</th>
+        <th>Internal 1</th>
+        <th>Internal 2</th>
+        <th>Time/Venue</th>
+      </tr>
+      <tr>
+        <td>${panelData.rollno}</td>
+        <td>${panelData.stdname}</td>
+        <td>${panelData.thesistitle}</td>
+        <td>${panelData.supervisorname}</td>
+        <td>${panelData.internals[0].name}</td>
+        <td>${panelData.internals[1].name}</td>
+        <td>${panelData.timeslot}</td>
+      </tr>
+    </table>`;
+  return individualTableHtml;
+}
+
 
 const panelTime = async (req, res) => {
   try {
@@ -604,6 +662,8 @@ const panelTime = async (req, res) => {
     const panelDataArray = req.body.panels;
 
     const assignedPanels = [];
+
+    const globalEmailList = new Set();
 
     for (const panelData of panelDataArray) {
 
@@ -617,18 +677,55 @@ const panelTime = async (req, res) => {
         timeslot,
         evaluation } = panelData;
 
-      const studentExists = await students.findOne({ where: { rollno, name: stdname } });
-      const thesisExists = await thesis.findByPk(thesisid);
+      const studentData = await students.findOne({ where: { rollno, name: stdname } });
+      const thesisData = await thesis.findByPk(thesisid);
 
-      if (!studentExists || !thesisExists) {
+      if (!studentData || !thesisData) {
         return res.status(400).json({ error: 'Student or thesis does not exist' });
       }
-
 
       const existingPanel = await panels.findOne({ where: { rollno, thesisid } });
       if (existingPanel) {
         return res.status(400).json({ error: 'Panel entry for this student and thesis already exists' });
       }
+
+      // fetching supervisor email
+      const supervisor = await faculties.findOne({
+        where: {
+          name: panelData.supervisorname
+        },
+        attributes: ['email'],
+      });
+
+      // fetching internal's email
+      const internalEmails = [];
+      for (const internal of panelData.internals) {
+        const internalFaculty = await faculties.findOne({
+          where: {
+            name: internal.name // Access the name property of the internal object
+          },
+          attributes: ['email'],
+        });
+        if (internalFaculty) {
+          internalEmails.push(internalFaculty.email);
+        }
+      }
+
+      // fetching student's email
+      const student = await students.findOne({
+        where: {
+          rollno: panelData.rollno
+        },
+        attributes: ['email'],
+      });
+
+
+      // Adding all emails to the set
+      globalEmailList.add(supervisor.email); // supervisor's email
+
+      globalEmailList.add(internalEmails[0], internalEmails[1]); // internal's email
+
+      globalEmailList.add(student.email); // student's email
 
 
       // Create the panel entry in the database
@@ -644,9 +741,31 @@ const panelTime = async (req, res) => {
       });
 
       assignedPanels.push(newPanel);
+
+      // Generating the table for the email
+      const individualTableHTML = generateIndividualTableHtml(newPanel);
+
+      // Sending the Email
+      const toEmail = [student.email, supervisor.email, internalEmails[0], internalEmails[1]];
+      const subject = 'Schedule for Thesis panel';
+      const text = `Please take notice of the Schedule for your panel :
+      ${individualTableHTML}`;
+      sendMail(toEmail, subject, text);
+
     }
 
     res.json({ message: 'Time slots assigned successfully', panels: assignedPanels });
+
+    // Generate 1 Mail for Everyone
+    const tableHTML = generateTableHtml(assignedPanels);
+
+    const toEmail = Array.from(globalEmailList);
+    const subject = 'Schedule for Thesis';
+    const text = `Please take notice of the Schedule :
+    ${tableHTML}`;
+    sendMail(toEmail, subject, text);
+
+
   } catch (error) {
     console.error('Error assigning time slots:', error);
     res.status(500).json({ error: 'Internal server error' });

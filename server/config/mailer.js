@@ -12,10 +12,16 @@ const transporter = nodemailer.createTransport({ // creating a transport with se
 // Send mail function
 const sendMail = async (to, subject, text) => { // sendMail function
     try {
+
+        if (!Array.isArray(to)) {
+            to = [to];
+        }
+
+
         // Send mail with defined transport object
         const info = await transporter.sendMail({
             from: 'projectatems@gmail.com',
-            to,
+            to: to.join(', '),
             subject,
             text,
         });
