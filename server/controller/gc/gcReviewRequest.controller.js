@@ -153,6 +153,16 @@ const approveThesis = async (req, res) => {
 const grantPropEvalPermission = async (req, res) => {
     try {
 
+        const allApproved = await thesis.findOne({
+            attributes: [
+                [sequelize.fn('COUNT', sequelize.col('thesisid')), 'total'],
+                [sequelize.fn('COUNT', sequelize.literal("CASE WHEN hodapproval = 'Approved' THEN 1 END")), 'hodCount'],
+                [sequelize.fn('COUNT', sequelize.literal("CASE WHEN gcapproval = 'Approved' THEN 1 END")), 'gcCount']
+            ]
+        });
+
+
+        if (allApproved.total > 0 && allApproved.total === allApproved.hodCount && allApproved.total === allApproved.gcCount) {
         const updateResult = await thesis.update(
             { gcproposalpermission: 'Granted' },
             { where: {} } // Set gcpermission to 'Granted' for all records
@@ -167,6 +177,11 @@ const grantPropEvalPermission = async (req, res) => {
             res.json({ message: "Failed to grant GC permission for proposal evaluations" });
 
         }
+
+    }
+    else {
+        res.json({ message: "Not all theses have approved HOD and GC permissions" });  
+    }
 
     } catch (error) {
         console.error('Error granting GC permission for proposal evaluations:', error);
