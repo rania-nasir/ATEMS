@@ -26,7 +26,7 @@ const getAcceptedThesis = async (req, res) => {
         const acceptedThesis = await thesis.findAll({
             where: {
                 gcapproval: 'Approved',
-                hodapproval: 'Approved' // searches for Approved theses
+                hodapproval: 'Approved' 
             },
             attributes: ['thesisid', 'thesistitle', 'potentialareas', 'facultyid', 'supervisorname', 'gcapproval', 'hodapproval'],
         });

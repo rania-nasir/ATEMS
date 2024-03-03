@@ -15,7 +15,7 @@ const faculties = sequelize.define("faculties", {
     allowNull: false
   },
   gender: {
-    type: DataTypes.CHAR,
+    type: DataTypes.STRING,
     allowNull: false,
     validate: {
       isIn: [['Male', 'Female']]

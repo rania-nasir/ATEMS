@@ -15,7 +15,7 @@ const getThesis = async (req, res) => {
             where: {
                 gcapproval: 'Pending' // only pending thesis will be fetched
             },
-            attributes: ['thesisid', 'rollno', 'facultyid', 'supervisorname',  'thesistitle', 'potentialareas'],
+            attributes: ['thesisid', 'rollno', 'facultyid', 'supervisorname', 'thesistitle', 'potentialareas'],
         });
 
         res.json({ allThesis });
@@ -30,7 +30,7 @@ const getThesis = async (req, res) => {
 const viewAllThesis = async (req, res) => {
     try {
         const viewallThesis = await thesis.findAll({
-            attributes: ['thesisid', 'thesistitle', 'potentialareas', 'gcApproval', 'hodapproval'],
+            attributes: ['thesisid', 'thesistitle', 'potentialareas', 'gcapproval', 'hodapproval'],
         });
 
         res.json({ viewallThesis });
@@ -66,18 +66,19 @@ const getThesisDetails = async (req, res) => {
         const facultyList = await faculties.findAll({
             attributes: ['facultyid', 'name', 'role'],
             where: {
-                role: { [Op.contains]: ['Internal'] }
+                role: { [Op.contains]: ['Internal'] },
+                name: { [Op.not]: selectedThesis.supervisorname } // Exclude the supervisor's name
             }
         });
 
 
 
-        res.json({ selectedThesis, facultyList });
+    res.json({ selectedThesis, facultyList });
 
-    } catch (error) {
-        console.error('Error fetching thesis details:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
+} catch (error) {
+    console.error('Error fetching thesis details:', error);
+    res.status(500).json({ error: 'Internal server error' });
+}
 };
 
 // Function to approve the fetched Thesis from above function
@@ -85,7 +86,7 @@ const approveThesis = async (req, res) => {
     try {
         // gc will choose an id for review
         const { thesisId } = req.params;
-        const { final_internal1, final_internal2 } = req.body; // if GC wants to change internals, he/she can.
+        const { final_internal1, internal1researcharea, final_internal2, internal2researcharea } = req.body; // if GC wants to change internals, he/she can.
 
 
         const selectedThesis = await thesis.findOne({
@@ -99,7 +100,7 @@ const approveThesis = async (req, res) => {
         }
 
         const facultyList = await faculties.findAll({
-            attributes: ['facultyid', 'name'],
+            attributes: ['facultyid', 'name', 'email'],
         });
 
         const supervisorid = selectedThesis.facultyid;
@@ -125,7 +126,8 @@ const approveThesis = async (req, res) => {
             {
                 gcapproval: 'Approved',
                 internals: [final_internal1, final_internal2],
-                internalsid: [final_internal1id, final_internal2id]
+                internalsid: [final_internal1id, final_internal2id],
+                researcharea: [internal1researcharea, internal2researcharea]
             },
             {
                 where: {
@@ -139,6 +141,26 @@ const approveThesis = async (req, res) => {
             return res.status(404).json({ error: 'Thesis not found' });
         }
 
+        // Send email to selected internal examiners
+        const internalsEmails = [
+            facultyList.find(faculty => faculty.facultyid === final_internal1id)?.email,
+            facultyList.find(faculty => faculty.facultyid === final_internal2id)?.email
+        ];
+
+        const subject = 'Internal examiner';
+        const text = `You have been selected as an internal examiner for the following thesis:
+            Thesis ID: ${thesisId}
+            Title: ${selectedThesis.thesistitle}
+            Supervisor: ${selectedThesis.supervisorname}`;
+        const html = `<p>You have been selected as an internal examiner for the following thesis:</p>
+            <ul>
+                <li><strong>Thesis ID:</strong> ${thesisId}</li>
+                <li><strong>Title:</strong> ${selectedThesis.thesistitle}</li>
+                <li><strong>Supervisor:</strong> ${selectedThesis.supervisorname}</li>
+            </ul>`;
+        sendMail(internalsEmails, subject, text, html);
+
+
         res.json({ updatedThesis });
 
 
@@ -150,9 +172,9 @@ const approveThesis = async (req, res) => {
 };
 
 
+
 const grantPropEvalPermission = async (req, res) => {
     try {
-
         const allApproved = await thesis.findOne({
             attributes: [
                 [sequelize.fn('COUNT', sequelize.col('thesisid')), 'total'],
@@ -161,33 +183,40 @@ const grantPropEvalPermission = async (req, res) => {
             ]
         });
 
+        // Log the raw data received from the query to debug
+        console.log('All Approved Theses:', allApproved.toJSON());
 
-        if (allApproved.total > 0 && allApproved.total === allApproved.hodCount && allApproved.total === allApproved.gcCount) {
-        const updateResult = await thesis.update(
-            { gcproposalpermission: 'Granted' },
-            { where: {} } // Set gcpermission to 'Granted' for all records
-        );
+        // Retrieve the counts from the raw data
+        const totalTheses = allApproved.get('total');
+        const hodApprovedCount = allApproved.get('hodCount');
+        const gcApprovedCount = allApproved.get('gcCount');
 
-        if (updateResult) {
+        // console.log('Total theses:', totalTheses);
+        // console.log('Approved HOD count:', hodApprovedCount);
+        // console.log('Approved GC count:', gcApprovedCount);
 
-            res.json({ message: "GC permission granted for all proposal evaluations" });
+        if (totalTheses > 0 && totalTheses === hodApprovedCount && totalTheses === gcApprovedCount) {
+            const updateResult = await thesis.update(
+                { gcproposalpermission: 'Granted' },
+                { where: {} } // Set gcpermission to 'Granted' for all records
+            );
 
+            if (updateResult) {
+                res.json({ message: "GC permission granted for all proposal evaluations" });
+            } else {
+                res.json({ message: "Failed to grant GC permission for proposal evaluations" });
+            }
         } else {
-
-            res.json({ message: "Failed to grant GC permission for proposal evaluations" });
-
+            res.json({ message: "Not all theses have approved HOD and GC permissions" });
         }
-
-    }
-    else {
-        res.json({ message: "Not all theses have approved HOD and GC permissions" });  
-    }
-
     } catch (error) {
         console.error('Error granting GC permission for proposal evaluations:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+
+
 
 
 const revokePropEvalPermission = async (req, res) => {
@@ -214,12 +243,20 @@ const revokePropEvalPermission = async (req, res) => {
     }
 };
 
+
+
 const gcAllPendingProposals = async (req, res) => {
     try {
         const pendingProposals = await proposalevaluations.findAll({
             where: {
                 gccommentsreview: 'Pending'
-            }
+            },
+            attributes: [
+                [sequelize.literal('DISTINCT "rollno"'), 'rollno'],
+                'stdname',
+                'batch',
+                'semester'
+            ]
         });
 
         res.json({ pendingProposals });
@@ -227,8 +264,8 @@ const gcAllPendingProposals = async (req, res) => {
         console.error('Error fetching pending proposals:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
+};
 
-}
 
 
 const gcSelectedProposalDetails = async (req, res) => {
@@ -236,7 +273,7 @@ const gcSelectedProposalDetails = async (req, res) => {
     try {
         const { rollno } = req.params;
 
-        const selectedProposal = await proposalevaluations.findOne({
+        const selectedProposal = await proposalevaluations.findAll({
             where: {
                 rollno
             }
@@ -259,24 +296,23 @@ const gcApproveProposal = async (req, res) => {
     try {
         const { rollno } = req.params;
 
-        // Update the proposal evaluation
-        const [updatedRows, [updatedProposal]] = await proposalevaluations.update(
+        // Update all proposal evaluations for the given rollno
+        const [updatedRows] = await proposalevaluations.update(
             { gccommentsreview: 'Approved' },
-            { where: { rollno }, returning: true }
+            { where: { rollno } }
         );
 
-        if (updatedRows === 1) {
+        if (updatedRows > 0) {
             // Update the comingevaluation status in the students model
-            const updatedStudent = await students.update(
+            const [updatedStudentCount] = await students.update(
                 {
                     comingevaluation: 'Mid1',
                     reevaluationstatus: 'false'
                 },
-                // { where: { rollno, gccommentsreview: 'Approved' } }
                 { where: { rollno } }
             );
 
-            if (updatedStudent[0] === 1) {
+            if (updatedStudentCount > 0) {
                 // Get student details
                 const student = await students.findOne({ where: { rollno } });
 
@@ -287,30 +323,24 @@ const gcApproveProposal = async (req, res) => {
                     await sendMail(student.email, subject, text);
 
                     res.json({ message: 'Proposal approved, comingevaluation status updated, and email sent to student' });
-                }
-                else {
-
+                } else {
                     res.status(404).json({ error: 'Student not found' });
                 }
-
             } else {
-
-                res.status(404).json({ error: 'Student not found or proposal not approved' });
+                res.status(404).json({ error: 'Proposal not approved or student not found' });
             }
-
         } else {
-
-            res.status(404).json({ error: 'Proposal not found or not approved' });
+            res.status(404).json({ error: 'No proposal found or not approved' });
         }
-
     } catch (error) {
-
         console.error('Error approving proposal:', error);
         res.status(500).json({ error: 'Internal server error' });
-
     }
-
 };
+
+
+
+
 
 
 
@@ -318,18 +348,15 @@ const gcRejectProposal = async (req, res) => {
     try {
         const { rollno } = req.params;
 
-        // Update the proposal evaluation to 'Rejected'
-        const [updatedRows, [updatedProposal]] = await proposalevaluations.update(
-            {
-                gccommentsreview: 'Rejected',
-            },
-            { where: { rollno }, returning: true }
-
+        // Update all proposal evaluations for the given rollno to 'Rejected'
+        const [updatedRows] = await proposalevaluations.update(
+            { gccommentsreview: 'Rejected' },
+            { where: { rollno } }
         );
 
-        if (updatedRows === 1) {
+        if (updatedRows > 0) {
             // Update the comingevaluation status in the students model
-            const updatedStudent = await students.update(
+            const [updatedStudentCount] = await students.update(
                 {
                     comingevaluation: 'Proposal',
                     reevaluationstatus: true
@@ -337,7 +364,7 @@ const gcRejectProposal = async (req, res) => {
                 { where: { rollno } }
             );
 
-            if (updatedStudent[0] === 1) {
+            if (updatedStudentCount > 0) {
                 // Get student details
                 const student = await students.findOne({ where: { rollno } });
 
@@ -348,28 +375,21 @@ const gcRejectProposal = async (req, res) => {
                     await sendMail(student.email, subject, text);
 
                     res.json({ message: 'Proposal rejected, comingevaluation status updated, and email sent to student' });
-                }
-                else {
-
+                } else {
                     res.status(404).json({ error: 'Student not found' });
                 }
-
             } else {
-
-                res.status(404).json({ error: 'Student not found or proposal not rejected' });
+                res.status(404).json({ error: 'Proposal not rejected or student not found' });
             }
-
         } else {
-
-            res.status(404).json({ error: 'Proposal not found or not rejected' });
+            res.status(404).json({ error: 'No proposal found or not rejected' });
         }
-
     } catch (error) {
-
         console.error('Error rejecting proposal:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-}
+};
+
 
 
 module.exports =

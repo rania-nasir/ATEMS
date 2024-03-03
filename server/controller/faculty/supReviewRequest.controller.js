@@ -36,9 +36,8 @@ const getSynopsis = async (req, res) => {
 // Fetch Synopsis details for a single synopsis
 const getSynopsisDetails = async (req, res) => {
     try {
-
-        const { synopsisId } = req.params; // Faculty will choose an id for review
-        const facultyId = req.userId; // obtain the logged in faculty id.
+        const { synopsisId } = req.params;
+        const facultyId = req.userId;
 
         const selectedSynopsis = await synopsis.findOne({
             where: {
@@ -47,19 +46,31 @@ const getSynopsisDetails = async (req, res) => {
             },
         });
 
-        const facultyList = await faculties.findAll({ // fetch the list of all faculties in the table to select for internal
-            attributes: ['facultyid', 'name', 'role'],
-            where: {
-                role: { [Op.contains]: ['Internal'] }
-            }
-        });
-
+        let facultyList;
         if (!selectedSynopsis) {
             return res.status(404).json({ error: 'Synopsis not found' });
         }
 
-        const fileURL = `/uploads/${selectedSynopsis.proposalfilename}`; // Construct the file URL
-        selectedSynopsis.dataValues.fileURL = fileURL; // Add the file URL to the selectedSynopsis object
+        // Fetch the list of all faculties in the table to select for internal, excluding the current faculty member if their role is "Internal"
+        if (selectedSynopsis.role !== 'Internal') {
+            facultyList = await faculties.findAll({
+                attributes: ['facultyid', 'name', 'role'],
+                where: {
+                    role: { [Op.contains]: ['Internal'] },
+                    facultyid: { [Op.not]: facultyId } // Exclude the current faculty member
+                }
+            });
+        } else {
+            facultyList = await faculties.findAll({
+                attributes: ['facultyid', 'name', 'role'],
+                where: {
+                    role: { [Op.contains]: ['Internal'] }
+                }
+            });
+        }
+
+        const fileURL = `/uploads/${selectedSynopsis.proposalfilename}`;
+        selectedSynopsis.dataValues.fileURL = fileURL;
 
         res.json({ selectedSynopsis, facultyList });
 
@@ -272,6 +283,75 @@ const declineSynopsis = async (req, res) => {
 };
 
 
+// const allProposalEvalations = async (req, res) => {
+//     try {
+//         const loggedInFacultyId = parseInt(req.userId);
+
+//         // Retrieve students with thesis status 1 and coming evaluation as Proposal
+//         const proposalEvaluationStudents = await students.findAll({
+//             where: {
+//                 thesisstatus: 1,
+//                 [Op.or]: [
+//                     { comingevaluation: 'Proposal' },
+//                     { comingevaluation: 'Proposal', reevaluationstatus: true }
+//                 ],
+//             },
+//             attributes: ['rollno', 'name', 'batch', 'semester', 'program']
+//         });
+
+//         // Extract roll numbers of students
+//         const rollnos = proposalEvaluationStudents.map(student => student.rollno);
+
+//         // Retrieve thesis details for the selected students
+//         const thesisDetails = await thesis.findAll({
+//             where: {
+//                 rollno: rollnos, // Filter by the roll numbers of selected students
+//                 facultyid: loggedInFacultyId // Filter by the logged-in faculty as supervisor
+//             },
+//             attributes: ['rollno', 'thesistitle', 'facultyid', 'supervisorname', 'internalsid', 'internals', 'potentialareas', 'gcapproval', 'hodapproval']
+//         });
+
+//         // Check if any thesis has pending approval
+//         const pendingThesis = thesisDetails.find(thesis =>
+//             thesis.gcapproval === 'Pending' || thesis.hodapproval === 'Pending'
+//         );
+
+//         if (pendingThesis) {
+//             // If any thesis has pending approval, send appropriate message
+//             res.json({ message: 'One or more theses have pending approval. Please wait for approval before viewing details.' });
+//             return;
+//         }
+
+//         // Filter students who have thesis supervised by the logged-in faculty
+//         const filteredStudents = proposalEvaluationStudents.filter(student =>
+//             thesisDetails.some(thesis => thesis.rollno === student.rollno)
+//         );
+
+//         // Merge filtered students and their thesis details
+//         const results = filteredStudents.map(student => {
+//             const studentThesis = thesisDetails.find(thesis => thesis.rollno === student.rollno);
+//             if (studentThesis) {
+//                 return {
+//                     ...student.toJSON(),
+//                     thesis: studentThesis
+//                 };
+//             }
+//         }).filter(Boolean); // Remove undefined values from the array
+
+//         if (results.length === 0) {
+//             res.json({ message: "You are not a supervisor of any thesis" });
+//         } else {
+//             res.json({ students: results });
+//         }
+
+//     } catch (error) {
+//         console.error('Error fetching students with thesis status 1 and proposal evaluation:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
+
+
+
 const allProposalEvalations = async (req, res) => {
     try {
         const loggedInFacultyId = parseInt(req.userId);
@@ -282,7 +362,7 @@ const allProposalEvalations = async (req, res) => {
                 thesisstatus: 1,
                 [Op.or]: [
                     { comingevaluation: 'Proposal' },
-                    { comingevaluation: 'Proposal', reevaluationstatus: true }
+                    { reevaluationstatus: true }
                 ],
             },
             attributes: ['rollno', 'name', 'batch', 'semester', 'program']
@@ -291,15 +371,16 @@ const allProposalEvalations = async (req, res) => {
         // Extract roll numbers of students
         const rollnos = proposalEvaluationStudents.map(student => student.rollno);
 
-        // Retrieve thesis details for the selected students
+        // Retrieve thesis details for the selected students with the same supervisor or internal examiners as the logged-in faculty
         const thesisDetails = await thesis.findAll({
             where: {
+                rollno: rollnos, // Filter by the roll numbers of selected students
                 [Op.or]: [
-                    { facultyid: loggedInFacultyId },
+                    { facultyid: loggedInFacultyId }, // Filter by the logged-in faculty as supervisor
                     { internalsid: { [Op.contains]: [loggedInFacultyId] } } // Check if loggedInFacultyId is in internalsid array
                 ]
             },
-            attributes: ['rollno', 'thesistitle', 'facultyid', 'supervisorname',  'internalsid', 'internals','potentialareas', 'gcapproval', 'hodapproval']
+            attributes: ['rollno', 'thesistitle', 'facultyid', 'supervisorname', 'internalsid', 'internals', 'potentialareas', 'gcapproval', 'hodapproval']
         });
 
         // Check if any thesis has pending approval
@@ -313,21 +394,26 @@ const allProposalEvalations = async (req, res) => {
             return;
         }
 
-        // Find the student whose rollno matches the faculty's thesis details
-        const studentThesis = proposalEvaluationStudents.find(student =>
+        // Filter students who have thesis supervised by the logged-in faculty or have the logged-in faculty as an internal examiner
+        const filteredStudents = proposalEvaluationStudents.filter(student =>
             thesisDetails.some(thesis => thesis.rollno === student.rollno)
         );
 
-        // Merge student and thesis details
-        const result = studentThesis ? [{
-            ...studentThesis.toJSON(),
-            thesis: thesisDetails.find(thesis => thesis.rollno === studentThesis.rollno) || {} // Add thesis details or empty object if not found
-        }] : [];
+        // Merge filtered students and their thesis details
+        const results = filteredStudents.map(student => {
+            const studentThesis = thesisDetails.find(thesis => thesis.rollno === student.rollno);
+            if (studentThesis) {
+                return {
+                    ...student.toJSON(),
+                    thesis: studentThesis
+                };
+            }
+        }).filter(Boolean); // Remove undefined values from the array
 
-        if (result.length === 0) {
-            res.json({ message: "You are not a supervisor of any thesis" });
+        if (results.length === 0) {
+            res.json({ message: "You are not a supervisor or internal examiner of any thesis" });
         } else {
-            res.json({ students: result });
+            res.json({ students: results });
         }
 
     } catch (error) {
@@ -338,9 +424,53 @@ const allProposalEvalations = async (req, res) => {
 
 
 
+
+// const selectedProposalDetails = async (req, res) => {
+//     try {
+
+//         const loggedInFacultyId = parseInt(req.userId);
+//         const selectedStudentRollNo = req.params.rollno;
+
+//         const selectedStudentDetails = await students.findOne({
+//             where: {
+//                 rollno: selectedStudentRollNo
+//             },
+//             attributes: ['rollno', 'name', 'batch', 'semester', 'program']
+//         });
+
+//         if (!selectedStudentDetails) {
+//             res.json({ message: "Student data not found for the selected roll number" });
+//             return;
+//         }
+
+//         const selectedThesisDetails = await thesis.findOne({
+//             where: {
+//                 rollno: selectedStudentRollNo,
+//                 facultyid: loggedInFacultyId,
+//                 [Op.or]: [
+//                     { gcproposalpermission: 'Granted' }
+//                 ]
+//             },
+//             attributes: ['thesistitle', 'facultyid', 'supervisorname', 'internalsid', 'internals', 'potentialareas', 'gcapproval', 'hodapproval']
+//         });
+
+//         if (!selectedThesisDetails) {
+//             res.json({ message: "Proposal Evaluations are not open yet" });
+//             return;
+//         }
+
+//         res.json({ student: selectedStudentDetails, thesis: selectedThesisDetails });
+
+//     } catch (error) {
+//         console.error('Error fetching selected proposal details:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+
+// };
+
+
 const selectedProposalDetails = async (req, res) => {
     try {
-
         const loggedInFacultyId = parseInt(req.userId);
         const selectedStudentRollNo = req.params.rollno;
 
@@ -359,12 +489,15 @@ const selectedProposalDetails = async (req, res) => {
         const selectedThesisDetails = await thesis.findOne({
             where: {
                 rollno: selectedStudentRollNo,
-                facultyid: loggedInFacultyId,
+                [Op.or]: [
+                    { facultyid: loggedInFacultyId }, // Supervisor condition
+                    { internalsid: { [Op.contains]: [loggedInFacultyId] } } // Internal examiner condition
+                ],
                 [Op.or]: [
                     { gcproposalpermission: 'Granted' }
                 ]
             },
-            attributes: ['thesistitle', 'facultyid', 'supervisorname',  'internalsid', 'internals', 'potentialareas', 'gcapproval', 'hodapproval']
+            attributes: ['thesistitle', 'facultyid', 'supervisorname', 'internalsid', 'internals', 'potentialareas', 'gcapproval', 'hodapproval']
         });
 
         if (!selectedThesisDetails) {
@@ -373,13 +506,106 @@ const selectedProposalDetails = async (req, res) => {
         }
 
         res.json({ student: selectedStudentDetails, thesis: selectedThesisDetails });
-
     } catch (error) {
         console.error('Error fetching selected proposal details:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-
 };
+
+
+// const evaluateProposal = async (req, res) => {
+//     try {
+//         // Extract evaluation details from the request
+//         const {
+//             rollno,
+//             stdname,
+//             batch,
+//             semester,
+//             thesistitle,
+//             facultyid,
+//             facname,
+//             significance,
+//             understanding,
+//             statement,
+//             rationale,
+//             timeline,
+//             bibliography,
+//             comments,
+//         } = req.body;
+
+//         const student = await students.findOne({ where: { rollno } });
+
+//         console.log(student);
+
+//         if (student && student.reevaluationstatus === true) {
+//             // Update the existing proposal evaluation record
+//             const existingEvaluation = await proposalevaluations.findOne({ where: { rollno, facultyid } });
+
+//             console.log(existingEvaluation);
+
+//             if (existingEvaluation) {
+//                 // Update the existing proposal evaluation
+//                 const updatedEvaluation = await proposalevaluations.update({
+//                     rollno,
+//                     stdname,
+//                     batch,
+//                     semester,
+//                     thesistitle,
+//                     facultyid,
+//                     facname,
+//                     significance,
+//                     understanding,
+//                     statement,
+//                     rationale,
+//                     timeline,
+//                     bibliography,
+//                     comments,
+//                     gccommentsreview: 'Pending',
+//                 }, { where: { rollno, facultyid } });
+
+
+//                 await students.update({ reevaluationstatus: false }, { where: { rollno } });
+
+//                 const updatedEvaluationdata = await proposalevaluations.findOne({ where: { rollno, facultyid } });
+
+//                 res.json({ message: 'Proposal re-evaluation stored successfully', evaluation: updatedEvaluationdata });
+//                 //students.reevaluationstatus = false;
+//             } else {
+//                 res.status(404).json({ error: 'No existing evaluation found for re-evaluation' });
+//             }
+//         } else {
+//             const existingEvaluation = await proposalevaluations.findOne({ where: { facultyid, rollno } });
+//             console.log(existingEvaluation);
+
+//             if (existingEvaluation) {
+//                 res.status(400).json({ error: 'You have already evaluated the thesis proposal' });
+//             } else {
+//                 // Create a new proposal evaluation record
+//                 const newEvaluation = await proposalevaluations.create({
+//                     rollno,
+//                     stdname,
+//                     batch,
+//                     semester,
+//                     thesistitle,
+//                     facultyid,
+//                     facname,
+//                     significance,
+//                     understanding,
+//                     statement,
+//                     rationale,
+//                     timeline,
+//                     bibliography,
+//                     comments,
+//                 });
+
+//                 res.json({ message: 'Proposal evaluation stored successfully', evaluation: newEvaluation });
+//             }
+//         }
+//     } catch (error) {
+//         console.error('Error evaluating proposal:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
 
 
 const evaluateProposal = async (req, res) => {
@@ -406,11 +632,11 @@ const evaluateProposal = async (req, res) => {
 
         if (student && student.reevaluationstatus) {
             // Update the existing proposal evaluation record
-            const existingEvaluation = await proposalevaluations.findOne({ where: { facultyid } });
+            const existingEvaluation = await proposalevaluations.findOne({ where: { facultyid, rollno } });
 
             if (existingEvaluation) {
                 // Update the existing proposal evaluation
-                const updatedEvaluation = await proposalevaluations.update({
+                const [updatedRows] = await proposalevaluations.update({
                     rollno,
                     stdname,
                     batch,
@@ -426,15 +652,18 @@ const evaluateProposal = async (req, res) => {
                     bibliography,
                     comments,
                     gccommentsreview: 'Pending',
-                }, { where: { facultyid } });
+                }, { where: { facultyid, rollno } });
 
 
-                await students.update({ reevaluationstatus: false }, { where: { rollno } });
+                if (updatedRows > 0) {
+                   // await students.update({ reevaluationstatus: false }, { where: { rollno } });
 
-                const updatedEvaluationdata = await proposalevaluations.findOne({ where: { facultyid } });
+                    const updatedEvaluationdata = await proposalevaluations.findOne({ where: { facultyid, rollno } });
 
-                res.json({ message: 'Proposal re-evaluation stored successfully', evaluation: updatedEvaluationdata });
-                //students.reevaluationstatus = false;
+                    res.json({ message: 'Proposal re-evaluation stored successfully', evaluation: updatedEvaluationdata });
+                } else {
+                    res.status(404).json({ error: 'No existing evaluation found for re-evaluation' });
+                }
             } else {
                 res.status(404).json({ error: 'No existing evaluation found for re-evaluation' });
             }
@@ -471,6 +700,7 @@ const evaluateProposal = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 
 module.exports =
