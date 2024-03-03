@@ -17,7 +17,7 @@ const students = sequelize.define("students", {
         allowNull: false
     },
     gender: {
-        type: DataTypes.CHAR,
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
             isIn: [['Male', 'Female']]

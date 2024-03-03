@@ -3,7 +3,7 @@ const { thesis } = require("../../model/thesis.model");
 const { faculties } = require("../../model/faculty.model");
 const { students } = require("../../model/student.model");
 const { sendMail } = require("../../config/mailer");
-
+const { Op } = require('sequelize');
 
 const getThesis = async (req, res) => {
     try {
@@ -145,24 +145,54 @@ const hodapproveThesis = async (req, res) => {
                 return res.status(404).json({ error: 'Student not found for the given synopsis' });
             }
 
-            const facultyName = faculty.facultyname;
+            const facultyName = faculty.name;
             const toEmail = student.email;
             const subject = 'Thesis Approved';
             const text = `Dear Student,
         
         Your thesis has been approved by Head of Department ${facultyName} (Faculty ID: ${facultyId}).
-        Your thesis internal examiners are ${selectedThesis.internal1} and ${selectedThesis.internal2}.
+        Your thesis internal examiners are ${selectedThesis.internals}.
   
         Best of luck for your thesis!
         Regards,`;
 
             try {
                 await sendMail(toEmail, subject, text);
-                res.json({ message: 'Thesis approved and email sent to student', updatedThesis });
+                //res.json({ message: 'Thesis approved and email sent to student', updatedThesis });
             } catch (error) {
-                console.error('Error sending email:', error);
-                return res.status(500).json({ error: 'Error sending approval email' });
+                console.error('Error sending email to student:', error);
+                return res.status(500).json({ error: 'Error sending approval email to student' });
             }
+            // Fetch all faculty members with the MSRC role
+            const msrcFaculty = await faculties.findAll({
+                where: {
+                    role: { [Op.contains]: ['MSRC'] }
+                },
+                attributes: ['email']
+            });
+
+            const msrcEmails = msrcFaculty.map(member => member.email);
+
+            // Send email to MSRC members
+            const msrcSubject = 'Review Approved Thesis';
+            const msrcText = `Dear MSRC Member,
+                    
+    The following thesis has been approved by the Head of Department:
+            Thesis ID: ${thesisId}
+            Title: ${selectedThesis.thesistitle}
+            Supervisor: ${selectedThesis.supervisorname}
+
+            Kindly provide your feedback on the thesis.
+            Best regards,`;
+
+            try {
+                await sendMail(msrcEmails, msrcSubject, msrcText);
+            } catch (error) {
+                console.error('Error sending email to MSRC members:', error);
+                return res.status(500).json({ error: 'Error sending approval email to MSRC members' });
+            }
+
+            res.json({ message: 'Thesis approved and emails sent', updatedThesis });
         } else {
             return res.status(403).json({ error: 'Access forbidden. Only HOD can approve the thesis' });
         }

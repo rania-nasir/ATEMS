@@ -20,7 +20,7 @@ facRouter.get('/supAllRequests', facReview.getSynopsis); // Fetches the list of 
 facRouter.get('/supReviewRequest/:synopsisId', facReview.getSynopsisDetails); // supervisor selects 1 request out of many, fetches the synopsis details
 facRouter.post('/approve-synopsis/:synopsisId', facReview.approveSynopsis); // supervisor approves
 facRouter.delete('/decline-synopsis/:synopsisId', facReview.declineSynopsis); // supervisor declines
-facRouter.get('/propsaleEvaluationStudents', facReview.allProposalEvalations); 
+facRouter.get('/propsalEvaluationStudents', facReview.allProposalEvalations); 
 facRouter.get('/selectedProposal/:rollno', facReview.selectedProposalDetails);
 facRouter.post('/evaluateProposal/:rollno', facReview.evaluateProposal);
 
