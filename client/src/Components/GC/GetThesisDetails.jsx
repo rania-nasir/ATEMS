@@ -74,16 +74,16 @@ export default function GetThesisDetails() {
 
         if (res.status === 200) {
             if (data.message === "Invalid Credentials") {
-                window.alert("Invalid Credentials");
-                console.log("Invalid Credentials");
+                window.alert(data.message);
+                console.log(data.message);
             } else {
-                window.alert("Accepted Thesis Successfully");
+                window.alert(data.message);
                 console.log("Accepted Thesis Successfully");
                 navigate('/');
             }
         } else {
-            window.alert("Something went wrong");
-            console.log("Something went wrong");
+            window.alert(data.message);
+            console.log(data.message);
         }
     }
 

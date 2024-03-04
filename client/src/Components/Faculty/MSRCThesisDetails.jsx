@@ -42,7 +42,7 @@ export default function MSRCThesisDetails() {
     }, [thesisid]);
 
     const handleInputs = (e) => {
-       setcomment(e.target.value);
+        setcomment(e.target.value);
     };
 
     const PostFeedbackData = async (e) => {
@@ -56,7 +56,7 @@ export default function MSRCThesisDetails() {
                 'Content-Type': 'application/json',
                 'Authorization': `${Cookie.get('jwtoken')}`
             },
-            body: JSON.stringify({comment})
+            body: JSON.stringify({ comment })
 
         });
 
@@ -80,52 +80,129 @@ export default function MSRCThesisDetails() {
 
     return (
         <>
-            <div className="flex flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-
-                {ThesisData.selectedThesis && (
-                    <Card title={"Thesis Request Detail"}>
-                        <h3>Thesis ID: {ThesisData.selectedThesis.thesisid}</h3>
-                        <h3>Thesis Title: {ThesisData.selectedThesis.thesistitle}</h3>
-                        <p>Description: {ThesisData.selectedThesis.description}</p>
-                        <p>Roll No: {ThesisData.selectedThesis.rollno}</p>
-                        <p>Thesis Status: {ThesisData.selectedThesis.thesisstatus}</p>
-                        <h3>Supervisor Faculty ID: {ThesisData.selectedThesis.facultyid}</h3>
-                        <h3>Internal 1 Faculty ID: {ThesisData.selectedThesis.internals[0]}</h3>
-                        <h3>Internal 2 Faculty ID: {ThesisData.selectedThesis.internals[1]}</h3>
-                    </Card>
-                )}
+            <div className='flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
+                <div className="mt-2 bg-gray-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
+                    <div className="px-4 py-5 sm:px-6">
+                        <p className="max-w-2xl text-md text-white">
+                            Thesis Registration Synopsis Request Details
+                        </p>
+                    </div>
+                    {ThesisData.selectedThesis && (
+                        <div className="border-t border-gray-200">
+                            <dl>
+                                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <div className="sm:col-span-1">
+                                        <dt className="text-sm font-medium text-gray-500">
+                                            Thesis ID:
+                                        </dt>
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                            {ThesisData.selectedThesis.thesisid}
+                                        </dd>
+                                    </div>
+                                    <div className="sm:col-span-1">
+                                        <dt className="text-sm font-medium text-gray-500">
+                                            Thesis Title:
+                                        </dt>
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                            {ThesisData.selectedThesis.thesistitle}
+                                        </dd>
+                                    </div>
+                                    <div className="sm:col-span-1">
+                                        <dt className="text-sm font-medium text-gray-500">
+                                            Roll Number
+                                        </dt>
+                                        <dd className="text-sm text-gray-900">
+                                            {ThesisData.selectedThesis.rollno}
+                                        </dd>
+                                    </div>
+                                </div>
+                                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <div className="sm:col-span-1">
+                                        <dt className="text-sm font-medium text-gray-500">
+                                            Supervisor ID:
+                                        </dt>
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                            {ThesisData.selectedThesis.facultyid}
+                                        </dd>
+                                    </div>
+                                    <div className="sm:col-span-1">
+                                        <dt className="text-sm font-medium text-gray-500">
+                                            Internal 1:
+                                        </dt>
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                            {/* {ThesisData.selectedThesis.thesistitle} */}
+                                        </dd>
+                                    </div>
+                                    <div className="sm:col-span-1">
+                                        <dt className="text-sm font-medium text-gray-500">
+                                            Internal 2:
+                                        </dt>
+                                        <dd className="text-sm text-gray-900">
+                                            {/* {ThesisData.selectedThesis.rollno} */}
+                                        </dd>
+                                    </div>
+                                </div>
+                                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <div className="sm:col-span-1">
+                                        <dt className="text-sm font-medium text-gray-500">
+                                            Thesis Status
+                                        </dt>
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                            {ThesisData.selectedThesis.gcapproval}
+                                        </dd>
+                                    </div>
+                                    <div className="sm:col-span-1">
+                                        <dt className="text-sm font-medium text-gray-500">
+                                            Potential Areas
+                                        </dt>
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                            {ThesisData.selectedThesis.potentialareas}
+                                        </dd>
+                                    </div>
+                                    {/* Display file URL */}
+                                    <div className="sm:col-span-1">
+                                        <dt className="text-sm font-medium text-gray-500">
+                                            Proposal File
+                                        </dt>
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                            <a href={`http://localhost:5000${ThesisData.selectedThesis.fileURL}`} target="_blank" rel="noopener noreferrer" type='application/pdf'>
+                                                View Proposal
+                                            </a>
+                                        </dd>
+                                    </div>
+                                </div>
+                            </dl>
+                        </div>
+                    )}
+                </div>
             </div>
 
-            <div className='mt-2 sm:mx-auto sm:w-full sm:max-w-sm flex flex-row gap-3'>
-                <form class="w-full max-w-lg">
-                    <div class="flex flex-wrap -mx-3 mb-6">
-                        <div class="w-full px-3">
-                            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-description">
-                                Description
-                            </label>
-                            <textarea class="resize-none h-96 rounded-md appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                value={comment}
-                                onChange={handleInputs}
-                                required
-                                id="comment"
-                                name="comment"
-                                type="comment"
-                                placeholder="Feedback Content here..."
-                            >
-                            </textarea>
-                        </div>
-                        <p id='errorMessage' class="pl-4 text-red-500 text-xs italic"></p>
+            <hr class="h-px my-6 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+
+            <div className='flex justify-center align-center mx-12'>
+                <div className='p-2 w-full'>
+                    <div className='w-full px-3'>
+                        <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                            Feedback
+                        </label>
+                        <textarea class="appearance-none h-64 block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                            value={comment}
+                            onChange={handleInputs}
+                            required
+                            id="comment"
+                            name="comment"
+                            type="comment"
+                            placeholder="Feedback Content here..."
+                        >
+                        </textarea>
+                        <button className="my-4 block flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                        type="button"
+                        onClick={PostFeedbackData}>
+                        Submit Feedback
+                    </button>
                     </div>
-                    <div class="flex flex-wrap -mx-3 mb-6">
-                        <div class="w-full px-3">
-                            <button class="block w-full flex-shrink-0 bg-green-500 hover:bg-green-700 border-green-500 hover:border-green-700 text-sm border-4 text-white py-1 px-2 rounded"
-                                type="button"
-                                onClick={PostFeedbackData}>
-                                Submit Feedback
-                            </button>
-                        </div>
-                    </div>
-                </form >
+                    
+                </div>
             </div>
 
         </>

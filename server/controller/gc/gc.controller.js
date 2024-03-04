@@ -810,7 +810,12 @@ const allSupervisors = async (req, res) => {
 
 
 const allThesisofSupervisor = async (req, res) => {
-  const { supervisorName } = req.body;
+  const { supervisorName } = req.params;
+  // Check if supervisorname is provided
+  console.log('----------->>', supervisorName)
+  if (!supervisorName) {
+    return res.status(400).json({ error: 'Supervisor name is required' });
+  }
   try {
     const supervisorThesis = await thesis.findAll({
       attributes : ['thesistitle'],
@@ -827,7 +832,9 @@ const allThesisofSupervisor = async (req, res) => {
 
 
 const thesisDetails = async (req, res) => {
-  const { thesistitle } = req.body;
+  const { thesistitle } = req.params;
+  console.log('thesis title ->>', thesistitle)
+
   try {
     const thesisDetail = await thesis.findOne({
       where: {

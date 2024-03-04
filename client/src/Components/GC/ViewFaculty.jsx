@@ -71,21 +71,22 @@ export default function ViewFaculty() {
     );
     return (
         <>
-            <div className='m-2 p-2'>
+            <div className='m-2 p-2 grid grid-cols-1'>
                 <Dialog visible={visible} modal header={headerElement} footer={footerContent} style={{ width: '30rem' }} onHide={() => setVisible(false)}>
                     <p className="m-0">
                         Are you sure you want to delete this faculty?
                     </p>
                 </Dialog>
-                <div className="mx-4 w-full">
+                <div className="mx-4">
                     <h2 className="my-4 text-left text-xl font-bold tracking-tight text-gray-950">
                         Faculty Record
                     </h2>
                 </div>
                 <AddFaculty />
-                <div class="m-6 shadow-md sm:rounded-lg">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <div className="overflow-x-auto m-6 shadow-md sm:rounded-lg col-span-1">
+                    <table
+                        className="table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3">
                                     Faculty ID
@@ -96,9 +97,9 @@ export default function ViewFaculty() {
                                 <th scope="col" class="px-6 py-3">
                                     Email
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                {/* <th scope="col" class="px-6 py-3">
                                     Gender
-                                </th>
+                                </th> */}
                                 {/* <th scope="col" class="px-6 py-3">
                                     Mobile
                                 </th> */}
@@ -116,7 +117,7 @@ export default function ViewFaculty() {
                         {FacultyData.length === 0 ? (
                             <p className="px-6 py-4">No faculty found</p>
                         ) : (
-                            <tbody>
+                            <tbody className='mx-auto'>
                                 {FacultyData?.map(rowData => (
                                     <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={rowData.thesisid}>
                                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -128,9 +129,9 @@ export default function ViewFaculty() {
                                         <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.email}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                        {/* <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.gender}
-                                        </td>
+                                        </td> */}
                                         {/* <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.mobile}
                                         </td> */}
@@ -146,7 +147,7 @@ export default function ViewFaculty() {
                                             )}
                                         </td>
                                         <td className="px-6 py-4">
-                                        <NavLink to={`/updateFaculty/${rowData.facultyid}`} onClick={() => { setSelectedFacultyId(rowData.facultyid); }}
+                                            <NavLink to={`/updateFaculty/${rowData.facultyid}`} onClick={() => { setSelectedFacultyId(rowData.facultyid); }}
                                                 className="font-semibold leading-6 text-blue-600 hover:underline">
                                                 Edit
                                             </NavLink>

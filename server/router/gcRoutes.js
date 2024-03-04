@@ -57,8 +57,8 @@ gcRouter.put('/approveProposalComments/:rollno', gcReview.gcApproveProposal);
 gcRouter.put('/rejectProposalComments/:rollno', gcReview.gcRejectProposal);
 
 gcRouter.get('/allSupervisors', gcFunctions.allSupervisors);
-gcRouter.get('/allThesisofSupervisor', gcFunctions.allThesisofSupervisor);
-gcRouter.get('/thesisDetails', gcFunctions.thesisDetails);
+gcRouter.get('/allThesisofSupervisor/:supervisorName', gcFunctions.allThesisofSupervisor);
+gcRouter.get('/thesisDetails/:thesistitle', gcFunctions.thesisDetails);
 
 
 module.exports = gcRouter;

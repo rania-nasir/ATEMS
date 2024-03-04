@@ -78,6 +78,12 @@ const SidebarDefault = () => {
             title: 'Thesis Requests',
             path: '/ReviewRequest',
             iconsrc: "https://img.icons8.com/ios-glyphs/30/737373/ask-question.png", // empty array for Thesis Requests
+        },
+        {
+            id: 7,
+            title: 'Panel Timelines',
+            path: '/PanelTimelines',
+            iconsrc: "https://img.icons8.com/ios-glyphs/30/737373/ask-question.png", // empty array for Thesis Requests
         }
     ];
 

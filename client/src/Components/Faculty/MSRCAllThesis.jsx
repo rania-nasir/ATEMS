@@ -52,7 +52,16 @@ export default function MSRCAllThesis() {
                                 Thesis Title
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Description
+                                Supervisor Name
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Student Roll no
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                GC Approval
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                HOD Approval
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Action
@@ -60,7 +69,7 @@ export default function MSRCAllThesis() {
                         </tr>
                     </thead>
                     <tbody>
-                        {thesisData.length > 0 ? (
+                    {thesisData && thesisData.length > 0 ? (
                             thesisData?.map(rowData => (
                                 <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={rowData.thesisid}>
                                     <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -70,7 +79,16 @@ export default function MSRCAllThesis() {
                                         {rowData.thesistitle}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {rowData.description}
+                                        {rowData.supervisorname}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {rowData.rollno}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {rowData.gcapproval}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {rowData.hodapproval}
                                     </td>
                                     <td className="px-6 py-4">
                                         <NavLink to={`/msrcThesisDetails/${rowData.thesisid}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
