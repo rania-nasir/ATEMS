@@ -3,6 +3,7 @@ const { synopsis } = require("../../model/synopsis.model");
 const { thesis } = require("../../model/thesis.model");
 const { faculties } = require("../../model/faculty.model");
 const { students } = require("../../model/student.model");
+const { feedbacks } = require("../../model/feedback.model");
 const { proposalevaluations } = require("../../model/proposalEvaluaton.model");
 const { sendMail } = require("../../config/mailer");
 const { Op, Model } = require('sequelize');
@@ -513,101 +514,6 @@ const selectedProposalDetails = async (req, res) => {
 };
 
 
-// const evaluateProposal = async (req, res) => {
-//     try {
-//         // Extract evaluation details from the request
-//         const {
-//             rollno,
-//             stdname,
-//             batch,
-//             semester,
-//             thesistitle,
-//             facultyid,
-//             facname,
-//             significance,
-//             understanding,
-//             statement,
-//             rationale,
-//             timeline,
-//             bibliography,
-//             comments,
-//         } = req.body;
-
-//         const student = await students.findOne({ where: { rollno } });
-
-//         console.log(student);
-
-//         if (student && student.reevaluationstatus === true) {
-//             // Update the existing proposal evaluation record
-//             const existingEvaluation = await proposalevaluations.findOne({ where: { rollno, facultyid } });
-
-//             console.log(existingEvaluation);
-
-//             if (existingEvaluation) {
-//                 // Update the existing proposal evaluation
-//                 const updatedEvaluation = await proposalevaluations.update({
-//                     rollno,
-//                     stdname,
-//                     batch,
-//                     semester,
-//                     thesistitle,
-//                     facultyid,
-//                     facname,
-//                     significance,
-//                     understanding,
-//                     statement,
-//                     rationale,
-//                     timeline,
-//                     bibliography,
-//                     comments,
-//                     gccommentsreview: 'Pending',
-//                 }, { where: { rollno, facultyid } });
-
-
-//                 await students.update({ reevaluationstatus: false }, { where: { rollno } });
-
-//                 const updatedEvaluationdata = await proposalevaluations.findOne({ where: { rollno, facultyid } });
-
-//                 res.json({ message: 'Proposal re-evaluation stored successfully', evaluation: updatedEvaluationdata });
-//                 //students.reevaluationstatus = false;
-//             } else {
-//                 res.status(404).json({ error: 'No existing evaluation found for re-evaluation' });
-//             }
-//         } else {
-//             const existingEvaluation = await proposalevaluations.findOne({ where: { facultyid, rollno } });
-//             console.log(existingEvaluation);
-
-//             if (existingEvaluation) {
-//                 res.status(400).json({ error: 'You have already evaluated the thesis proposal' });
-//             } else {
-//                 // Create a new proposal evaluation record
-//                 const newEvaluation = await proposalevaluations.create({
-//                     rollno,
-//                     stdname,
-//                     batch,
-//                     semester,
-//                     thesistitle,
-//                     facultyid,
-//                     facname,
-//                     significance,
-//                     understanding,
-//                     statement,
-//                     rationale,
-//                     timeline,
-//                     bibliography,
-//                     comments,
-//                 });
-
-//                 res.json({ message: 'Proposal evaluation stored successfully', evaluation: newEvaluation });
-//             }
-//         }
-//     } catch (error) {
-//         console.error('Error evaluating proposal:', error);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// };
-
-
 const evaluateProposal = async (req, res) => {
     try {
         // Extract evaluation details from the request
@@ -628,6 +534,7 @@ const evaluateProposal = async (req, res) => {
             comments,
         } = req.body;
 
+        // Check if the student requires re-evaluation
         const student = await students.findOne({ where: { rollno } });
 
         if (student && student.reevaluationstatus) {
@@ -654,46 +561,71 @@ const evaluateProposal = async (req, res) => {
                     gccommentsreview: 'Pending',
                 }, { where: { facultyid, rollno } });
 
-
                 if (updatedRows > 0) {
-                   // await students.update({ reevaluationstatus: false }, { where: { rollno } });
+                    // Update or create feedback record
+                    const feedbackRecord = await feedbacks.findOne({ where: { rollno, facultyid } });
+                    if (feedbackRecord) {
+                        // Update the existing feedback record
+                        await feedbacks.update({
+                            feedbackContent: comments,
+                            // other fields to update
+                        }, { where: { rollno, facultyid } });
+                    } else {
+                        // Create a new feedback record
+                        await feedbacks.create({
+                            rollno,
+                            facultyid,
+                            facultyname: facname,
+                            feedbackContent: comments,
+                            feedbackType: 'Proposal',
+                        });
+                    }
 
+                    // Fetch updated proposal evaluation data
                     const updatedEvaluationdata = await proposalevaluations.findOne({ where: { facultyid, rollno } });
-
-                    res.json({ message: 'Proposal re-evaluation stored successfully', evaluation: updatedEvaluationdata });
-                } else {
-                    res.status(404).json({ error: 'No existing evaluation found for re-evaluation' });
+                    res.json({ message: 'Proposal evaluation and feedback updated successfully', evaluation: updatedEvaluationdata });
                 }
             } else {
                 res.status(404).json({ error: 'No existing evaluation found for re-evaluation' });
             }
         } else {
+
             const existingEvaluation = await proposalevaluations.findOne({ where: { facultyid, rollno } });
-            console.log(existingEvaluation);
-
             if (existingEvaluation) {
-                res.status(400).json({ error: 'You have already evaluated the thesis proposal' });
-            } else {
-                // Create a new proposal evaluation record
-                const newEvaluation = await proposalevaluations.create({
-                    rollno,
-                    stdname,
-                    batch,
-                    semester,
-                    thesistitle,
-                    facultyid,
-                    facname,
-                    significance,
-                    understanding,
-                    statement,
-                    rationale,
-                    timeline,
-                    bibliography,
-                    comments,
-                });
-
-                res.json({ message: 'Proposal evaluation stored successfully', evaluation: newEvaluation });
+                res.status(400).json({ error: 'You have already evaluated this thesis proposal' });
+                return;
             }
+            
+            // Create a new proposal evaluation record
+            const newEvaluation = await proposalevaluations.create({
+                rollno,
+                stdname,
+                batch,
+                semester,
+                thesistitle,
+                facultyid,
+                facname,
+                significance,
+                understanding,
+                statement,
+                rationale,
+                timeline,
+                bibliography,
+                comments,
+                gccommentsreview: 'Pending',
+            });
+
+            // Create a new feedback record
+            await feedbacks.create({
+                rollno,
+                facultyid,
+                facultyname: facname,
+                feedbackContent: comments,
+                feedbackType: 'Proposal',
+
+            });
+
+            res.json({ message: 'Proposal evaluation and feedback stored successfully', evaluation: newEvaluation });
         }
     } catch (error) {
         console.error('Error evaluating proposal:', error);
