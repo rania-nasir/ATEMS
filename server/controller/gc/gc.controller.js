@@ -791,6 +791,57 @@ const panelTime = async (req, res) => {
 };
 
 
+const allSupervisors = async (req, res) => {
+  try {
+    const supervisorFaculties = await faculties.findAll({
+      attributes: ['name'],
+      where: {
+        role: {
+          [Op.contains]: ['Supervisor']
+        }
+      }
+    });
+    res.json(supervisorFaculties);
+  } catch (error) {
+    console.error('Error fetching supervisor faculties:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
+const allThesisofSupervisor = async (req, res) => {
+  const { supervisorName } = req.body;
+  try {
+    const supervisorThesis = await thesis.findAll({
+      attributes : ['thesistitle'],
+      where: {
+        supervisorname: supervisorName
+      }
+    });
+    res.json(supervisorThesis);
+  } catch (error) {
+    console.error('Error fetching supervisor theses:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
+const thesisDetails = async (req, res) => {
+  const { thesistitle } = req.body;
+  try {
+    const thesisDetail = await thesis.findOne({
+      where: {
+        thesistitle: thesistitle
+      }
+    });
+    res.json(thesisDetail);
+  } catch (error) {
+    console.error('Error fetching thesis details:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
 module.exports =
 {
   GCSignIn,
@@ -808,5 +859,8 @@ module.exports =
   deleteStudent,
   deleteFaculty,
   showgcData,
-  panelTime
+  panelTime,
+  allSupervisors,
+  allThesisofSupervisor,
+  thesisDetails
 };
