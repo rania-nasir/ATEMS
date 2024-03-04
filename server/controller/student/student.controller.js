@@ -87,26 +87,11 @@ const viewFeedback = async (req, res) => {
     const rollno = req.userId
     const feedbackList = await feedbacks.findAll({
       where: {
-        rollno: rollno,
-        feedbackType: 'MSRC' // Assuming the feedback type for MSRC members is 'MSRC' 
+        rollno: rollno, 
       }
     });
 
-    // Fetch proposal comments approved by GC
-    const proposalComments = await proposalevaluations.findAll({
-      where: {
-        rollno: rollno,
-        gccommentsreview: 'Approved',
-      }
-    });
-
-    // Combine both types of comments into a single array
-    const combinedComments = {
-      feedback: feedbackList,
-      proposalComments: proposalComments
-    };
-
-    res.json(combinedComments);
+    res.json(feedbackList);
   } catch (error) {
     console.error('Error fetching feedback:', error);
     res.status(500).json({ error: 'Internal server error' });
