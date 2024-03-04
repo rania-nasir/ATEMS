@@ -5,13 +5,14 @@ import { RoleContext } from '../../context/RoleContext';
 import GetSynopsis from './GetSynopsis';
 import MSRCAllThesis from './MSRCAllThesis';
 import HODGetThesis from './HOD/GetThesis'
+import DefenseProposal from './Supervisor/DefenseProposal';
 
 const RoleTabs = () => {
     const { role } = useContext(RoleContext);
     const [activeIndex, setActiveIndex] = useState(0);
 
     const tabs = [
-        { role: 'Supervisor', panels: ['Registration', 'Thesis Requests'] },
+        { role: 'Supervisor', panels: ['Thesis Requests', 'Proposal Defense'] },
         { role: 'Internal', panels: ['Evaluation', 'Feedback'] },
         { role: 'MSRC', panels: ['MSRC Requests'] },
         { role: 'HOD', panels: ['Thesis Approval Requests'] },
@@ -29,11 +30,11 @@ const RoleTabs = () => {
                             <TabPanel key={index} header={panel}>
                                 {/* Content for each tab panel */}
                                 <div className="m-0">
-                                    {panel === "Registration" && (
+                                    {panel === "Thesis Requests" && (
                                         <GetSynopsis />
                                     )}
-                                    {panel === "Thesis Requests" && (
-                                        <p>Thesis Requests</p>
+                                    {panel === "Proposal Defense" && (
+                                        <DefenseProposal/>
                                     )}
                                     {panel === "Evaluation" && (
                                         <p>Evaluation</p>

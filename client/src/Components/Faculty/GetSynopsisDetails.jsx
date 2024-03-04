@@ -173,6 +173,14 @@ export default function GetSynopsisDetails() {
                                             {synopsisData.selectedSynopsis.potentialareas}
                                         </dd>
                                     </div>
+                                    <div className="sm:col-span-1">
+                                        <dt className="text-sm font-medium text-gray-500">
+                                            Supervisor Name
+                                        </dt>
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                            {synopsisData.selectedSynopsis.facultyname}
+                                        </dd>
+                                    </div>
                                     {/* Display file URL */}
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">

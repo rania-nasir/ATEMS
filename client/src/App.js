@@ -21,6 +21,7 @@ import GClogin from './Components/Login/GClogin';
 // Faculty Components
 import RoleTabs from './Components/Faculty/RoleTabs'
 import SupervisorComp from './Components/Faculty/Supervisor/SupervisorComp';
+import DefenseProposal from './Components/Faculty/Supervisor/DefenseProposal';
 import MSRCComp from './Components/Faculty/MSRC/MSRCComp';
 import InternalComp from './Components/Faculty/Internal/InternalComp';
 import HODComp from './Components/Faculty/HOD/HODComp';
@@ -51,6 +52,7 @@ import MakeAnnouncement from './Components/GC/MakeAnnouncement';
 import GetThesis from './Components/GC/GetThesis';
 import GetThesisDetails from './Components/GC/GetThesisDetails';
 import ThesisRecord from './Components/GC/ThesisRecord';
+import PanelTime from './Components/GC/PanelTime';
 
 // Other Components
 import NotFoundPage from './Components/Error/NotFoundPage'
@@ -212,6 +214,7 @@ function App() {
                                 <>
                                   <Route path='/supAllRequests' element={<GetSynopsis />} />
                                   <Route path='/supReviewRequest/:synopsisid' element={<GetSynopsisDetails />} />
+                                  <Route path='/DefenseProposal' element={<DefenseProposal />} />
                                 </>
                               )}
                               {isMSRC && (
@@ -258,6 +261,7 @@ function App() {
                                 <Route path='/viewAllThesis' element={<ThesisRecord />} />
                                 <Route path='/ReviewRequest' element={<GetThesis />} />
                                 <Route path='/ReviewRequest/:thesisid' element={<GetThesisDetails />} />
+                                <Route path='/PanelTimelines' element={<PanelTime />} />
                                 {/* ... (other gc routes) */}
                               </>
                             )

@@ -3,7 +3,7 @@ import Cookie from 'js-cookie'
 
 
 export default function ViewFeedback() {
-    const [FeedbackData, setFeedbackData] = useState([]);
+    const [FeedbackData, setFeedbackData] = useState("");
 
     useEffect(() => {
         async function fetchFeedbackData() {
@@ -59,29 +59,29 @@ export default function ViewFeedback() {
                         </tr>
                     </thead>
                     {FeedbackData.length === 0 ? (
-                        <p className="px-6 py-4">No feedback found</p>
-                    ) : (
-                        <tbody>
-                            {FeedbackData.map(rowData => (
-                                <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={rowData.thesisid}>
-                                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {rowData.feedbackID}
-                                    </td>
-                                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {rowData.feedbackType}
-                                    </td>
-                                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {rowData.facultyname}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {rowData.rollno}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {rowData.feedbackContent}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
+                            <p className="px-6 py-4">No thesis found</p>
+                        ) : (
+                    <tbody>
+                        {FeedbackData.feedback.map(rowData => (
+                            <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={rowData.thesisid}>
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {rowData.feedbackID}
+                                </td>
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {rowData.feedbackType}
+                                </td>
+                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {rowData.facultyname}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {rowData.rollno}
+                                </td>
+                                <td className="px-6 py-4">
+                                    {rowData.feedbackContent}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
                     )}
                 </table>
 

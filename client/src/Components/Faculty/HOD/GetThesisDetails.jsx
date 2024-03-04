@@ -59,8 +59,8 @@ export default function GetThesisDetails() {
                 navigate('/');
             }
         } else {
-            window.alert("Something went wrong");
-            console.log("Something went wrong");
+            window.alert(data.message);
+            console.log(data.message);
         }
     }
 
