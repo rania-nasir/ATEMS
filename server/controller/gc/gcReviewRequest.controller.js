@@ -3,6 +3,7 @@ const { synopsis } = require("../../model/synopsis.model");
 const { thesis } = require("../../model/thesis.model");
 const { students } = require("../../model/student.model");
 const { faculties } = require("../../model/faculty.model");
+const { feedbacks } = require("../../model/feedback.model");
 const { proposalevaluations } = require("../../model/proposalEvaluaton.model");
 const { sendMail } = require("../../config/mailer");
 const { Op, Model } = require('sequelize');
@@ -73,12 +74,12 @@ const getThesisDetails = async (req, res) => {
 
 
 
-    res.json({ selectedThesis, facultyList });
+        res.json({ selectedThesis, facultyList });
 
-} catch (error) {
-    console.error('Error fetching thesis details:', error);
-    res.status(500).json({ error: 'Internal server error' });
-}
+    } catch (error) {
+        console.error('Error fetching thesis details:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 };
 
 // Function to approve the fetched Thesis from above function
@@ -303,34 +304,64 @@ const gcApproveProposal = async (req, res) => {
         );
 
         if (updatedRows > 0) {
-            // Update the comingevaluation status in the students model
-            const [updatedStudentCount] = await students.update(
-                {
-                    comingevaluation: 'Mid1',
-                    reevaluationstatus: 'false'
-                },
-                { where: { rollno } }
-            );
 
-            if (updatedStudentCount > 0) {
-                // Get student details
-                const student = await students.findOne({ where: { rollno } });
+            // Find the approved proposal evaluations for the given rollno
+            const approvedProposals = await proposalevaluations.findAll({
+                where: {
+                    rollno,
+                    gccommentsreview: 'Approved'
+                }
+            });
 
-                if (student) {
-                    // Send approval email to student
-                    const subject = 'Proposal Approval';
-                    const text = 'Your proposal has been approved. Congratulations!';
-                    await sendMail(student.email, subject, text);
+            if (approvedProposals.length > 0) {
+                // Iterate through each approved proposal
+                for (const proposal of approvedProposals) {
+                    // Extract comments from the approved proposal
+                    const comments = proposal.comments;
 
-                    res.json({ message: 'Proposal approved, comingevaluation status updated, and email sent to student' });
+                    // Create a feedback record for the approved proposal
+                    await feedbacks.create({
+                        rollno,
+                        facultyid: proposal.facultyid,
+                        facultyname: proposal.facname,
+                        feedbackContent: comments,
+                        feedbackType: 'Proposal',
+                    });
+                }
+
+
+
+                // Update the comingevaluation status in the students model
+                const [updatedStudentCount] = await students.update(
+                    {
+                        comingevaluation: 'Mid1',
+                        reevaluationstatus: 'false'
+                    },
+                    { where: { rollno } }
+                );
+
+                if (updatedStudentCount > 0) {
+                    // Get student details
+                    const student = await students.findOne({ where: { rollno } });
+
+                    if (student) {
+                        // Send approval email to student
+                        const subject = 'Proposal Approval';
+                        const text = 'Your proposal has been approved. Congratulations!';
+                        await sendMail(student.email, subject, text);
+
+                        res.json({ message: 'Proposal approved, comingevaluation status updated, and email sent to student' });
+                    } else {
+                        res.status(404).json({ error: 'Student not found' });
+                    }
                 } else {
-                    res.status(404).json({ error: 'Student not found' });
+                    res.status(404).json({ error: 'Proposal not approved or student not found' });
                 }
             } else {
-                res.status(404).json({ error: 'Proposal not approved or student not found' });
+                res.status(404).json({ error: 'No proposal found or not approved' });
             }
         } else {
-            res.status(404).json({ error: 'No proposal found or not approved' });
+            res.status(404).json({ error: 'No approved proposal found for the student' });
         }
     } catch (error) {
         console.error('Error approving proposal:', error);

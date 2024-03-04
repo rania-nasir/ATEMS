@@ -562,25 +562,7 @@ const evaluateProposal = async (req, res) => {
                 }, { where: { facultyid, rollno } });
 
                 if (updatedRows > 0) {
-                    // Update or create feedback record
-                    const feedbackRecord = await feedbacks.findOne({ where: { rollno, facultyid } });
-                    if (feedbackRecord) {
-                        // Update the existing feedback record
-                        await feedbacks.update({
-                            feedbackContent: comments,
-                            // other fields to update
-                        }, { where: { rollno, facultyid } });
-                    } else {
-                        // Create a new feedback record
-                        await feedbacks.create({
-                            rollno,
-                            facultyid,
-                            facultyname: facname,
-                            feedbackContent: comments,
-                            feedbackType: 'Proposal',
-                        });
-                    }
-
+    
                     // Fetch updated proposal evaluation data
                     const updatedEvaluationdata = await proposalevaluations.findOne({ where: { facultyid, rollno } });
                     res.json({ message: 'Proposal evaluation and feedback updated successfully', evaluation: updatedEvaluationdata });
@@ -615,15 +597,6 @@ const evaluateProposal = async (req, res) => {
                 gccommentsreview: 'Pending',
             });
 
-            // Create a new feedback record
-            await feedbacks.create({
-                rollno,
-                facultyid,
-                facultyname: facname,
-                feedbackContent: comments,
-                feedbackType: 'Proposal',
-
-            });
 
             res.json({ message: 'Proposal evaluation and feedback stored successfully', evaluation: newEvaluation });
         }
