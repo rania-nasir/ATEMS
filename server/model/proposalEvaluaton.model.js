@@ -26,8 +26,8 @@ const proposalevaluations = sequelize.define('proposalevaluations', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    facname: {
-        type: DataTypes.STRING,
+    proposalEvaluationPermission: {
+        type: DataTypes.BOOLEAN,
         allowNull: false
     },
     significance: {
@@ -58,13 +58,21 @@ const proposalevaluations = sequelize.define('proposalevaluations', {
         type: DataTypes.TEXT('long'),
         allowNull: false
     },
-    gccommentsreview: {
+    gcProposalCommentsReview: {
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: 'Pending',
         validate: {
             isIn: [['Pending', 'Approved', 'Rejected']]
         }
+    },
+    internalname: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    internalid: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     createdAt: {
         type: DataTypes.DATE,
