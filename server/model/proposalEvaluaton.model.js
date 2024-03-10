@@ -85,10 +85,10 @@ const proposalevaluations = sequelize.define('proposalevaluations', {
 });
 
 sequelize.sync().then(() => {
-    console.log('Proposal Evaluaton table created successfully!');
+    console.log('Proposal Evaluation table created successfully!');
 }).catch((error) => {
     console.error('Unable to create table : ', error);
 });
 
-// Export the Proposal Evaluaton model
+// Export the Proposal Evaluation model
 module.exports = { proposalevaluations };
