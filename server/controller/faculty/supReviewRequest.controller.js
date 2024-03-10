@@ -558,11 +558,11 @@ const evaluateProposal = async (req, res) => {
                     timeline,
                     bibliography,
                     comments,
-                    gccommentsreview: 'Pending',
+                    gcProposalCommentsReview: 'Pending',
                 }, { where: { facultyid, rollno } });
 
                 if (updatedRows > 0) {
-    
+
                     // Fetch updated proposal evaluation data
                     const updatedEvaluationdata = await proposalevaluations.findOne({ where: { facultyid, rollno } });
                     res.json({ message: 'Proposal evaluation and feedback updated successfully', evaluation: updatedEvaluationdata });
@@ -577,7 +577,7 @@ const evaluateProposal = async (req, res) => {
                 res.status(400).json({ error: 'You have already evaluated this thesis proposal' });
                 return;
             }
-            
+
             // Create a new proposal evaluation record
             const newEvaluation = await proposalevaluations.create({
                 rollno,
@@ -594,7 +594,7 @@ const evaluateProposal = async (req, res) => {
                 timeline,
                 bibliography,
                 comments,
-                gccommentsreview: 'Pending',
+                gcProposalCommentsReview: 'Pending',
             });
 
 

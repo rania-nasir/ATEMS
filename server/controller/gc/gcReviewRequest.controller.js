@@ -250,7 +250,7 @@ const gcAllPendingProposals = async (req, res) => {
     try {
         const pendingProposals = await proposalevaluations.findAll({
             where: {
-                gccommentsreview: 'Pending'
+                gcProposalCommentsReview: 'Pending'
             },
             attributes: [
                 [sequelize.literal('DISTINCT "rollno"'), 'rollno'],
@@ -299,7 +299,7 @@ const gcApproveProposal = async (req, res) => {
 
         // Update all proposal evaluations for the given rollno
         const [updatedRows] = await proposalevaluations.update(
-            { gccommentsreview: 'Approved' },
+            { gcProposalCommentsReview: 'Approved' },
             { where: { rollno } }
         );
 
@@ -309,7 +309,7 @@ const gcApproveProposal = async (req, res) => {
             const approvedProposals = await proposalevaluations.findAll({
                 where: {
                     rollno,
-                    gccommentsreview: 'Approved'
+                    gcProposalCommentsReview: 'Approved'
                 }
             });
 
@@ -381,7 +381,7 @@ const gcRejectProposal = async (req, res) => {
 
         // Update all proposal evaluations for the given rollno to 'Rejected'
         const [updatedRows] = await proposalevaluations.update(
-            { gccommentsreview: 'Rejected' },
+            { gcProposalCommentsReview: 'Rejected' },
             { where: { rollno } }
         );
 

@@ -22,11 +22,11 @@ const proposalevaluations = sequelize.define('proposalevaluations', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    facultyid: {
-        type: DataTypes.INTEGER,
+    facname: {
+        type: DataTypes.STRING,
         allowNull: false
     },
-    proposalEvaluationPermission: {
+    midEvaluationPermission: {
         type: DataTypes.BOOLEAN,
         allowNull: false
     },
@@ -65,14 +65,6 @@ const proposalevaluations = sequelize.define('proposalevaluations', {
         validate: {
             isIn: [['Pending', 'Approved', 'Rejected']]
         }
-    },
-    internalname: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    internalid: {
-        type: DataTypes.INTEGER,
-        allowNull: false
     },
     createdAt: {
         type: DataTypes.DATE,

@@ -17,21 +17,13 @@ const midevaluations = sequelize.define('midevaluations', {
         type: DataTypes.INTEGER,
         primaryKey: true
     },
-    facultyid: {
-        type: DataTypes.INTEGER,
+    facname: {
+        type: DataTypes.STRING,
         allowNull: false
     },
-    proposalEvaluated: {
+    finalEvaluationPermission: {
         type: DataTypes.BOOLEAN,
         allowNull: false
-    },
-    midEvaluationPermission: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-    },
-    midEvaluationAt: {
-        type: DataTypes.DATE,
-        allowNull: true,
     },
     literatureReviewRank: {
         type: DataTypes.ENUM,
@@ -65,14 +57,6 @@ const midevaluations = sequelize.define('midevaluations', {
     },
     comments: {
         type: DataTypes.TEXT('long'),
-        allowNull: false
-    },
-    internalname: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    internalid: {
-        type: DataTypes.INTEGER,
         allowNull: false
     },
     gcMidCommentsReview: {

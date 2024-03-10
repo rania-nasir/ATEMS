@@ -17,21 +17,9 @@ const finalevaluations = sequelize.define('finalevaluations', {
         type: DataTypes.INTEGER,
         primaryKey: true
     },
-    facultyid: {
-        type: DataTypes.INTEGER,
+    facname: {
+        type: DataTypes.STRING,
         allowNull: false
-    },
-    midEvaluated: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-    },
-    finalEvaluationPermission: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-    },
-    finalEvaluationAt: {
-        type: DataTypes.DATE,
-        allowNull: true,
     },
     literatureReviewRank: {
         type: DataTypes.ENUM,
@@ -98,14 +86,6 @@ const finalevaluations = sequelize.define('finalevaluations', {
     },
     comments: {
         type: DataTypes.TEXT('long'),
-        allowNull: false
-    },
-    internalname: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    internalid: {
-        type: DataTypes.INTEGER,
         allowNull: false
     },
     gcFinalCommentsReview: {
