@@ -99,5 +99,5 @@ sequelize.sync().then(() => {
     console.error('Unable to create table : ', error);
 });
 
-// Export the Proposal Evaluaton model
+// Export the Mid Evaluation model
 module.exports = { midevaluations };
