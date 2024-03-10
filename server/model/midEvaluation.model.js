@@ -15,11 +15,18 @@ const midevaluations = sequelize.define('midevaluations', {
     },
     thesisid: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+        primaryKey: true
     },
     facultyid: {
         type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    proposalEvaluated: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+    },
+    midEvaluationPermission: {
+        type: DataTypes.BOOLEAN,
         allowNull: false
     },
     midEvaluationAt: {
@@ -67,6 +74,14 @@ const midevaluations = sequelize.define('midevaluations', {
     internalid: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    gcMidCommentsReview: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'Pending',
+        validate: {
+            isIn: [['Pending', 'Approved', 'Rejected']]
+        }
     },
     createdAt: {
         type: DataTypes.DATE,
