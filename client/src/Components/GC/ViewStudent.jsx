@@ -72,7 +72,7 @@ export default function ViewStudent() {
     );
     return (
         <>
-            <div className='m-2'>
+            <div className='m-2 p-2 grid grid-cols-1'>
                 <Dialog visible={visible} modal header={headerElement} footer={footerContent} style={{ width: '30rem' }} onHide={() => setVisible(false)}>
                     <p className="m-0">
                         Are you sure you want to delete this student?
@@ -84,9 +84,9 @@ export default function ViewStudent() {
                     </h2>
                 </div>
                 <AddStudent />
-                <div class="m-6 shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <div className="overflow-x-auto m-6 shadow-md sm:rounded-lg col-span-1">
+                <table className="table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-3 py-3">
                                     Roll Number
@@ -97,7 +97,7 @@ export default function ViewStudent() {
                                 <th scope="col" class="px-3 py-3">
                                     Email
                                 </th>
-                                {/* <th scope="col" class="px-3 py-3">
+                                <th scope="col" class="px-3 py-3">
                                     Mobile
                                 </th>
                                 <th scope="col" class="px-3 py-3">
@@ -105,7 +105,7 @@ export default function ViewStudent() {
                                 </th>
                                 <th scope="col" class="px-3 py-3">
                                     Gender
-                                </th> */}
+                                </th>
                                 <th scope="col" class="px-3 py-3">
                                     Batch
                                 </th>
@@ -115,9 +115,9 @@ export default function ViewStudent() {
                                 <th scope="col" class="px-3 py-3">
                                     Program
                                 </th>
-                                {/* <th scope="col" class="px-3 py-3">
+                                <th scope="col" class="px-3 py-3">
                                     CGPA
-                                </th> */}
+                                </th>
                                 <th scope="col" class="px-3 py-3">
                                     Update
                                 </th>
@@ -129,7 +129,7 @@ export default function ViewStudent() {
                         {studentData.length === 0 ? (
                             <p className="px-6 py-4">No Student found</p>
                         ) : (
-                            <tbody>
+                            <tbody className="mx-auto">
                                 {studentData?.map(rowData => (
                                     <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -141,7 +141,7 @@ export default function ViewStudent() {
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.email}
                                         </td>
-                                        {/* <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
+                                        <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.mobile}
                                         </td>
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
@@ -149,7 +149,7 @@ export default function ViewStudent() {
                                         </td>
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.gender}
-                                        </td> */}
+                                        </td>
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.batch}
                                         </td>
@@ -159,9 +159,9 @@ export default function ViewStudent() {
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.program}
                                         </td>
-                                        {/* <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
+                                        <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.cgpa}
-                                        </td> */}
+                                        </td>
                                         <td className="px-3 py-4">
                                             <NavLink to={`/updateStudent/${rowData.rollno}`} onClick={() => { setSelectedRollNo(rowData.rollno); }}
                                                 className="font-semibold leading-6 text-blue-600 hover:underline">

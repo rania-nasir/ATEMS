@@ -37,25 +37,27 @@ export default function GetSynopsis() {
 
     return (
         <>
+        <div className='m-2 p-2 grid grid-cols-1'>
+
             <div className="sm:mx-auto w-full">
                 <h2 className="m-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                     Thesis Proposal Synopsis Requests
                 </h2>
             </div>
-            <div class="m-6 shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <div className="overflow-x-auto m-6 shadow-md sm:rounded-lg col-span-1">
+                <table className="table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" class="px-6 py-3">
+                            <th scope="col" className="px-6 py-3">
                                 Student Roll Number
                             </th>
-                            <th scope="col" class="px-6 py-3">
+                            <th scope="col" className="px-6 py-3">
                                 Thesis Title
                             </th>
-                            <th scope="col" class="px-6 py-3">
+                            <th scope="col" className="px-6 py-3">
                                 Potential Areas
                             </th>
-                            <th scope="col" class="px-6 py-3">
+                            <th scope="col" className="px-6 py-3">
                                 Action
                             </th>
                         </tr>
@@ -82,6 +84,8 @@ export default function GetSynopsis() {
                     </tbody>
                 </table>
             </div>
-        </>
+
+            </div>
+                    </>
     )
 }

@@ -46,8 +46,10 @@ export default function GetSynopsisDetails() {
 
         const internal1 = selectedInternal1;
         const internal2 = selectedInternal2;
+        const stdname = synopsisData.selectedSynopsis.stdname;
 
         const InternalData = {
+            stdname,
             internal1,
             internal2,
             researcharea1: researchArea1, // Use state variables here
@@ -149,20 +151,28 @@ export default function GetSynopsisDetails() {
                                     </div>
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">
+                                            Thesis Status
+                                        </dt>
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                            {synopsisData.selectedSynopsis.synopsisstatus}
+                                        </dd>
+                                    </div>
+                                </div>
+                                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <div className="sm:col-span-1">
+                                        <dt className="text-sm font-medium text-gray-500">
                                             Roll Number
                                         </dt>
                                         <dd className="text-sm text-gray-900">
                                             {synopsisData.selectedSynopsis.rollno}
                                         </dd>
                                     </div>
-                                </div>
-                                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">
-                                            Thesis Status
+                                            Student Name
                                         </dt>
-                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                            {synopsisData.selectedSynopsis.synopsisstatus}
+                                        <dd className="text-sm text-gray-900">
+                                            {synopsisData.selectedSynopsis.stdname}
                                         </dd>
                                     </div>
                                     <div className="sm:col-span-1">
@@ -173,6 +183,7 @@ export default function GetSynopsisDetails() {
                                             {synopsisData.selectedSynopsis.potentialareas}
                                         </dd>
                                     </div>
+                                    {/* Display file URL */}
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">
                                             Supervisor Name
@@ -181,7 +192,6 @@ export default function GetSynopsisDetails() {
                                             {synopsisData.selectedSynopsis.facultyname}
                                         </dd>
                                     </div>
-                                    {/* Display file URL */}
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">
                                             Proposal File

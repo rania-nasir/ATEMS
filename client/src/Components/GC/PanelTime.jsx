@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Calendar } from 'primereact/calendar';
 import { Dropdown } from 'primereact/dropdown';
 import Cookie from 'js-cookie';
+import DateTimePicker from 'react-datetime-picker';
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
 
 export default function PanelTime() {
-    const [rows, setRows] = useState([{ supervisor: '', thesisTitle: '', timeslot: null }]);
+    const [rows, setRows] = useState([{ supervisor: '', thesistitle: '', timeslot: new Date() }]);
     const [supervisors, setSupervisors] = useState([]);
-    const [thesisTitles, setThesisTitles] = useState([]);
-    const [selectedSupervisor, setSelectedSupervisor] = useState('');
     const [selectedThesisTitle, setSelectedThesisTitle] = useState('');
+    const [evaluations, setEvaluations] = useState(['Proposal', 'Mid', 'Final']);
 
     useEffect(() => {
         async function fetchSupervisors() {
@@ -25,6 +27,7 @@ export default function PanelTime() {
                 }
                 const data = await response.json();
                 setSupervisors(data);
+                console.log('supervisors: ', data);
             } catch (error) {
                 console.error('Error fetching supervisors:', error);
             }
@@ -33,7 +36,7 @@ export default function PanelTime() {
         fetchSupervisors();
     }, []);
 
-    const fetchThesisTitles = async (supervisorName) => {
+    const fetchThesisTitles = async (supervisorName, rowIndex) => {
         try {
             const response = await fetch(`http://localhost:5000/gc/allThesisofSupervisor/${supervisorName}`, {
                 method: 'GET',
@@ -46,46 +49,159 @@ export default function PanelTime() {
                 throw new Error('Failed to fetch thesis titles');
             }
             const data = await response.json();
-            setThesisTitles(data);
+            console.log('Thesis titles:', data);
+            const updatedRows = [...rows];
+            updatedRows[rowIndex].thesisTitles = data;
+            setRows(updatedRows);
         } catch (error) {
             console.error('Error fetching thesis titles:', error);
         }
     };
 
+    const fetchThesisDetails = async (thesistitle, rowIndex) => {
+        try {
+            const response = await fetch(`http://localhost:5000/gc/thesisDetails/${thesistitle}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${Cookie.get('jwtoken')}`
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch thesis titles');
+            }
+            const data = await response.json();
+            console.log('Thesis Details:', data);
+
+            // Extract rollno and internals from thesisDetails
+            const { rollno, internals } = data;
+
+            // Update the corresponding row in the rows state
+            setRows(prevRows => {
+                const updatedRows = [...prevRows];
+                updatedRows[rowIndex].thesisDetails = data;
+                updatedRows[rowIndex].rollno = rollno;
+                updatedRows[rowIndex].internals = internals;
+                return updatedRows;
+            });
+        } catch (error) {
+            console.error('Error fetching thesis titles:', error);
+        }
+    };
+
+
     const addRow = () => {
-        setRows([...rows, { supervisor: '', thesisTitle: '', timeslot: null }]);
+        setRows(prevRows => {
+            const newRow = { supervisor: '', thesistitle: '', timeslot: new Date(), evaluation: '' };
+            const lastTimeslot = prevRows[prevRows.length - 1].timeslot;
+            const nextTimeslot = new Date(lastTimeslot.getTime() + 30 * 60000); // Add 30 minutes
+            newRow.timeslot = nextTimeslot;
+            return [...prevRows, newRow];
+        });
     };
 
     const removeRow = (indexToRemove) => {
-        setRows(rows.filter((row, index) => index !== indexToRemove));
+        setRows(prevRows => prevRows.filter((row, index) => index !== indexToRemove));
     };
 
     const handleSupervisorChange = (selectedSupervisor, index) => {
         const supervisorName = selectedSupervisor.name;
         const updatedRows = [...rows];
         updatedRows[index].supervisor = supervisorName;
-        updatedRows[index].thesisTitle = '';
+        updatedRows[index].thesistitle = ''; // Reset thesis title for the specific row
         setRows(updatedRows);
-        setSelectedSupervisor(supervisorName);
-        fetchThesisTitles(supervisorName);
+        fetchThesisTitles(supervisorName, index); // Fetch thesis titles for the selected supervisor
     };
 
     const handleThesisTitleChange = (selectedThesisTitle, index) => {
-        const thesisTitle = selectedThesisTitle.thesistitle; // Extract the thesis title
+        const thesistitle = selectedThesisTitle.thesistitle; // Extract the thesis title
         const updatedRows = [...rows];
-        updatedRows[index].thesisTitle = thesisTitle;
+        updatedRows[index].thesistitle = thesistitle;
         setRows(updatedRows);
-        setSelectedThesisTitle(thesisTitle); // Update the selected thesis title
+        setSelectedThesisTitle(thesistitle); // Update the selected thesis title
+        checkDuplicateValues(updatedRows); // Call the function to check duplicates even if timeslots are different
+        fetchThesisDetails(thesistitle, index); // Fetch thesis Details for the selected thesis title
+    };
+
+    const handleEvaluationChange = (selectedEvaluation, index) => {
+        const evaluation = selectedEvaluation;
+        const updatedRows = [...rows];
+        updatedRows[index].evaluation = evaluation;
+        setRows(updatedRows);
+    };
+
+    const checkDuplicateValues = (updatedRows) => {
+        const uniqueSupervisors = new Set();
+        const uniqueThesisTitles = new Set();
+        updatedRows.forEach(row => {
+            if (uniqueSupervisors.has(row.supervisor) && uniqueThesisTitles.has(row.thesistitle)) {
+                console.error('Duplicate supervisor and thesis title found, removing row:', row);
+                row.supervisor = ''; // Empty supervisor field
+                row.thesistitle = ''; // Empty thesis title field
+            } else {
+                uniqueSupervisors.add(row.supervisor);
+                uniqueThesisTitles.add(row.thesistitle);
+            }
+        });
     };
 
     const handleTimeslotChange = (value, index) => {
         const updatedRows = [...rows];
         updatedRows[index].timeslot = value;
         setRows(updatedRows);
+        validateTimeSlots(); // Validate timeslots after a change
+    };
+
+    const validateTimeSlots = () => {
+        let conflictDetected = false;
+        for (let i = 0; i < rows.length - 1; i++) {
+            for (let j = i + 1; j < rows.length; j++) {
+                const timeslot1 = new Date(rows[i].timeslot);
+                const timeslot2 = new Date(rows[j].timeslot);
+                const timeDifference = Math.abs(timeslot1 - timeslot2) / (1000 * 60); // difference in minutes
+                if (timeDifference < 30) {
+                    console.error('Conflicting timeslots detected.');
+                    conflictDetected = true;
+                    break; // Conflict found, exit inner loop
+                }
+            }
+            if (conflictDetected) {
+                break; // Exit outer loop
+            }
+        }
+        if (conflictDetected) {
+            // Allocate timeslots 30 minutes later to the previous timeslot for rows with conflicts
+            setRows(prevRows => {
+                const updatedRows = [...prevRows];
+                for (let i = 1; i < updatedRows.length; i++) {
+                    const prevTimeslot = new Date(updatedRows[i - 1].timeslot);
+                    const newTimeslot = new Date(prevTimeslot.getTime() + 30 * 60000); // Add 30 minutes
+                    updatedRows[i].timeslot = newTimeslot;
+                }
+                return updatedRows;
+            });
+            return false; // Conflict detected and resolved
+        }
+        return true; // No conflict
     };
 
     const handleSubmit = async () => {
         console.log('rows : ', rows);
+    
+        // Prepare the data to send
+        const dataToSend = rows.map(({ thesisDetails, timeslot, thesisTitles, supervisor, ...rest }) => ({
+            ...rest,
+            thesisid: thesisDetails.thesisid,
+            rollno: thesisDetails.rollno,
+            stdname: thesisDetails.stdname,
+            supervisorname: thesisDetails.supervisorname,
+            timeslot: timeslot.toISOString(), // Convert timeslot to ISO string format
+        }));
+    
+        const formattedData = { panels: dataToSend };
+    
+        console.log('Data to send:', formattedData);
+    
         try {
             const response = await fetch('http://localhost:5000/gc/panelTime', {
                 method: 'POST',
@@ -93,49 +209,63 @@ export default function PanelTime() {
                     'Content-Type': 'application/json',
                     'Authorization': `${Cookie.get('jwtoken')}`
                 },
-                body: JSON.stringify({ panels: rows }) // Send the panel data to the server
+                body: JSON.stringify(formattedData) // Send the panel data to the server
             });
             if (!response.ok) {
                 throw new Error('Failed to assign time slots');
             }
             const data = await response.json();
-            console.log(data); // Log the response from the server
+            console.log(data, "Time slots assigned successfully"); // Log the response from the server
+            window.alert(data, "Time slots assigned successfully")
             // Handle the response as required
         } catch (error) {
             console.error('Error assigning time slots:', error);
             // Handle the error
         }
     };
+    
+
 
     return (
-        <div>
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-950">
+        <div className="m-2 p-2 grid grid-cols-1">
+            <div className="flex justify-center">
+                <h2 className="text-center text-2xl font-bold tracking-tight text-gray-950">
                     Schedule Panel Timelines
                 </h2>
             </div>
-            <div className="m-6 shadow-md sm:rounded-lg">
-                <table className="w-full text-sm text-left rtl:text-right text-gray-900 dark:text-gray-400">
+            <div className="flex justify-end px-6">
+                <button
+                    onClick={handleSubmit}
+                    className="block flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                >
+                    Assign Time Slots
+                </button>
+            </div>
+            <div className="overflow-x-auto m-6 shadow-md sm:rounded-lg col-span-1">
+                <table className="table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-3 py-4 w-1/4">
                                 Supervisor
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-3 py-4 w-1/4">
                                 Thesis Title
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-3 py-4 w-1/4">
                                 Timeslot
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-3 py-4 w-1/4">
+                                Evaluation
+                            </th>
+                            <th scope="col" className="px-3 py-4 w-1/4">
                                 Actions
                             </th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="mx-auto">
                         {rows.map((row, index) => (
                             <tr key={index} className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <td className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
                                     <Dropdown
                                         placeholder="Select Supervisor"
                                         value={row.supervisor ? (typeof row.supervisor === 'object' ? row.supervisor : supervisors.find(s => s.name === row.supervisor)) : null}
@@ -145,28 +275,32 @@ export default function PanelTime() {
                                         className="w-full text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     />
                                 </td>
-                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <td className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
                                     <Dropdown
                                         placeholder="Select Thesis Title"
-                                        value={row.thesisTitle ? (typeof row.thesisTitle === 'object' ? row.thesisTitle : thesisTitles.find(t => t.thesistitle === row.thesisTitle)) : null}
-                                        options={thesisTitles}
+                                        value={row.thesistitle ? (typeof row.thesistitle === 'object' ? row.thesistitle : { thesistitle: row.thesistitle }) : null}
+                                        options={row.thesisTitles || []}
                                         optionLabel="thesistitle"
                                         onChange={(e) => handleThesisTitleChange(e.value, index)}
                                         className="w-full text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     />
                                 </td>
-                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <Calendar
-                                        placeholder="Select Timeslot"
+                                <td className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
+                                    <DateTimePicker
+                                        onChange={(value) => handleTimeslotChange(value, index)}
                                         value={row.timeslot}
-                                        onChange={(e) => handleTimeslotChange(e.value, index)}
-                                        className="w-full text-gray-900 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                        style={{ height: "44px", padding: "4px" }}
-                                        showTime
-                                        hourFormat="12"
                                     />
                                 </td>
-                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <td className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
+                                    <Dropdown
+                                        placeholder="Select Evaluation"
+                                        value={row.evaluation}
+                                        options={evaluations}
+                                        onChange={(e) => handleEvaluationChange(e.value, index)}
+                                        className="w-full text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    />
+                                </td>
+                                <td className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
                                     {rows.length > 1 && (
                                         <button
                                             onClick={() => removeRow(index)}
@@ -195,15 +329,34 @@ export default function PanelTime() {
                         ))}
                     </tbody>
                 </table>
-                <div className="mt-4 flex justify-center">
-                    <button
-                        onClick={handleSubmit}
-                        className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Assign Time Slots
-                    </button>
-                </div>
             </div>
         </div>
     );
 }
+
+
+
+// {
+//     "panels": [
+//       {
+//         "thesisid": 1,
+//         "rollno": "20F-0245",
+//         "stdname": "Mustajab Ahmad",
+//         "thesistitle": "ATEMS",
+//         "supervisorname": "Dr. Muhammad Fayyaz",
+//         "internals": ["Dr. Rabia", "Dr. Hashim Yasin"],
+//         "timeslot": "2023-10-01T10:00:00",
+//         "evaluation": "Proposal"
+//       },
+//       {
+//         "thesisid": 2,
+//         "rollno": "20F-1004",
+//         "stdname": "Omar Ahsan",
+//         "thesistitle": "Udemy",
+//         "supervisorname": "Dr. Muhammad Fayyaz",
+//         "internals": ["Dr. Rabia", "Dr. Hashim Yasin"],
+//         "timeslot": "2023-10-01T14:00:00",
+//         "evaluation": "Proposal"
+//       }
+//     ]
+//   }

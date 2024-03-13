@@ -19,6 +19,10 @@ const synopsis = sequelize.define('synopsis', {
         allowNull: false,
         unique: true
     },
+    stdname: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     facultyid: {
         type: DataTypes.STRING,
         allowNull: false

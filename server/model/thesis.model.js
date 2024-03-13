@@ -15,6 +15,10 @@ const thesis = sequelize.define('thesis', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    stdname: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     facultyid: {
         type: DataTypes.INTEGER,
         allowNull: false

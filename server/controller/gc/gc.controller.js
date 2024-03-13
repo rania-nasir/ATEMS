@@ -786,7 +786,7 @@ const panelTime = async (req, res) => {
 
   } catch (error) {
     console.error('Error assigning time slots:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error', error: error.message });
   }
 };
 
