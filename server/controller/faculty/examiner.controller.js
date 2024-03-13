@@ -100,6 +100,17 @@ const getExaminableThesisDetails = async (req, res) => {
             return res.status(404).json({ error: 'Student not found' });
         }
 
+        const midEvaluationPermission = await proposalevaluations.findOne({
+            where: {
+                rollno: studentDetails.rollno,
+                midEvaluationPermission: true
+            }
+        });
+
+        if (!midEvaluationPermission) {
+            return res.status(403).json({ error: 'Mid evaluation permission not granted' });
+        }
+
         // Check if the comingevaluation is set to Mid1
         if (studentDetails.comingevaluation !== 'Mid1') {
             return res.status(400).json({ error: 'Thesis evaluation is not set for Mid1' });
@@ -116,4 +127,71 @@ const getExaminableThesisDetails = async (req, res) => {
     }
 };
 
-module.exports = { getExaminableThesis, getExaminableThesisDetails };
+const evaluateMid = async (req, res) => {
+    try {
+        // Extract evaluation details from the request
+        const {
+            rollno,
+            stdname,
+            batch,
+            semester,
+            thesistitle,
+            facultyid,
+            facname,
+            literatureReviewRank,
+            paper1,
+            paper2,
+            problemGapIdentified,
+            problemClearlyDefined,
+            problemPlacement,
+            solutionUnderstanding,
+            comments,
+        } = req.body;
+
+        const studentDetails = await students.findOne({
+            where: {
+                rollno: thesisDetails.rollno
+            },
+            attributes: ['rollno', 'name', 'email', 'gender', 'batch', 'semester', 'program', 'credithours', 'cgpa', 'mobile', 'thesisstatus', 'comingevaluation'],
+        });
+
+        if (!studentDetails && studentDetails.comingevaluation != "Mid1") {
+            return res.status(404).json({ error: 'Student not found' });
+        }
+
+        const existingMidEvaluation = await midevaluations.findOne({ where: { facultyid, rollno } });
+        if (existingMidEvaluation) {
+            res.status(400).json({ error: 'You have already evaluated this thesis proposal' });
+            return;
+        }
+
+        // Create a new proposal evaluation record
+        const newEvaluation = await midevaluations.create({
+            rollno,
+            stdname,
+            batch,
+            semester,
+            thesistitle,
+            facultyid,
+            facname,
+            literatureReviewRank,
+            paper1,
+            paper2,
+            problemGapIdentified,
+            problemClearlyDefined,
+            problemPlacement,
+            solutionUnderstanding,
+            comments,
+            gcMidCommentsReview: 'Pending',
+        });
+
+
+        res.json({ message: 'Mid evaluation and feedback stored successfully', evaluation: newEvaluation });
+
+    } catch (error) {
+        console.error('Error evaluating proposal:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+module.exports = { getExaminableThesis, getExaminableThesisDetails, evaluateMid };
