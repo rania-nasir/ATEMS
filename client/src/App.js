@@ -21,7 +21,7 @@ import GClogin from './Components/Login/GClogin';
 // Faculty Components
 import RoleTabs from './Components/Faculty/RoleTabs'
 import SupervisorComp from './Components/Faculty/Supervisor/SupervisorComp';
-import DefenseProposal from './Components/Faculty/Supervisor/DefenseProposal';
+import SelectedProposalDetails from './Components/Faculty/Supervisor/SelectedProposalDetails';
 import MSRCComp from './Components/Faculty/MSRC/MSRCComp';
 import InternalComp from './Components/Faculty/Internal/InternalComp';
 import HODComp from './Components/Faculty/HOD/HODComp';
@@ -32,6 +32,7 @@ import GetSynopsisDetails from './Components/Faculty/GetSynopsisDetails';
 import FacultyviewAnnouncement from './Components/Faculty/FacultyviewAnnouncement'
 import MSRCAllThesis from './Components/Faculty/MSRCAllThesis';
 import MSRCThesisDetails from './Components/Faculty/MSRCThesisDetails';
+import AllProposalEvaluations from './Components/Faculty/Supervisor/AllProposalEvaluations';
 
 // Student Components
 import Studenthome from './Components/Student/Studenthome'
@@ -214,7 +215,8 @@ function App() {
                                 <>
                                   <Route path='/supAllRequests' element={<GetSynopsis />} />
                                   <Route path='/supReviewRequest/:synopsisid' element={<GetSynopsisDetails />} />
-                                  <Route path='/DefenseProposal' element={<DefenseProposal />} />
+                                  <Route path='/AllProposalEvaluations' element={<AllProposalEvaluations />} />
+                                  <Route path='/selectedProposal/:rollno' element={<SelectedProposalDetails />} />
                                 </>
                               )}
                               {isMSRC && (

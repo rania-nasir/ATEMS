@@ -5,7 +5,7 @@ import { RoleContext } from '../../context/RoleContext';
 import GetSynopsis from './GetSynopsis';
 import MSRCAllThesis from './MSRCAllThesis';
 import HODGetThesis from './HOD/GetThesis'
-import DefenseProposal from './Supervisor/DefenseProposal';
+import AllProposalEvaluations from './Supervisor/AllProposalEvaluations';
 
 const RoleTabs = () => {
     const { role } = useContext(RoleContext);
@@ -34,7 +34,9 @@ const RoleTabs = () => {
                                         <GetSynopsis />
                                     )}
                                     {panel === "Proposal Defense" && (
-                                        <DefenseProposal/>
+                                        <>
+                                        <AllProposalEvaluations/>
+                                        </>
                                     )}
                                     {panel === "Evaluation" && (
                                         <p>Evaluation</p>

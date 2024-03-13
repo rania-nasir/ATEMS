@@ -181,7 +181,7 @@ export default function MSRCThesisDetails() {
 
             <div className='flex justify-center align-center mx-12'>
                 <div className='p-2 w-full'>
-                    <div className='w-full px-3'>
+                <div className='w-full px-3'>
                         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                             Feedback
                         </label>
