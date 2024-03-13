@@ -57,6 +57,7 @@ const fillSynopsis = async (req, res) => {
             const synopsistitle = req.body.synopsistitle;
             const facultyname = req.body.facultyname;
             const studentrollno = req.userId;
+            const stdname = req.body.stdname;
             const potentialareas = req.body.potentialareas;
             const proposalfilename = req.file.filename;
             
@@ -90,6 +91,7 @@ const fillSynopsis = async (req, res) => {
                 facultyid: facultyid,
                 facultyname: facultyname,
                 rollno: studentrollno,
+                stdname: stdname,
                 synopsisstatus: 'Pending',
                 proposalfilename
             });

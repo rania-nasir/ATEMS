@@ -86,7 +86,7 @@ const approveSynopsis = async (req, res) => {
     try {
         const { synopsisId } = req.params;
         const facultyId = req.userId;
-        const { internal1, internal2, researcharea1, researcharea2 } = req.body; // fetch the names of the internals from the frontend
+        const { stdname, internal1, internal2, researcharea1, researcharea2 } = req.body; // fetch the names of the internals from the frontend
         //console.log('Internals are : ', internal1, ', ', internal2)
 
         const existingApprovedSynopsis = await synopsis.findOne({ // check for existing approved synopsis, if it is already existing display error
@@ -175,6 +175,7 @@ const approveSynopsis = async (req, res) => {
         const newThesis = await thesis.create({ // Create thesis with internal members name and id and set status to pending
             thesistitle: selectedSynopsis.synopsistitle,
             rollno: selectedSynopsis.rollno,
+            stdname: stdname,
             facultyid: selectedSynopsis.facultyid,
             supervisorname: selectedSynopsis.facultyname,
             internals: [internal1, internal2],

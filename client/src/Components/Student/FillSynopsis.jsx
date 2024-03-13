@@ -82,6 +82,7 @@ const FillSynopsis = () => {
         console.log('PA = ',selectedCategory)
 
         const synopsisData = new FormData();
+        synopsisData.append('stdname', rollno.name);
         synopsisData.append('synopsistitle', user.synopsistitle);
         synopsisData.append('facultyname', selectedfacultyname); // Use the selected faculty name
         synopsisData.append('potentialareas', selectedCategory);
