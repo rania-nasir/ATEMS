@@ -421,6 +421,37 @@ const gcRejectProposal = async (req, res) => {
     }
 };
 
+const grantMidEvalPermission = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        // Check if the faculty has the GC role
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        // Update all records in proposalevaluations to set midEvaluationPermission to true
+        await proposalevaluations.update(
+            { midEvaluationPermission: true },
+            { where: {} } // No specific where clause needed, as we're updating all records
+        );
+
+        return res.json({ message: 'Mid-evaluation permissions successfully updated for all proposal evaluations.' });
+
+    } catch (error) {
+        console.error('Error setting mid-evaluation permissions:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 
 
 module.exports =
@@ -434,5 +465,6 @@ module.exports =
     gcAllPendingProposals,
     gcSelectedProposalDetails,
     gcApproveProposal,
-    gcRejectProposal
+    gcRejectProposal,
+    grantMidEvalPermission
 };
