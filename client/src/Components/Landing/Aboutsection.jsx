@@ -47,7 +47,7 @@ const Aboutsection = () => {
                                         Resourceful Support
                                     </h5>
                                     <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                                        Provides comprehensive materials for students and a summarizer tool for faculty, enhancing the thesis experience for all involved.
+                                        Provides comprehensive materials for students and a summarizer tool for faculty, enhancing thesis experience for all involved.
                                     </p>
                                 </div>
                             </div>
