@@ -5,8 +5,13 @@ import DateTimePicker from 'react-datetime-picker';
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
+// import { Popup, DatePicker } from 'react-date-time-picker-popup'
+// import 'react-date-time-picker-popup/dist/index.css'
 
 export default function PanelTime() {
+    const [visible, setVisible] = useState(false);
+    const [day, setDay] = useState(new Date());
+
     const [rows, setRows] = useState([{ supervisor: '', thesistitle: '', timeslot: new Date() }]);
     const [supervisors, setSupervisors] = useState([]);
     const [selectedThesisTitle, setSelectedThesisTitle] = useState('');
@@ -187,7 +192,7 @@ export default function PanelTime() {
 
     const handleSubmit = async () => {
         console.log('rows : ', rows);
-    
+
         // Prepare the data to send
         const dataToSend = rows.map(({ thesisDetails, timeslot, thesisTitles, supervisor, ...rest }) => ({
             ...rest,
@@ -197,11 +202,11 @@ export default function PanelTime() {
             supervisorname: thesisDetails.supervisorname,
             timeslot: timeslot.toISOString(), // Convert timeslot to ISO string format
         }));
-    
+
         const formattedData = { panels: dataToSend };
-    
+
         console.log('Data to send:', formattedData);
-    
+
         try {
             const response = await fetch('http://localhost:5000/gc/panelTime', {
                 method: 'POST',
@@ -223,7 +228,7 @@ export default function PanelTime() {
             // Handle the error
         }
     };
-    
+
 
 
     return (
@@ -241,66 +246,73 @@ export default function PanelTime() {
                     Assign Time Slots
                 </button>
             </div>
-            <div className="overflow-x-auto m-6 shadow-md sm:rounded-lg col-span-1">
-                <table className="table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <div className="my-6 shadow-md sm:rounded-lg col-span-1">
+                <table className="border-collapse w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" className="px-3 py-4 w-1/4">
+                            <th scope="col" className="px-3 py-4 w-1/3">
                                 Supervisor
                             </th>
-                            <th scope="col" className="px-3 py-4 w-1/4">
+                            <th scope="col" className="px-3 py-4 w-1/3">
                                 Thesis Title
                             </th>
-                            <th scope="col" className="px-3 py-4 w-1/4">
+                            <th scope="col" className="px-3 py-4 w-1/3">
                                 Timeslot
                             </th>
-                            <th scope="col" className="px-3 py-4 w-1/4">
+                            <th scope="col" className="px-3 py-4 w-1/3">
                                 Evaluation
                             </th>
-                            <th scope="col" className="px-3 py-4 w-1/4">
+                            <th scope="col" className="px-3 py-4 w-1/3">
                                 Actions
                             </th>
                         </tr>
                     </thead>
-                    <tbody className="mx-auto">
+                    <tbody>
                         {rows.map((row, index) => (
                             <tr key={index} className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                <td className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
+                                <td className="w-1/3 px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
                                     <Dropdown
-                                        placeholder="Select Supervisor"
+                                        placeholder="Supervisor"
                                         value={row.supervisor ? (typeof row.supervisor === 'object' ? row.supervisor : supervisors.find(s => s.name === row.supervisor)) : null}
                                         options={supervisors}
                                         optionLabel="name"
                                         onChange={(e) => handleSupervisorChange(e.value, index)}
-                                        className="w-full text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        className="max-w-full w-48 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     />
                                 </td>
-                                <td className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
+                                <td className="w-1/3 px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
                                     <Dropdown
-                                        placeholder="Select Thesis Title"
+                                        placeholder="Title"
                                         value={row.thesistitle ? (typeof row.thesistitle === 'object' ? row.thesistitle : { thesistitle: row.thesistitle }) : null}
                                         options={row.thesisTitles || []}
                                         optionLabel="thesistitle"
                                         onChange={(e) => handleThesisTitleChange(e.value, index)}
-                                        className="w-full text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        className="max-w-full w-48 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     />
                                 </td>
-                                <td className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
+                                <td className="w-1/3 px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
                                     <DateTimePicker
                                         onChange={(value) => handleTimeslotChange(value, index)}
                                         value={row.timeslot}
+                                        className="max-w-full w-48 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     />
+                                    {/* <div className='App'>
+                                        <button onClick={() => setVisible(true)}>Show Popup</button>
+                                        <Popup visible={visible} setVisible={setVisible}>
+                                            <DatePicker lang="tr" selectedDay={day} setSelectedDay={setDay} timeSelector={true} />
+                                        </Popup>
+                                    </div> */}
                                 </td>
-                                <td className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
+                                <td className="w-1/3 px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
                                     <Dropdown
-                                        placeholder="Select Evaluation"
+                                        placeholder="Evaluation"
                                         value={row.evaluation}
                                         options={evaluations}
                                         onChange={(e) => handleEvaluationChange(e.value, index)}
-                                        className="w-full text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        className="max-w-full w-48 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     />
                                 </td>
-                                <td className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
+                                <td className="w-1/3 px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
                                     {rows.length > 1 && (
                                         <button
                                             onClick={() => removeRow(index)}

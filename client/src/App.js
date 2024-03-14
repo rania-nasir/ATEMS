@@ -54,6 +54,7 @@ import GetThesis from './Components/GC/GetThesis';
 import GetThesisDetails from './Components/GC/GetThesisDetails';
 import ThesisRecord from './Components/GC/ThesisRecord';
 import PanelTime from './Components/GC/PanelTime';
+import Evaluations from './Components/GC/Evaluations';
 
 // Other Components
 import NotFoundPage from './Components/Error/NotFoundPage'
@@ -264,6 +265,7 @@ function App() {
                                 <Route path='/ReviewRequest' element={<GetThesis />} />
                                 <Route path='/ReviewRequest/:thesisid' element={<GetThesisDetails />} />
                                 <Route path='/PanelTimelines' element={<PanelTime />} />
+                                <Route path='/Evaluations' element={<Evaluations />} />
                                 {/* ... (other gc routes) */}
                               </>
                             )

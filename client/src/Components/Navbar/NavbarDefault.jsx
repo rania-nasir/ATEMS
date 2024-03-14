@@ -35,14 +35,14 @@ const LogoutButton = ({ onLogout }) => {
 const NavbarDefault = () => {
     const [openNav, setOpenNav] = React.useState(false);
     const [isLoggedIn, setIsLoggedIn] = React.useState(!!Cookies.get('jwtoken'));
-    const toast = useRef(null);
-    
+    const toastTopCenter = useRef(null);
+
     const handleLogout = () => {
         setIsLoggedIn(false);
     };
 
     const showGetStartedToast = () => {
-        toast.current.show({ severity: 'info', detail: 'Please log in to get started.', life: 1000 });
+        toastTopCenter.current.show({ severity: 'info', detail: 'Please log in to get started.', life: 3000 });
     };
 
     React.useEffect(() => {
@@ -54,7 +54,7 @@ const NavbarDefault = () => {
 
     return (
         <div className="mx-auto py-2 px-4 lg:px-8 lg:py-4 shadow" >
-        <Toast ref={toast} style={{ width: '100%' }}/>
+            <Toast ref={toastTopCenter} position="top-center" />
             <div className="container mx-auto flex items-center justify-between text-blue-gray-900">
 
                 <Typography

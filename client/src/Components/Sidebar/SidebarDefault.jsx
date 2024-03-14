@@ -3,6 +3,19 @@ import { useNavigate, NavLink } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useContext } from 'react';
 import { RoleContext } from '../../context/RoleContext';
+import dashbboardicon from '../../Icons/dashboard.png';
+import recordsicon from '../../Icons/records.png';
+import requestsicon from '../../Icons/requests.png';
+import announcementicon from '../../Icons/announcement.png';
+import timelineicon from '../../Icons/timeline.png';
+import thesisrecordsicon from '../../Icons/thesis-records.png'
+import evaluationsicon from '../../Icons/evaluations.png'
+import homeicon from '../../Icons/home.png';
+import Managementicon from '../../Icons/Managment.png'
+import Managmentsicon from '../../Icons/Managments.png';
+import Managingsicon from '../../Icons/Managings.png';
+import formicon from '../../Icons/form.png';
+import feedbackicon from '../../Icons/feedback.png'
 
 
 const SidebarDefault = () => {
@@ -39,51 +52,54 @@ const SidebarDefault = () => {
         fetchfacultyData();
     }, [userId]);
 
-    // console.log('facultydata - ' + facultyData.name);
-    // console.log('facultydata.role - ' + facultyData.role)
-
     const GCSidebarItems = [
         {
             id: 1,
             title: 'Dashboard',
             path: '/',
-            iconsrc: "https://img.icons8.com/external-kmg-design-glyph-kmg-design/32/737373/external-dashboard-user-interface-kmg-design-glyph-kmg-design.png",
+            iconsrc: dashbboardicon,
         },
         {
             id: 2,
             title: 'Make Announcement',
             path: '/makeAnnouncement',
-            iconsrc: "https://img.icons8.com/pastel-glyph/64/737373/commercial--v2.png",
+            iconsrc: announcementicon,
         },
         {
             id: 3,
             title: 'Thesis Records',
             path: '/viewAllThesis',
-            iconsrc: "https://img.icons8.com/glyph-neue/64/737373/align-right.png", // empty array for Thesis Requests
+            iconsrc: thesisrecordsicon,
         },
         {
             id: 4,
             title: 'Faculty Records',
             path: '/viewfaculty',
-            iconsrc: "https://img.icons8.com/ios-filled/50/737373/data-provider.png",
+            iconsrc: recordsicon,
         },
         {
             id: 5,
             title: 'Student Records',
             path: '/viewstudent',
-            iconsrc: "https://img.icons8.com/ios-filled/50/737373/data-provider.png",
+            iconsrc: recordsicon,
         },
         {
             id: 6,
             title: 'Thesis Requests',
             path: '/ReviewRequest',
-            iconsrc: "https://img.icons8.com/ios-glyphs/30/737373/ask-question.png", // empty array for Thesis Requests
+            iconsrc: requestsicon,
         },
         {
             id: 7,
             title: 'Panel Timelines',
             path: '/PanelTimelines',
-            iconsrc: "https://img.icons8.com/ios-glyphs/30/737373/ask-question.png", // empty array for Thesis Requests
+            iconsrc: timelineicon,
+        },
+        {
+            id: 8,
+            title: 'Evaluations',
+            path: '/Evaluations',
+            iconsrc: evaluationsicon,
         }
     ];
 
@@ -92,37 +108,37 @@ const SidebarDefault = () => {
             id: 1,
             title: 'Home',
             path: '/',
-            iconsrc: "https://img.icons8.com/material-rounded/24/737373/home.png",
+            iconsrc: homeicon,
         },
         {
             id: 2,
             title: 'View Announcement',
             path: '/viewAnnouncement',
-            iconsrc: "https://img.icons8.com/ios-filled/50/737373/commercial.png",
+            iconsrc: announcementicon,
         },
         {
             id: 3,
             title: 'Supervisor Management',
             path: '/Supervisor',
-            iconsrc: "https://img.icons8.com/ios-filled/50/737373/invite.png",
+            iconsrc: Managementicon,
         },
         {
             id: 4,
             title: 'Internal Management',
             path: '/Internal',
-            iconsrc: "https://img.icons8.com/ios-filled/50/737373/giving.png",
+            iconsrc: Managmentsicon,
         },
         {
             id: 5,
             title: 'MSRC Management',
             path: '/MSRC',
-            iconsrc: "https://img.icons8.com/ios-filled/50/737373/giving.png",
+            iconsrc: Managmentsicon,
         },
         {
             id: 6,
             title: 'HOD Management',
             path: '/HOD',
-            iconsrc: "https://img.icons8.com/ios-filled/50/737373/invite.png",
+            iconsrc: Managingsicon,
         },
     ];
 
@@ -131,31 +147,30 @@ const SidebarDefault = () => {
             id: 1,
             title: 'Home',
             path: '/',
-            iconsrc: "https://img.icons8.com/material-rounded/24/737373/home.png",
+            iconsrc: homeicon,
         },
         {
             id: 2,
             title: 'Synopsis Form',
             path: '/synopsisForm',
-            iconsrc: "https://img.icons8.com/material/24/737373/application-form.png",
+            iconsrc: formicon,
         },
         {
             id: 3,
             title: 'View Announcement',
             path: '/viewAnnouncement',
-            iconsrc: "https://img.icons8.com/ios-filled/50/737373/commercial.png",
+            iconsrc: announcementicon,
         },
         {
             id: 4,
             title: 'View Feedback',
             path: '/viewFeedback',
-            iconsrc: "https://img.icons8.com/fluency-systems-filled/48/737373/request-feedback.png",
+            iconsrc: feedbackicon,
         },
     ];
 
     const navigate = useNavigate();
 
-    // console.log(`Sidebar : user ID is ` + userId, `user Type is ` + userType)
     useEffect(() => {
         // Use userType to determine which sidebar items to display
         if (userType === "faculty") {
@@ -214,38 +229,38 @@ const SidebarDefault = () => {
             } else if ((id === 5 && isMSRC)) {
                 setRole("MSRC");
             } else if ((id === 6 && isHOD)) {
-            setRole("HOD");
+                setRole("HOD");
+            }
         }
-    }
-};
+    };
 
-return (
-    <>
-        <div className="flex min-w-max">
-            <div className="text-gray-800 px-2 flex flex-col">
-                {menuItems.map((menuItem) => {
+    return (
+        <>
+            <div className="flex min-w-max">
+                <div className="text-gray-900 px-2 pt-4 flex flex-col border-r border-gray-350">
+                    {menuItems.map((menuItem) => {
 
-                    console.log('role = ', role);
-                    console.log('role = ', role.includes("Supervisor"));
+                        console.log('role = ', role);
+                        console.log('role = ', role.includes("Supervisor"));
 
-                    return (
-                        <div className="w-full pr-1 border-r border-gray-350" key={menuItem.id}>
-                            <NavLink
-                                to={menuItem.path}
-                                onClick={() => handleMenuClick(menuItem.path, menuItem.id)}
-                                className={`flex items-left w-full my-1 p-2 py-3 px-5 hover:bg-gray-200 ${activeMenu === menuItem.id ? 'bg-gray-200' : ''}`}
-                                style={{ borderRadius: "14px" }}
-                            >
-                                <img className="mr-4" width="28" height="28" src={menuItem.iconsrc} alt="icon" />
-                                {menuItem.title}
-                            </NavLink>
-                        </div>
-                    );
-                })}
+                        return (
+                            <div className="w-full" key={menuItem.id}>
+                                <NavLink
+                                    to={menuItem.path}
+                                    onClick={() => handleMenuClick(menuItem.path, menuItem.id)}
+                                    className={`flex items-left w-full my-1 p-2 py-3 px-5 hover:bg-gray-200 ${activeMenu === menuItem.id ? 'bg-gray-200' : ''}`}
+                                    style={{ borderRadius: "14px" }}
+                                >
+                                    <img className="mr-4" width="28" height="28" src={menuItem.iconsrc} alt="icon" />
+                                    {menuItem.title}
+                                </NavLink>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
-        </div>
-    </>
-);
+        </>
+    );
 };
 
 export default SidebarDefault;
