@@ -1,10 +1,11 @@
 const express = require('express');
 const facRouter = express.Router();
-const gcReview = require ("../controller/gc/gcReviewRequest.controller")
+const gcReview = require("../controller/gc/gcReviewRequest.controller")
 const facFunctions = require('../controller/faculty/faculty.controller');
 const facReview = require('../controller/faculty/supReviewRequest.controller');
 const msrcReview = require('../controller/faculty/msrcReview.controller');
 const hodFunctions = require('../controller/hod/hod.controller')
+const examinerFunctions = require('../controller/faculty/examiner.controller');
 const { authenticate } = require('../middleware/authMiddleware');
 const gcRouter = require('./gcRoutes');
 
@@ -20,7 +21,7 @@ facRouter.get('/supAllRequests', facReview.getSynopsis); // Fetches the list of 
 facRouter.get('/supReviewRequest/:synopsisId', facReview.getSynopsisDetails); // supervisor selects 1 request out of many, fetches the synopsis details
 facRouter.post('/approve-synopsis/:synopsisId', facReview.approveSynopsis); // supervisor approves
 facRouter.delete('/decline-synopsis/:synopsisId', facReview.declineSynopsis); // supervisor declines
-facRouter.get('/propsalEvaluationStudents', facReview.allProposalEvalations); 
+facRouter.get('/propsalEvaluationStudents', facReview.allProposalEvalations);
 facRouter.get('/selectedProposal/:rollno', facReview.selectedProposalDetails);
 facRouter.post('/evaluateProposal/:rollno', facReview.evaluateProposal);
 
@@ -35,6 +36,11 @@ facRouter.post('/msrcSubmitFeedback/:thesisId', msrcReview.setThesisFeedback); /
 facRouter.get('/viewAllThesis', hodFunctions.getThesis);
 facRouter.get('/reviewThesis/:thesisId', hodFunctions.onethesisDetails); // GC fetches details of a single accepted synopsis
 facRouter.put('/approveThesis/:thesisId', hodFunctions.hodapproveThesis); // GC approves synopsis which creates thesis
+
+/*Examiners */
+facRouter.get('/viewExaminableThesis', examinerFunctions.getExaminableThesis);
+facRouter.get('/viewSelectedExaminableThesis/:thesisId', examinerFunctions.getExaminableThesisDetails);
+facRouter.put('/evaluateSelectedThesisMid', examinerFunctions.evaluateMid);
 
 
 /* Feedback */

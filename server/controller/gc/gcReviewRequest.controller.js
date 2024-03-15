@@ -7,6 +7,7 @@ const { feedbacks } = require("../../model/feedback.model");
 const { proposalevaluations } = require("../../model/proposalEvaluaton.model");
 const { sendMail } = require("../../config/mailer");
 const { Op, Model } = require('sequelize');
+const { midevaluations } = require("../../model/midEvaluation.model");
 
 
 // fetch all thesis for the logged in gc
@@ -452,6 +453,200 @@ const grantMidEvalPermission = async (req, res) => {
     }
 };
 
+const revokeMidEvalPermission = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        // Check if the faculty has the GC role
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        // Update all records in proposalevaluations to set midEvaluationPermission to true
+        await proposalevaluations.update(
+            { midEvaluationPermission: false },
+            { where: {} } // No specific where clause needed, as we're updating all records
+        );
+
+        return res.json({ message: 'Mid-evaluation permissions successfully updated for all proposal evaluations.' });
+
+    } catch (error) {
+        console.error('Error setting mid-evaluation permissions:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const gcAllPendingMidEvaluations = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        // Check if the faculty has the GC role
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+        const pendingMidReviews = await midevaluations.findAll({
+            where: {
+                gcMidCommentsReview: 'Pending'
+            },
+            attributes: [
+                [sequelize.literal('DISTINCT "rollno"'), 'rollno'],
+                'stdname',
+                'batch',
+                'semester'
+            ]
+        });
+
+        res.json({ pendingMidReviews });
+    } catch (error) {
+        console.error('Error fetching pending mid evaluations:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const gcSelectedMidEvaluationDetails = async (req, res) => {
+
+    try {
+        const facultyId = req.userId;
+        // Check if the faculty has the GC role
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+        const { rollno } = req.params;
+
+        const selectedMidEvaluation = await midevaluations.findAll({
+            where: {
+                rollno
+            }
+        });
+
+        if (selectedMidEvaluation) {
+            res.json({ selectedMidEvaluation });
+        } else {
+            res.status(404).json({ error: 'Mid Evaluation not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching mid evaluation details:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+};
+
+const gcApproveMidEvaluation = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        // Check if the faculty has the GC role
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        const { rollno } = req.params;
+
+        // Update all proposal evaluations for the given rollno
+        const [updatedRows] = await midevaluations.update(
+            { gcMidCommentsReview: 'Approved' },
+            { where: { rollno } }
+        );
+
+        if (updatedRows > 0) {
+
+            // Find the approved proposal evaluations for the given rollno
+            const approvedMidEvaluation = await midevaluations.findAll({
+                where: {
+                    rollno,
+                    gcMidCommentsReview: 'Approved'
+                }
+            });
+
+            if (approvedMidEvaluation.length > 0) {
+                // Iterate through each approved proposal
+                for (const midEvaluation of approvedMidEvaluation) {
+                    // Extract comments from the approved proposal
+                    const comments = midEvaluation.comments;
+
+                    // Create a feedback record for the approved proposal
+                    await feedbacks.create({
+                        rollno,
+                        facultyid: midEvaluation.facultyid,
+                        facultyname: midEvaluation.facname,
+                        feedbackContent: comments,
+                        feedbackType: 'Mid1',
+                    });
+                }
+
+
+
+                // Update the comingevaluation status in the students model
+                const [updatedStudentCount] = await students.update(
+                    {
+                        comingevaluation: 'Final1',
+                        reevaluationstatus: 'false'
+                    },
+                    { where: { rollno } }
+                );
+
+                if (updatedStudentCount > 0) {
+                    // Get student details
+                    const student = await students.findOne({ where: { rollno } });
+
+                    if (student) {
+                        // Send approval email to student
+                        const subject = 'Mid Evaluation Approval';
+                        const text = 'Your Mid Evaluation has been approved, You can now view the feedback';
+                        await sendMail(student.email, subject, text);
+
+                        res.json({ message: 'Mid Evaluation approved, comingevaluation status updated, and email sent to student' });
+                    } else {
+                        res.status(404).json({ error: 'Student not found' });
+                    }
+                } else {
+                    res.status(404).json({ error: 'mid evaluation not approved or student not found' });
+                }
+            } else {
+                res.status(404).json({ error: 'No mid evaluation found or not approved' });
+            }
+        } else {
+            res.status(404).json({ error: 'No mid evaluation found for the student' });
+        }
+    } catch (error) {
+        console.error('Error approving mid evaluation:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 
 
 module.exports =
@@ -466,5 +661,9 @@ module.exports =
     gcSelectedProposalDetails,
     gcApproveProposal,
     gcRejectProposal,
-    grantMidEvalPermission
+    grantMidEvalPermission,
+    revokeMidEvalPermission,
+    gcAllPendingMidEvaluations,
+    gcSelectedMidEvaluationDetails,
+    gcApproveMidEvaluation
 };
