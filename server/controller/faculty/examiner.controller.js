@@ -112,7 +112,7 @@ const getExaminableThesisDetails = async (req, res) => {
         }
 
         // Check if the comingevaluation is set to Mid1
-        if (studentDetails.comingevaluation !== 'Mid1') {
+        if (studentDetails.comingevaluation != 'Mid1') {
             return res.status(400).json({ error: 'Thesis evaluation is not set for Mid1' });
         }
 
