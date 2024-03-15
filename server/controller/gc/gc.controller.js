@@ -616,17 +616,17 @@ function generateTableHtml(panels) {
   panels.forEach((panel, index) => {
     const date = new Date(panel.timeslot);
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const formattedDate = `${ days[date.getDay()] } ${ date.getDate()}-${date.getMonth() + 1 }-${date.getFullYear()}`;
+    const formattedDate = `${days[date.getDay()]} ${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
     const formattedTime = `${date.getHours()}:${(date.getMinutes() < 10 ? '0' : '') + date.getMinutes()}`;
     tableHtml += `
       <tr>
-        <td> ${ index + 1 } </td>
-        <td> ${ panel.rollno } </td>
-        <td> ${ panel.stdname } </td>
-        <td> ${ panel.supervisorname } </td>
-        <td> ${ panel.internals[0] } </td>
-        <td> ${ panel.internals[1] } </td>
-        <td> ${ formattedDate} ${formattedTime} </td>
+        <td> ${index + 1} </td>
+        <td> ${panel.rollno} </td>
+        <td> ${panel.stdname} </td>
+        <td> ${panel.supervisorname} </td>
+        <td> ${panel.internals[0]} </td>
+        <td> ${panel.internals[1]} </td>
+        <td> ${formattedDate} ${formattedTime} </td>
         <td> Seminar Hall </td>
       </tr>`;
   });
@@ -640,7 +640,7 @@ function generateIndividualTableHtml(panelData) {
   // Generate HTML table for a single panel
   const date = new Date(panelData.timeslot);
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const formattedDate = `${ days[date.getDay()] } ${ date.getDate()}-${date.getMonth() + 1 }-${date.getFullYear()}`;
+  const formattedDate = `${days[date.getDay()]} ${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
   const formattedTime = `${date.getHours()}:${(date.getMinutes() < 10 ? '0' : '') + date.getMinutes()}`;
 
   const individualTableHtml = `
@@ -818,7 +818,7 @@ const allThesisofSupervisor = async (req, res) => {
   }
   try {
     const supervisorThesis = await thesis.findAll({
-      attributes : ['thesistitle'],
+      attributes: ['thesistitle'],
       where: {
         supervisorname: supervisorName
       }
@@ -847,6 +847,8 @@ const thesisDetails = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 }
+
+
 
 
 module.exports =
