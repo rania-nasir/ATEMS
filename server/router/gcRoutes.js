@@ -49,8 +49,11 @@ gcRouter.put('/grantPropEvalPermission', gcReview.grantPropEvalPermission);
 gcRouter.put('/revokePropEvalPermission', gcReview.revokePropEvalPermission);
 gcRouter.put('/grantMidEvalPermission', gcReview.grantMidEvalPermission);
 gcRouter.put('/revokeMidEvalPermission', gcReview.revokeMidEvalPermission);
+gcRouter.put('/grantFinalEvalPermission', gcReview.grantFinalEvalPermission);
+gcRouter.put('/revokeFinalEvalPermission', gcReview.revokeFinalEvalPermission);
 gcRouter.get('/proposalEvaluationStatus', gcReview.getGCProposalPermissionStatus);
 gcRouter.get('/midEvaluationStatus', gcReview.gcMidPermissionStatus);
+gcRouter.get('/finalEvaluationStatus', gcReview.gcFinalPermissionStatus);
 
 gcRouter.get('/gcViewPendingProposals', gcReview.gcAllPendingProposals);
 gcRouter.get('/viewPendingProposal/:rollno', gcReview.gcSelectedProposalDetails);
@@ -60,6 +63,10 @@ gcRouter.put('/rejectProposalComments/:rollno', gcReview.gcRejectProposal);
 gcRouter.get('/gcViewPendingMids', gcReview.gcAllPendingMidEvaluations);
 gcRouter.get('/viewPendingMid/:rollno', gcReview.gcSelectedMidEvaluationDetails);
 gcRouter.put('/approveMidComments/:rollno', gcReview.gcApproveMidEvaluation);
+
+gcRouter.get('/gcViewPendingFinals', gcReview.gcAllPendingFinalEvaluations);
+gcRouter.get('/viewPendingFinal/:rollno', gcReview.gcSelectedFinalEvaluationDetails);
+gcRouter.put('/approveFinalComments/:rollno', gcReview.gcApproveFinalEvaluation);
 
 gcRouter.get('/allSupervisors', gcFunctions.allSupervisors);
 gcRouter.get('/allThesisofSupervisor/:supervisorName', gcFunctions.allThesisofSupervisor);
