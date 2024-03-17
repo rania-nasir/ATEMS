@@ -86,7 +86,7 @@ const approveSynopsis = async (req, res) => {
     try {
         const { synopsisId } = req.params;
         const facultyId = req.userId;
-        const { stdname, internal1, internal2, researcharea1, researcharea2 } = req.body; // fetch the names of the internals from the frontend
+        const { internal1, internal2, researcharea1, researcharea2 } = req.body; // fetch the names of the internals from the frontend
         //console.log('Internals are : ', internal1, ', ', internal2)
 
         const existingApprovedSynopsis = await synopsis.findOne({ // check for existing approved synopsis, if it is already existing display error
@@ -175,7 +175,7 @@ const approveSynopsis = async (req, res) => {
         const newThesis = await thesis.create({ // Create thesis with internal members name and id and set status to pending
             thesistitle: selectedSynopsis.synopsistitle,
             rollno: selectedSynopsis.rollno,
-            stdname: stdname,
+            stdname: student.name,
             facultyid: selectedSynopsis.facultyid,
             supervisorname: selectedSynopsis.facultyname,
             internals: [internal1, internal2],
@@ -285,76 +285,9 @@ const declineSynopsis = async (req, res) => {
 };
 
 
-// const allProposalEvalations = async (req, res) => {
-//     try {
-//         const loggedInFacultyId = parseInt(req.userId);
-
-//         // Retrieve students with thesis status 1 and coming evaluation as Proposal
-//         const proposalEvaluationStudents = await students.findAll({
-//             where: {
-//                 thesisstatus: 1,
-//                 [Op.or]: [
-//                     { comingevaluation: 'Proposal' },
-//                     { comingevaluation: 'Proposal', reevaluationstatus: true }
-//                 ],
-//             },
-//             attributes: ['rollno', 'name', 'batch', 'semester', 'program']
-//         });
-
-//         // Extract roll numbers of students
-//         const rollnos = proposalEvaluationStudents.map(student => student.rollno);
-
-//         // Retrieve thesis details for the selected students
-//         const thesisDetails = await thesis.findAll({
-//             where: {
-//                 rollno: rollnos, // Filter by the roll numbers of selected students
-//                 facultyid: loggedInFacultyId // Filter by the logged-in faculty as supervisor
-//             },
-//             attributes: ['rollno', 'thesistitle', 'facultyid', 'supervisorname', 'internalsid', 'internals', 'potentialareas', 'gcapproval', 'hodapproval']
-//         });
-
-//         // Check if any thesis has pending approval
-//         const pendingThesis = thesisDetails.find(thesis =>
-//             thesis.gcapproval === 'Pending' || thesis.hodapproval === 'Pending'
-//         );
-
-//         if (pendingThesis) {
-//             // If any thesis has pending approval, send appropriate message
-//             res.json({ message: 'One or more theses have pending approval. Please wait for approval before viewing details.' });
-//             return;
-//         }
-
-//         // Filter students who have thesis supervised by the logged-in faculty
-//         const filteredStudents = proposalEvaluationStudents.filter(student =>
-//             thesisDetails.some(thesis => thesis.rollno === student.rollno)
-//         );
-
-//         // Merge filtered students and their thesis details
-//         const results = filteredStudents.map(student => {
-//             const studentThesis = thesisDetails.find(thesis => thesis.rollno === student.rollno);
-//             if (studentThesis) {
-//                 return {
-//                     ...student.toJSON(),
-//                     thesis: studentThesis
-//                 };
-//             }
-//         }).filter(Boolean); // Remove undefined values from the array
-
-//         if (results.length === 0) {
-//             res.json({ message: "You are not a supervisor of any thesis" });
-//         } else {
-//             res.json({ students: results });
-//         }
-
-//     } catch (error) {
-//         console.error('Error fetching students with thesis status 1 and proposal evaluation:', error);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// };
 
 
-
-const allProposalEvalations = async (req, res) => {
+const superisorviewPropEvals = async (req, res) => {
     try {
         const loggedInFacultyId = parseInt(req.userId);
 
@@ -379,7 +312,7 @@ const allProposalEvalations = async (req, res) => {
                 rollno: rollnos, // Filter by the roll numbers of selected students
                 [Op.or]: [
                     { facultyid: loggedInFacultyId }, // Filter by the logged-in faculty as supervisor
-                    { internalsid: { [Op.contains]: [loggedInFacultyId] } } // Check if loggedInFacultyId is in internalsid array
+                    //{ internalsid: { [Op.contains]: [loggedInFacultyId] } } // Check if loggedInFacultyId is in internalsid array
                 ]
             },
             attributes: ['rollno', 'thesistitle', 'facultyid', 'supervisorname', 'internalsid', 'internals', 'potentialareas', 'gcapproval', 'hodapproval']
@@ -426,49 +359,75 @@ const allProposalEvalations = async (req, res) => {
 
 
 
+const interalviewPropEvals = async (req, res) => {
+    try {
+        const loggedInFacultyId = parseInt(req.userId);
 
-// const selectedProposalDetails = async (req, res) => {
-//     try {
+        // Retrieve students with thesis status 1 and coming evaluation as Proposal
+        const proposalEvaluationStudents = await students.findAll({
+            where: {
+                thesisstatus: 1,
+                [Op.or]: [
+                    { comingevaluation: 'Proposal' },
+                    { reevaluationstatus: true }
+                ],
+            },
+            attributes: ['rollno', 'name', 'batch', 'semester', 'program']
+        });
 
-//         const loggedInFacultyId = parseInt(req.userId);
-//         const selectedStudentRollNo = req.params.rollno;
+        // Extract roll numbers of students
+        const rollnos = proposalEvaluationStudents.map(student => student.rollno);
 
-//         const selectedStudentDetails = await students.findOne({
-//             where: {
-//                 rollno: selectedStudentRollNo
-//             },
-//             attributes: ['rollno', 'name', 'batch', 'semester', 'program']
-//         });
+        // Retrieve thesis details for the selected students with the same supervisor or internal examiners as the logged-in faculty
+        const thesisDetails = await thesis.findAll({
+            where: {
+                rollno: rollnos, // Filter by the roll numbers of selected students
+                [Op.or]: [
+                    //{ facultyid: loggedInFacultyId }, // Filter by the logged-in faculty as supervisor
+                    { internalsid: { [Op.contains]: [loggedInFacultyId] } } // Check if loggedInFacultyId is in internalsid array
+                ]
+            },
+            attributes: ['rollno', 'thesistitle', 'facultyid', 'supervisorname', 'internalsid', 'internals', 'potentialareas', 'gcapproval', 'hodapproval']
+        });
 
-//         if (!selectedStudentDetails) {
-//             res.json({ message: "Student data not found for the selected roll number" });
-//             return;
-//         }
+        // Check if any thesis has pending approval
+        const pendingThesis = thesisDetails.find(thesis =>
+            thesis.gcapproval === 'Pending' || thesis.hodapproval === 'Pending'
+        );
 
-//         const selectedThesisDetails = await thesis.findOne({
-//             where: {
-//                 rollno: selectedStudentRollNo,
-//                 facultyid: loggedInFacultyId,
-//                 [Op.or]: [
-//                     { gcproposalpermission: 'Granted' }
-//                 ]
-//             },
-//             attributes: ['thesistitle', 'facultyid', 'supervisorname', 'internalsid', 'internals', 'potentialareas', 'gcapproval', 'hodapproval']
-//         });
+        if (pendingThesis) {
+            // If any thesis has pending approval, send appropriate message
+            res.json({ message: 'One or more theses have pending approval. Please wait for approval before viewing details.' });
+            return;
+        }
 
-//         if (!selectedThesisDetails) {
-//             res.json({ message: "Proposal Evaluations are not open yet" });
-//             return;
-//         }
+        // Filter students who have thesis supervised by the logged-in faculty or have the logged-in faculty as an internal examiner
+        const filteredStudents = proposalEvaluationStudents.filter(student =>
+            thesisDetails.some(thesis => thesis.rollno === student.rollno)
+        );
 
-//         res.json({ student: selectedStudentDetails, thesis: selectedThesisDetails });
+        // Merge filtered students and their thesis details
+        const results = filteredStudents.map(student => {
+            const studentThesis = thesisDetails.find(thesis => thesis.rollno === student.rollno);
+            if (studentThesis) {
+                return {
+                    ...student.toJSON(),
+                    thesis: studentThesis
+                };
+            }
+        }).filter(Boolean); // Remove undefined values from the array
 
-//     } catch (error) {
-//         console.error('Error fetching selected proposal details:', error);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
+        if (results.length === 0) {
+            res.json({ message: "You are not a supervisor or internal examiner of any thesis" });
+        } else {
+            res.json({ students: results });
+        }
 
-// };
+    } catch (error) {
+        console.error('Error fetching students with thesis status 1 and proposal evaluation:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 
 
 const selectedProposalDetails = async (req, res) => {
@@ -507,7 +466,7 @@ const selectedProposalDetails = async (req, res) => {
             return;
         }
 
-        res.json({ student: selectedStudentDetails, thesis: selectedThesisDetails });
+        res.json({ message:'Proposal Evaluations are open' , student: selectedStudentDetails, thesis: selectedThesisDetails });
     } catch (error) {
         console.error('Error fetching selected proposal details:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -559,6 +518,7 @@ const evaluateProposal = async (req, res) => {
                     timeline,
                     bibliography,
                     comments,
+                    midEvaluationPermission: false,
                     gcProposalCommentsReview: 'Pending',
                 }, { where: { facultyid, rollno } });
 
@@ -595,6 +555,7 @@ const evaluateProposal = async (req, res) => {
                 timeline,
                 bibliography,
                 comments,
+                midEvaluationPermission: false,
                 gcProposalCommentsReview: 'Pending',
             });
 
@@ -615,7 +576,8 @@ module.exports =
     getSynopsisDetails,
     approveSynopsis,
     declineSynopsis,
-    allProposalEvalations,
+    superisorviewPropEvals,
+    interalviewPropEvals,
     selectedProposalDetails,
     evaluateProposal
 };

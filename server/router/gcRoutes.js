@@ -17,8 +17,6 @@ gcRouter.get('/showgcData/:gcid', gcFunctions.showgcData);
 gcRouter.post('/uploadStdData', uploadMiddleware, gcFunctions.uploadStdData.uploadStd); // GC uploads student data
 gcRouter.post('/uploadFacData', uploadMiddleware, gcFunctions.uploadFacData.uploadFac); // GC uploads faculty data
 
-//gcRouter.post('/addStudent', gcFunctions.addStudent); // GC adds student
-//gcRouter.post('/addFaculty', gcFunctions.addFaculty); // GC adds faculty
 
 gcRouter.get('/viewFaculty', gcFunctions.viewFaculty); // GC views faculty
 gcRouter.get('/viewStudents', gcFunctions.viewStudents); // GC views student record
@@ -39,12 +37,7 @@ gcRouter.post('/panelTime', gcFunctions.panelTime); // GC updates panel time
 gcRouter.post('/makeAnnouncement', gcFunctions.addAnnouncement); // GC makes announcement
 gcRouter.get('/viewAllThesis', gcReview.viewAllThesis);
 
-// gcRouter.get('/assignRoles', (req, res)=>{ res.send('GC assign faculty roles here'); });
 
-gcRouter.put('/grantPropEvalPermission', gcReview.grantPropEvalPermission);
-gcRouter.put('/revokePropEvalPermission', gcReview.revokePropEvalPermission);
-gcRouter.put('/grantMidEvalPermission', gcReview.grantMidEvalPermission);
-gcRouter.put('/revokeMidEvalPermission', gcReview.revokeMidEvalPermission);
 
 gcRouter.put('/updateStudent/:rollno', gcFunctions.updateStudent); // GC updates student
 gcRouter.put('/updateFaculty/:facultyid', gcFunctions.updateFaculty); // GC updates faculty
@@ -52,13 +45,19 @@ gcRouter.put('/updateFaculty/:facultyid', gcFunctions.updateFaculty); // GC upda
 gcRouter.delete('/deleteStudent/:rollno', gcFunctions.deleteStudent);// GC deletes student
 gcRouter.delete('/deleteFaculty/:facultyid', gcFunctions.deleteFaculty);// GC deletes faculty
 
+gcRouter.put('/grantPropEvalPermission', gcReview.grantPropEvalPermission);
+gcRouter.put('/revokePropEvalPermission', gcReview.revokePropEvalPermission);
+gcRouter.put('/grantMidEvalPermission', gcReview.grantMidEvalPermission);
+gcRouter.put('/revokeMidEvalPermission', gcReview.revokeMidEvalPermission);
+gcRouter.get('/proposalEvaluationStatus', gcReview.getGCProposalPermissionStatus);
+gcRouter.get('/midEvaluationStatus', gcReview.gcMidPermissionStatus);
 
 gcRouter.get('/gcViewPendingProposals', gcReview.gcAllPendingProposals);
 gcRouter.get('/viewPendingProposal/:rollno', gcReview.gcSelectedProposalDetails);
 gcRouter.put('/approveProposalComments/:rollno', gcReview.gcApproveProposal);
 gcRouter.put('/rejectProposalComments/:rollno', gcReview.gcRejectProposal);
 
-gcRouter.get('/gcViewMidPendingMids', gcReview.gcAllPendingMidEvaluations);
+gcRouter.get('/gcViewPendingMids', gcReview.gcAllPendingMidEvaluations);
 gcRouter.get('/viewPendingMid/:rollno', gcReview.gcSelectedMidEvaluationDetails);
 gcRouter.put('/approveMidComments/:rollno', gcReview.gcApproveMidEvaluation);
 

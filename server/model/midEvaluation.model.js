@@ -5,7 +5,7 @@ const midevaluations = sequelize.define('midevaluations', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    name: {
+    stdname: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -13,12 +13,12 @@ const midevaluations = sequelize.define('midevaluations', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    thesisid: {
-        type: DataTypes.INTEGER,
-        primaryKey: true
-    },
     facname: {
         type: DataTypes.STRING,
+        allowNull: false
+    },
+    facultyid: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     finalEvaluationPermission: {
