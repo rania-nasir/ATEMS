@@ -22,6 +22,10 @@ const proposalevaluations = sequelize.define('proposalevaluations', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    facultyid: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     facname: {
         type: DataTypes.STRING,
         allowNull: false

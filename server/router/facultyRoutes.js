@@ -21,9 +21,13 @@ facRouter.get('/supAllRequests', facReview.getSynopsis); // Fetches the list of 
 facRouter.get('/supReviewRequest/:synopsisId', facReview.getSynopsisDetails); // supervisor selects 1 request out of many, fetches the synopsis details
 facRouter.post('/approve-synopsis/:synopsisId', facReview.approveSynopsis); // supervisor approves
 facRouter.delete('/decline-synopsis/:synopsisId', facReview.declineSynopsis); // supervisor declines
-facRouter.get('/propsalEvaluationStudents', facReview.allProposalEvalations);
+facRouter.get('/supviewPropEvalsStudents', facReview.superisorviewPropEvals);
 facRouter.get('/selectedProposal/:rollno', facReview.selectedProposalDetails);
 facRouter.post('/evaluateProposal/:rollno', facReview.evaluateProposal);
+
+
+//Internals
+facRouter.get('/internalviewPropEvalsStudents', facReview.interalviewPropEvals);
 
 /* MSRC */
 
@@ -38,7 +42,8 @@ facRouter.get('/reviewThesis/:thesisId', hodFunctions.onethesisDetails); // GC f
 facRouter.put('/approveThesis/:thesisId', hodFunctions.hodapproveThesis); // GC approves synopsis which creates thesis
 
 /*Examiners */
-facRouter.get('/viewExaminableThesis', examinerFunctions.getExaminableThesis);
+facRouter.get('/supviewExaminableThesis', examinerFunctions.supViewExaminableThesis);
+facRouter.get('/internalviewExaminableThesis', examinerFunctions.internalViewExaminableThesis);
 facRouter.get('/viewSelectedExaminableThesis/:thesisId', examinerFunctions.getExaminableThesisDetails);
 facRouter.put('/evaluateSelectedThesisMid', examinerFunctions.evaluateMid);
 

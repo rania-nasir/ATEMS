@@ -57,7 +57,6 @@ const fillSynopsis = async (req, res) => {
             const synopsistitle = req.body.synopsistitle;
             const facultyname = req.body.facultyname;
             const studentrollno = req.userId;
-            const stdname = req.body.stdname;
             const potentialareas = req.body.potentialareas;
             const proposalfilename = req.file.filename;
             
@@ -84,18 +83,7 @@ const fillSynopsis = async (req, res) => {
             }
 
             const facultyid = faculty.facultyid;
-
-            const newSynopsis = await synopsis.create({ // Creating Synopsis in the table with the following information
-                synopsistitle,
-                potentialareas,
-                facultyid: facultyid,
-                facultyname: facultyname,
-                rollno: studentrollno,
-                stdname: stdname,
-                synopsisstatus: 'Pending',
-                proposalfilename
-            });
-
+            
             // Email sending
             const student = await students.findOne({
                 where: {
@@ -104,6 +92,19 @@ const fillSynopsis = async (req, res) => {
                 attributes: ['name'],
             });
             const studentname = student.name;
+
+
+            const newSynopsis = await synopsis.create({ // Creating Synopsis in the table with the following information
+                synopsistitle,
+                potentialareas,
+                facultyid: facultyid,
+                facultyname: facultyname,
+                rollno: studentrollno,
+                stdname: studentname,
+                synopsisstatus: 'Pending',
+                proposalfilename
+            });
+
 
             const toEmail = faculty.email;
             const subject = 'New Supervision Request';

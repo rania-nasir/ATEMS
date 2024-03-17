@@ -9,6 +9,8 @@ const { sendMail } = require("../../config/mailer");
 const { Op, Model } = require('sequelize');
 const { midevaluations } = require("../../model/midEvaluation.model");
 
+let isProposalEvaluationApproved = false; // Flag for prop eval status
+let isMidEvaluationApproved = false; // Flag for mid eval status
 
 // fetch all thesis for the logged in gc
 const getThesis = async (req, res) => {
@@ -175,8 +177,14 @@ const approveThesis = async (req, res) => {
 
 
 
+
 const grantPropEvalPermission = async (req, res) => {
     try {
+
+        if (isMidEvaluationApproved) {
+            return res.status(400).json({ error: 'Mid Evaluations are open. Proposal Evaluations cannot be approved at this time.' });
+        }
+
         const allApproved = await thesis.findOne({
             attributes: [
                 [sequelize.fn('COUNT', sequelize.col('thesisid')), 'total'],
@@ -193,31 +201,56 @@ const grantPropEvalPermission = async (req, res) => {
         const hodApprovedCount = allApproved.get('hodCount');
         const gcApprovedCount = allApproved.get('gcCount');
 
-        // console.log('Total theses:', totalTheses);
-        // console.log('Approved HOD count:', hodApprovedCount);
-        // console.log('Approved GC count:', gcApprovedCount);
-
         if (totalTheses > 0 && totalTheses === hodApprovedCount && totalTheses === gcApprovedCount) {
-            const updateResult = await thesis.update(
-                { gcproposalpermission: 'Granted' },
-                { where: {} } // Set gcpermission to 'Granted' for all records
+            // Query to count feedback comments for each MSRC member for each thesis
+            const thesisIDs = await thesis.findAll({ attributes: ['thesisid'] });
+
+            const msrcFeedbackCounts = await Promise.all(
+                thesisIDs.map(async (thesiss) => {
+                    const thesisID = thesiss.thesisid;
+                    const thesisRollNo = await thesis.findOne({
+                        where: { thesisid: thesisID },
+                        attributes: ['rollno']
+                    });
+                    const feedbackCount = await feedbacks.count({
+                        where: {
+                            feedbackType: 'MSRC',
+                            rollno: thesisRollNo ? thesisRollNo.rollno : null
+                        }
+                    });
+                    return feedbackCount;
+                })
             );
 
-            if (updateResult) {
-                res.json({ message: "GC permission granted for all proposal evaluations" });
+            // Check if each thesis has feedback comments from each MSRC member
+            const hasFeedbackFromMSRC = msrcFeedbackCounts.every(count => count === 5); // Assuming totalMSRCMembers holds the total number of MSRC members
+
+            if (hasFeedbackFromMSRC) {
+                // Update GC permission to 'Granted' for all theses
+                const updateResult = await thesis.update(
+                    { gcproposalpermission: 'Granted' },
+                    { where: {} }
+                );
+
+                if (updateResult) {
+                    res.json({ message: "GC permission granted for all proposal evaluations" });
+                } else {
+                    res.json({ message: "Failed to grant GC permission for proposal evaluations" });
+                }
             } else {
-                res.json({ message: "Failed to grant GC permission for proposal evaluations" });
+                res.json({ message: "Not all theses have feedback comments from each MSRC member" });
             }
         } else {
             res.json({ message: "Not all theses have approved HOD and GC permissions" });
         }
+
+        isProposalEvaluationApproved = true;
+
     } catch (error) {
         console.error('Error granting GC permission for proposal evaluations:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
-
-
 
 
 
@@ -239,6 +272,8 @@ const revokePropEvalPermission = async (req, res) => {
 
         }
 
+        isProposalEvaluationApproved = false;
+
     } catch (error) {
         console.error('Error granting GC permission for proposal evaluations:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -246,22 +281,103 @@ const revokePropEvalPermission = async (req, res) => {
 };
 
 
+const getGCProposalPermissionStatus = async (req, res) => {
+    try {
+        // Query to retrieve the value of gcproposalpermission from thesis table
+        const gcProposalPermission = await thesis.findOne({
+            attributes: ['gcproposalpermission'],
+            limit: 1 // Limit to one result as we only need one value
+        });
+
+        // Check if a record was found
+        if (gcProposalPermission) {
+            const permissionValue = gcProposalPermission.gcproposalpermission;
+            res.json({ gcproposalpermission: permissionValue });
+        } else {
+            res.status(404).json({ message: "No thesis record found" });
+        }
+    } catch (error) {
+        console.error('Error retrieving GC proposal permission:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+
 
 const gcAllPendingProposals = async (req, res) => {
     try {
-        const pendingProposals = await proposalevaluations.findAll({
-            where: {
-                gcProposalCommentsReview: 'Pending'
-            },
-            attributes: [
-                [sequelize.literal('DISTINCT "rollno"'), 'rollno'],
-                'stdname',
-                'batch',
-                'semester'
-            ]
+        // Query to retrieve the value of gcproposalpermission from thesis table
+        const gcProposalPermission = await thesis.findOne({
+            attributes: ['gcproposalpermission'],
+            limit: 1 // Limit to one result as we only need one value
         });
 
-        res.json({ pendingProposals });
+        // Check if a record was found
+        if (gcProposalPermission) {
+            const permissionValue = gcProposalPermission.gcproposalpermission;
+
+            if (permissionValue === 'Revoke') {
+                // Query to find all pending proposals
+                const pendingProposals = await proposalevaluations.findAll({
+                    where: {
+                        gcProposalCommentsReview: 'Pending'
+                    },
+                    attributes: [
+                        [sequelize.literal('DISTINCT "rollno"'), 'rollno'],
+                        'stdname',
+                        'batch',
+                        'semester'
+                    ]
+                });
+
+                // Check if all pending proposals have been evaluated by Supervisor and Internals
+                const allProposalsEvaluated = await Promise.all(pendingProposals.map(async (proposal) => {
+                    const { rollno } = proposal;
+
+                    // Query to find thesis record by rollno
+                    const thesisRecord = await thesis.findOne({ where: { rollno } });
+                    if (!thesisRecord) return false;
+
+                    const { internals, supervisorname } = thesisRecord;
+
+                    // Check if each internal has provided feedback for the proposal
+                    const internalFeedbacks = await proposalevaluations.findAll({
+                        where: {
+                            rollno,
+                            facname: internals,
+                            gcProposalCommentsReview: 'Pending'
+                        }
+                    });
+                    const internsEvaluated = internals.every(internal => {
+                        return internalFeedbacks.some(feedback => feedback.facname === internal);
+                    });
+
+                    // Check if supervisor has provided feedback for the proposal
+                    const supervisorFeedback = await proposalevaluations.findOne({
+                        where: {
+                            rollno,
+                            facname: supervisorname,
+                            gcProposalCommentsReview: 'Pending'
+                        }
+                    });
+                    const supervisorEvaluated = supervisorFeedback !== null;
+
+                    return supervisorEvaluated && internsEvaluated;
+                }));
+
+                // If all proposals are evaluated, send response
+                if (allProposalsEvaluated.every(evaluated => evaluated)) {
+                    res.json({ pendingProposals });
+                } else {
+                    res.json({ message: "Not all pending proposals have been evaluated by Supervisor and Internals" });
+                }
+            } else {
+                res.json({ message: "Prposal are in th phase of Evaluation. Revoke the proposals permssion to complete the action" });
+            }
+        } else {
+            res.status(404).json({ message: "No thesis record found" });
+        }
     } catch (error) {
         console.error('Error fetching pending proposals:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -374,8 +490,6 @@ const gcApproveProposal = async (req, res) => {
 
 
 
-
-
 const gcRejectProposal = async (req, res) => {
     try {
         const { rollno } = req.params;
@@ -422,8 +536,16 @@ const gcRejectProposal = async (req, res) => {
     }
 };
 
+
+
+
 const grantMidEvalPermission = async (req, res) => {
     try {
+
+        if (isProposalEvaluationApproved) {
+            return res.status(400).json({ error: 'Proposal Evaluations are open. Mid Evaluations cannot be approved at this time.' });
+        }
+
         const facultyId = req.userId;
         // Check if the faculty has the GC role
         const faculty = await faculties.findOne({
@@ -439,19 +561,46 @@ const grantMidEvalPermission = async (req, res) => {
             return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
         }
 
-        // Update all records in proposalevaluations to set midEvaluationPermission to true
+        // Check if gcproposalpermission is 'Revoke'
+        const gcPermission = await thesis.findOne({
+            attributes: ['gcproposalpermission'],
+            limit: 1
+        });
+
+        if (!gcPermission || gcPermission.gcproposalpermission !== 'Revoke') {
+            return res.status(403).json({ error: 'Proposal Evaluations permission is not revoked' });
+        }
+
+        // Check if all gcProposalCommentsReview in proposalEvaluations table are 'Approved'
+        const allApproved = await proposalevaluations.findAll({
+            where: {
+                gcProposalCommentsReview: {
+                    [Op.ne]: 'Approved' // Find records where gcProposalCommentsReview is not 'Approved'
+                }
+            }
+        });
+
+        if (allApproved.length > 0) {
+            return res.status(400).json({ error: 'All proposals are not completely evalautaed yet.' });
+        }
+
+        // Update midEvaluationPermission for all records
         await proposalevaluations.update(
             { midEvaluationPermission: true },
-            { where: {} } // No specific where clause needed, as we're updating all records
+            { where: {} }
         );
 
-        return res.json({ message: 'Mid-evaluation permissions successfully updated for all proposal evaluations.' });
+        isMidEvaluationApproved = true;
+
+        return res.json({ message: 'Mid-evaluation permissions successfully granted.' });
+
 
     } catch (error) {
         console.error('Error setting mid-evaluation permissions:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 const revokeMidEvalPermission = async (req, res) => {
     try {
@@ -476,7 +625,8 @@ const revokeMidEvalPermission = async (req, res) => {
             { where: {} } // No specific where clause needed, as we're updating all records
         );
 
-        return res.json({ message: 'Mid-evaluation permissions successfully updated for all proposal evaluations.' });
+        isMidEvaluationApproved = false;
+        return res.json({ message: 'Mid-evaluation permissions revoked for all record.' });
 
     } catch (error) {
         console.error('Error setting mid-evaluation permissions:', error);
@@ -484,10 +634,116 @@ const revokeMidEvalPermission = async (req, res) => {
     }
 };
 
+
+const gcMidPermissionStatus = async (req, res) => {
+    try {
+        // Query to retrieve the value of midEvaluationPermission from proposalevaluations table
+        const midEvaluation = await proposalevaluations.findOne({
+            attributes: ['midEvaluationPermission'],
+            limit: 1 // Limit to one result as we only need one value
+        });
+
+        // Check if a record was found
+        if (midEvaluation) {
+            const midEvaluationValue = midEvaluation.midEvaluationPermission;
+            res.json({ midEvaluationPermission: midEvaluationValue });
+        } else {
+            res.status(404).json({ message: "No Mid Evaluation record found" });
+        }
+    } catch (error) {
+        console.error('Error retrieving Mid Evaluation permission:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+
+// const gcAllPendingMidEvaluations = async (req, res) => {
+//     try {
+//         const facultyId = req.userId;
+//         const faculty = await faculties.findOne({
+//             where: {
+//                 facultyid: facultyId,
+//                 role: {
+//                     [Op.contains]: ["GC"]
+//                 },
+//             }
+//         });
+
+//         if (!faculty) {
+//             return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+//         }
+
+//         const pendingMidReviews = await midevaluations.findAll({
+//             where: {
+//                 gcMidCommentsReview: 'Pending'
+//             },
+//             attributes: [
+//                 [sequelize.literal('DISTINCT "rollno"'), 'rollno'],
+//                 'stdname',
+//                 'rollno',
+//                 'thesistitle',
+//             ]
+//         });
+
+//         const allMidReviewsEvaluated = await Promise.all(pendingMidReviews.map(async (review) => {
+//             const { rollno } = review;
+
+//             const supervisorFeedback = await midevaluations.findOne({
+//                 where: {
+//                     rollno,
+//                     facname: 'Supervisor',
+//                     gcMidCommentsReview: 'Pending'
+//                 }
+//             });
+
+//             const supervisorEvaluated = supervisorFeedback !== null;
+
+//             const internalFeedbacks = await midevaluations.findAll({
+//                 where: {
+//                     rollno,
+//                     facname: { [Op.not]: 'Supervisor' },
+//                     gcMidCommentsReview: 'Pending'
+//                 }
+//             });
+//             const internalsEvaluated = internalFeedbacks.length === 0;
+
+//             return supervisorEvaluated && internalsEvaluated;
+//         }));
+
+//         // Check if all mid reviews are evaluated by Supervisor and Internals
+//         if (!allMidReviewsEvaluated.every(evaluated => evaluated)) {
+//             return res.json({ message: "Not all pending mid evaluations have been evaluated by Supervisor and Internals" });
+//         }
+
+//         // Fetch midEvaluationPermission
+//         const midEvaluation = await proposalevaluations.findOne({
+//             attributes: ['midEvaluationPermission'],
+//             limit: 1 // Limit to one result as we only need one value
+//         });
+
+//         // Check if a record was found
+//         if (!midEvaluation) {
+//             return res.status(403).json({ error: 'Mid evaluation permission record not found' });
+//         }
+
+//         // Check if midEvaluationPermission is true (indicating it's not closed yet)
+//         if (midEvaluation.midEvaluationPermission === true) {
+//             return res.status(403).json({ error: 'Mid evaluation permission are not closed yet.' });
+//         }
+
+//         res.json({ pendingMidReviews });
+        
+//     } catch (error) {
+//         console.error('Error fetching pending mid evaluations:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
+
+
 const gcAllPendingMidEvaluations = async (req, res) => {
     try {
         const facultyId = req.userId;
-        // Check if the faculty has the GC role
         const faculty = await faculties.findOne({
             where: {
                 facultyid: facultyId,
@@ -500,6 +756,24 @@ const gcAllPendingMidEvaluations = async (req, res) => {
         if (!faculty) {
             return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
         }
+
+        // Fetch midEvaluationPermission
+        const midEvaluation = await proposalevaluations.findOne({
+            attributes: ['midEvaluationPermission'],
+            limit: 1 // Limit to one result as we only need one value
+        });
+
+        // Check if a record was found
+        if (!midEvaluation) {
+            return res.status(403).json({ error: 'Mid evaluation permission record not found' });
+        }
+
+        // Check if midEvaluationPermission is true (indicating it's not closed yet)
+        if (midEvaluation.midEvaluationPermission === true) {
+            return res.status(403).json({ error: 'Mid evaluations are not closed yet' });
+        }
+
+        // Find all pending mid evaluations
         const pendingMidReviews = await midevaluations.findAll({
             where: {
                 gcMidCommentsReview: 'Pending'
@@ -507,17 +781,21 @@ const gcAllPendingMidEvaluations = async (req, res) => {
             attributes: [
                 [sequelize.literal('DISTINCT "rollno"'), 'rollno'],
                 'stdname',
-                'batch',
-                'semester'
+                'rollno',
+                'thesistitle',
             ]
         });
 
         res.json({ pendingMidReviews });
+
     } catch (error) {
         console.error('Error fetching pending mid evaluations:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+
+
 
 const gcSelectedMidEvaluationDetails = async (req, res) => {
 
@@ -661,8 +939,10 @@ module.exports =
     gcSelectedProposalDetails,
     gcApproveProposal,
     gcRejectProposal,
+    getGCProposalPermissionStatus,
     grantMidEvalPermission,
     revokeMidEvalPermission,
+    gcMidPermissionStatus,
     gcAllPendingMidEvaluations,
     gcSelectedMidEvaluationDetails,
     gcApproveMidEvaluation
