@@ -42,10 +42,16 @@ facRouter.get('/reviewThesis/:thesisId', hodFunctions.onethesisDetails); // GC f
 facRouter.put('/approveThesis/:thesisId', hodFunctions.hodapproveThesis); // GC approves synopsis which creates thesis
 
 /*Examiners */
+/* Mid */
 facRouter.get('/supviewExaminableThesis', examinerFunctions.supViewExaminableThesis);
 facRouter.get('/internalviewExaminableThesis', examinerFunctions.internalViewExaminableThesis);
 facRouter.get('/viewSelectedExaminableThesis/:thesisId', examinerFunctions.getExaminableThesisDetails);
 facRouter.put('/evaluateSelectedThesisMid', examinerFunctions.evaluateMid);
+/* Final */
+facRouter.get('/supviewFinalExaminableThesis', examinerFunctions.supViewFinalExaminableThesis);
+facRouter.get('/internalviewFinalExaminableThesis', examinerFunctions.internalViewFinalExaminableThesis);
+facRouter.get('/viewSelectedFinalExaminableThesis/:thesisId', examinerFunctions.getFinalExaminableThesisDetails);
+facRouter.put('/evaluateSelectedThesisFinal', examinerFunctions.evaluateFinal);
 
 
 /* Feedback */

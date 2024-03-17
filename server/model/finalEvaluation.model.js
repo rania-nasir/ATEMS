@@ -5,7 +5,7 @@ const finalevaluations = sequelize.define('finalevaluations', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    name: {
+    stdname: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -13,12 +13,12 @@ const finalevaluations = sequelize.define('finalevaluations', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    thesisid: {
-        type: DataTypes.INTEGER,
-        primaryKey: true
-    },
     facname: {
         type: DataTypes.STRING,
+        allowNull: false
+    },
+    facultyid: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     literatureReviewRank: {
@@ -34,52 +34,52 @@ const finalevaluations = sequelize.define('finalevaluations', {
         type: DataTypes.STRING,
         allowNull: true // Nullable because it's only required if literatureReviewRank is 'g'
     },
-    comparativeAnalysisThorough: {
+    comparativeAnalysisThorough: { // 2
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    researchGapClearlyIdentified: {
+    researchGapClearlyIdentified: { // 3
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    researchProblemClearlyDefined: {
+    researchProblemClearlyDefined: { // 4
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    problemContextInLiterature: {
+    problemContextInLiterature: { // 5
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    understandingOfSolution: {
+    understandingOfSolution: { // 6
         type: DataTypes.ENUM,
         values: ['e', 'f', 'g', 'h'],
         allowNull: false
     },
-    proposedWorkEvaluation: {
+    proposedWorkEvaluation: { // 7
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    reportQuality: {
+    reportQuality: { // 8
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    reportOrganizationAcceptable: {
+    reportOrganizationAcceptable: { // 9
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    communicationSkills: {
+    communicationSkills: { // 10
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    questionsHandling: {
+    questionsHandling: { // 11
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
