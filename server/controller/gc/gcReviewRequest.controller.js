@@ -8,9 +8,11 @@ const { proposalevaluations } = require("../../model/proposalEvaluaton.model");
 const { sendMail } = require("../../config/mailer");
 const { Op, Model } = require('sequelize');
 const { midevaluations } = require("../../model/midEvaluation.model");
+const { finalevaluations } = require("../../model/finalEvaluation.model")
 
 let isProposalEvaluationApproved = false; // Flag for prop eval status
 let isMidEvaluationApproved = false; // Flag for mid eval status
+let isFinalEvaluationApproved = false; // Flag for final eval status
 
 // fetch all thesis for the logged in gc
 const getThesis = async (req, res) => {
@@ -733,7 +735,7 @@ const gcMidPermissionStatus = async (req, res) => {
 //         }
 
 //         res.json({ pendingMidReviews });
-        
+
 //     } catch (error) {
 //         console.error('Error fetching pending mid evaluations:', error);
 //         res.status(500).json({ error: 'Internal server error' });
@@ -925,6 +927,320 @@ const gcApproveMidEvaluation = async (req, res) => {
     }
 };
 
+/* Final */
+
+const grantFinalEvalPermission = async (req, res) => {
+    try {
+
+        if (isProposalEvaluationApproved) {
+            return res.status(400).json({ error: 'Proposal Evaluations are open. Final Evaluations cannot be approved at this time.' });
+        }
+
+        if (isMidEvaluationApproved) {
+            return res.status(400).json({ error: 'Mid Evaluations are open. Final Evaluations cannot be approved at this time.' });
+        }
+
+        const facultyId = req.userId;
+        // Check if the faculty has the GC role
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        // Check if gcproposalpermission is 'Revoke'
+        const gcProposalPermission = await thesis.findOne({
+            attributes: ['gcproposalpermission'],
+            limit: 1
+        });
+
+        if (!gcProposalPermission || gcProposalPermission.gcproposalpermission !== 'Revoke') {
+            return res.status(403).json({ error: 'Proposal Evaluations permission is not revoked' });
+        }
+
+        // Check if midPermission is false
+        const gcMidPermission = await proposalevaluations.findOne({
+            attributes: ['midEvaluationPermission'],
+            limit: 1
+        });
+
+        if (!gcMidPermission || gcMidPermission.midEvaluationPermission !== false) {
+            return res.status(403).json({ error: 'Mid Evaluations permission is not revoked' });
+        }
+
+        // Check if all gcProposalCommentsReview in proposalEvaluations table are 'Approved'
+        const allApproved = await midevaluations.findAll({
+            where: {
+                gcMidCommentsReview: {
+                    [Op.ne]: 'Approved' // Find records where gcProposalCommentsReview is not 'Approved'
+                }
+            }
+        });
+
+        if (allApproved.length > 0) {
+            return res.status(400).json({ error: 'All mid evaluations are not completely evaluated yet.' });
+        }
+
+        // Update midEvaluationPermission for all records
+        await midevaluations.update(
+            { finalEvaluationPermission: true },
+            { where: {} }
+        );
+
+        isFinalEvaluationApproved = true;
+
+        return res.json({ message: 'Final-evaluation permissions successfully granted.' });
+
+
+    } catch (error) {
+        console.error('Error setting final-evaluation permissions:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const revokeFinalEvalPermission = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        // Check if the faculty has the GC role
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        // Update all records in midevaluations to set finalEvaluationPermission to false
+        await midevaluations.update(
+            { finalEvaluationPermission: false },
+            { where: {} } // No specific where clause needed, as we're updating all records
+        );
+
+        isFinalEvaluationApproved = false;
+        return res.json({ message: 'Final-evaluation permissions revoked for all record.' });
+
+    } catch (error) {
+        console.error('Error setting Final-evaluation permissions:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const gcFinalPermissionStatus = async (req, res) => {
+    try {
+        // Query to retrieve the value of finalEvaluationPermission from midevaluations table
+        const finalEvaluation = await midevaluations.findOne({
+            attributes: ['finalEvaluationPermission'],
+            limit: 1 // Limit to one result as we only need one value
+        });
+
+        // Check if a record was found
+        if (finalEvaluation) {
+            const finalEvaluationValue = finalEvaluation.finalEvaluationPermission;
+            res.json({ finalEvaluationPermission: finalEvaluationValue });
+        } else {
+            res.status(404).json({ message: "No Final Evaluation record found" });
+        }
+    } catch (error) {
+        console.error('Error retrieving Final Evaluation permission:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const gcAllPendingFinalEvaluations = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        // Fetch finalEvaluationPermission
+        const finalEvaluation = await midevaluations.findOne({
+            attributes: ['finalEvaluationPermission'],
+            limit: 1 // Limit to one result as we only need one value
+        });
+
+        // Check if a record was found
+        if (!finalEvaluation) {
+            return res.status(403).json({ error: 'Final evaluation permission record not found' });
+        }
+
+        // Check if finalEvaluationPermission is true (indicating it's not closed yet)
+        if (finalEvaluation.finalEvaluationPermission === true) {
+            return res.status(403).json({ error: 'Final evaluations are not closed yet' });
+        }
+
+        // Find all pending final evaluations
+        const pendingFinalReviews = await finalevaluations.findAll({
+            where: {
+                gcFinalCommentsReview: 'Pending'
+            },
+            attributes: [
+                [sequelize.literal('DISTINCT "rollno"'), 'rollno'],
+                'stdname',
+                'rollno',
+                'thesistitle',
+            ]
+        });
+
+        res.json({ pendingFinalReviews });
+
+    } catch (error) {
+        console.error('Error fetching pending final evaluations:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const gcSelectedFinalEvaluationDetails = async (req, res) => {
+
+    try {
+        const facultyId = req.userId;
+        // Check if the faculty has the GC role
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+        const { rollno } = req.params;
+
+        const selectedFinalEvaluation = await finalevaluations.findAll({
+            where: {
+                rollno
+            }
+        });
+
+        if (selectedFinalEvaluation) {
+            res.json({ selectedFinalEvaluation });
+        } else {
+            res.status(404).json({ error: 'Final Evaluation not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching Final evaluation details:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+};
+
+const gcApproveFinalEvaluation = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        // Check if the faculty has the GC role
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        const { rollno } = req.params;
+
+        // Update all final evaluations for the given rollno
+        const [updatedRows] = await finalevaluations.update(
+            { gcFinalCommentsReview: 'Approved' },
+            { where: { rollno } }
+        );
+
+        if (updatedRows > 0) {
+
+            // Find the approved final evaluations for the given rollno
+            const approvedFinalEvaluation = await finalevaluations.findAll({
+                where: {
+                    rollno,
+                    gcFinalCommentsReview: 'Approved'
+                }
+            });
+
+            if (approvedFinalEvaluation.length > 0) {
+                // Iterate through each approved final evaluation
+                for (const finalEvaluation of approvedFinalEvaluation) {
+                    // Extract comments from the approved final evaluation
+                    const comments = finalEvaluation.comments;
+
+                    // Create a feedback record for the approved final evaluation
+                    await feedbacks.create({
+                        rollno,
+                        facultyid: finalEvaluation.facultyid,
+                        facultyname: finalEvaluation.facname,
+                        feedbackContent: comments,
+                        feedbackType: 'Final1',
+                    });
+                }
+
+
+
+                // Update the comingevaluation status in the students model
+                const [updatedStudentCount] = await students.update(
+                    {
+                        comingevaluation: 'Mid2',
+                        reevaluationstatus: 'false'
+                    },
+                    { where: { rollno } }
+                );
+
+                if (updatedStudentCount > 0) {
+                    // Get student details
+                    const student = await students.findOne({ where: { rollno } });
+
+                    if (student) {
+                        // Send approval email to student
+                        const subject = 'Final Evaluation Approval';
+                        const text = 'Your Final Evaluation has been approved, You can now view the feedback';
+                        await sendMail(student.email, subject, text);
+
+                        res.json({ message: 'Final Evaluation approved, comingevaluation status updated, and email sent to student' });
+                    } else {
+                        res.status(404).json({ error: 'Student not found' });
+                    }
+                } else {
+                    res.status(404).json({ error: 'Final evaluation not approved or student not found' });
+                }
+            } else {
+                res.status(404).json({ error: 'No Final evaluation found or not approved' });
+            }
+        } else {
+            res.status(404).json({ error: 'No Final evaluation found for the student' });
+        }
+    } catch (error) {
+        console.error('Error approving Final evaluation:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+
 
 
 module.exports =
@@ -945,5 +1261,11 @@ module.exports =
     gcMidPermissionStatus,
     gcAllPendingMidEvaluations,
     gcSelectedMidEvaluationDetails,
-    gcApproveMidEvaluation
+    gcApproveMidEvaluation,
+    grantFinalEvalPermission,
+    revokeFinalEvalPermission,
+    gcFinalPermissionStatus,
+    gcAllPendingFinalEvaluations,
+    gcSelectedFinalEvaluationDetails,
+    gcApproveFinalEvaluation
 };
