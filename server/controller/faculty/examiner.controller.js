@@ -49,6 +49,17 @@ const supViewExaminableThesis = async (req, res) => {
             }
         }
 
+        // Fetch midEvaluationPermission
+        const midEvaluation = await proposalevaluations.findOne({
+            attributes: ['midEvaluationPermission'],
+            limit: 1 // Limit to one result as we only need one value
+        });
+
+        // Check if midEvaluationPermission is true (indicating it's not closed yet)
+        if (!midEvaluation || midEvaluation.midEvaluationPermission !== true) {
+            return res.status(403).json({ error: 'Mid evaluations are not open yet.' });
+        }
+
         // Respond with the filtered list of examinable thesis papers
         return res.json(examinableThesisWithPermission);
 
@@ -99,6 +110,16 @@ const internalViewExaminableThesis = async (req, res) => {
             if (proposalEvaluation) {
                 examinableThesisWithPermission.push(eachThesis);
             }
+        }
+
+        const midEvaluation = await proposalevaluations.findOne({
+            attributes: ['midEvaluationPermission'],
+            limit: 1 // Limit to one result as we only need one value
+        });
+
+        // Check if midEvaluationPermission is true (indicating it's not closed yet)
+        if (!midEvaluation || midEvaluation.midEvaluationPermission !== true) {
+            return res.status(403).json({ error: 'Mid evaluations are not open yet.' });
         }
 
         // Respond with the filtered list of examinable thesis papers
@@ -306,6 +327,16 @@ const supViewFinalExaminableThesis = async (req, res) => {
             }
         }
 
+        const finalEvaluation = await midevaluations.findOne({
+            attributes: ['finalEvaluationPermission'],
+            limit: 1 // Limit to one result as we only need one value
+        });
+
+        // Check if midEvaluationPermission is true (indicating it's not closed yet)
+        if (!finalEvaluation || finalEvaluation.finalEvaluationPermission !== true) {
+            return res.status(403).json({ error: 'Final evaluations are not open yet.' });
+        }
+
         // Respond with the filtered list of examinable thesis papers
         return res.json(examinableThesisWithPermission);
 
@@ -354,6 +385,16 @@ const internalViewFinalExaminableThesis = async (req, res) => {
             if (midEvaluation) {
                 examinableThesisWithPermission.push(eachThesis);
             }
+        }
+
+        const finalEvaluation = await midevaluations.findOne({
+            attributes: ['finalEvaluationPermission'],
+            limit: 1 // Limit to one result as we only need one value
+        });
+
+        // Check if midEvaluationPermission is true (indicating it's not closed yet)
+        if (!finalEvaluation || finalEvaluation.finalEvaluationPermission !== true) {
+            return res.status(403).json({ error: 'Final evaluations are not open yet.' });
         }
 
         // Respond with the filtered list of examinable thesis papers
