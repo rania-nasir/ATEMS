@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react';
 import Cookie from 'js-cookie';
 import { NavLink } from 'react-router-dom';
 
-export default function AllProposalEvaluations() {
+export default function AllInternalPropEvaluations() {
     const [thesisData, setThesisData] = useState([]);
 
     useEffect(() => {
         async function fetchThesisData() {
             try {
-                const response = await fetch('http://localhost:5000/faculty/supviewPropEvalsStudents', {
-                    method: 'GET',
+                const response = await fetch('http://localhost:5000/faculty/internalviewPropEvalsStudents', {
+                    method: 'GET',    
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `${Cookie.get('jwtoken')}`
@@ -18,7 +18,6 @@ export default function AllProposalEvaluations() {
                 if (response.ok) {
                     const data = await response.json();
                     setThesisData(data.students);
-                    console.log('Thesis Data Student Detail --> ', thesisData);
                 } else {
                     throw new Error('Failed to fetch data');
                 }
@@ -66,14 +65,14 @@ export default function AllProposalEvaluations() {
                         <tbody>
                             {thesisData && thesisData.length > 0 ? (
                                 thesisData.map(student => (
-                                    <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={student?.rollno}>
-                                        <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{student?.rollno}</td>
-                                        <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{student?.program}</td>
-                                        <td className="px-4 py-4">{student?.thesis?.thesistitle}</td>
-                                        <td className="px-4 py-4">{student?.thesis?.supervisorname}</td>
-                                        <td className="px-4 py-4">{student?.thesis?.internals.join(', ')}</td>
+                                    <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={student.rollno}>
+                                        <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{student.rollno}</td>
+                                        <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{student.program}</td>
+                                        <td className="px-4 py-4">{student.thesis.thesistitle}</td>
+                                        <td className="px-4 py-4">{student.thesis.supervisorname}</td>
+                                        <td className="px-4 py-4">{student.thesis.internals.join(', ')}</td>
                                         <td className="px-6 py-4">
-                                            <NavLink to={student?.rollno ? `/selectedProposal/${student.rollno}` : '#'} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            <NavLink to={`/selectedProposal/${student.rollno}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                 View Details
                                             </NavLink>
                                         </td>
@@ -84,7 +83,6 @@ export default function AllProposalEvaluations() {
                                     <td className='px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white' colSpan="6">No proposal found</td>
                                 </tr>
                             )}
-
                         </tbody>
 
                     </table>

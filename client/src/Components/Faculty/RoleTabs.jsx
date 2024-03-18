@@ -6,6 +6,7 @@ import GetSynopsis from './GetSynopsis';
 import MSRCAllThesis from './MSRCAllThesis';
 import HODGetThesis from './HOD/GetThesis'
 import AllProposalEvaluations from './Supervisor/AllProposalEvaluations';
+import AllInternalPropEvaluations from './Internal/AllInternalPropEvaluations';
 
 const RoleTabs = () => {
     const { role } = useContext(RoleContext);
@@ -13,7 +14,7 @@ const RoleTabs = () => {
 
     const tabs = [
         { role: 'Supervisor', panels: ['Thesis Requests', 'Proposal Defense'] },
-        { role: 'Internal', panels: ['Evaluation', 'Feedback'] },
+        { role: 'Internal', panels: ['Proposal Defense Internal Evaluations', 'Feedback'] },
         { role: 'MSRC', panels: ['MSRC Requests'] },
         { role: 'HOD', panels: ['Thesis Approval Requests'] },
     ];
@@ -38,8 +39,10 @@ const RoleTabs = () => {
                                         <AllProposalEvaluations/>
                                         </>
                                     )}
-                                    {panel === "Evaluation" && (
-                                        <p>Evaluation</p>
+                                    {panel === "Proposal Defense Internal Evaluations" && (
+                                        <>
+                                        <AllInternalPropEvaluations/>
+                                        </>
                                     )}
                                     {panel === "Feedback" && (
                                         <p>Feedback</p>

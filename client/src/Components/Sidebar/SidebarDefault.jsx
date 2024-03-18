@@ -16,6 +16,7 @@ import Managmentsicon from '../../Icons/Managments.png';
 import Managingsicon from '../../Icons/Managings.png';
 import formicon from '../../Icons/form.png';
 import feedbackicon from '../../Icons/feedback.png'
+import Permissionicon from '../../Icons/permissions.png';
 
 
 const SidebarDefault = () => {
@@ -97,7 +98,13 @@ const SidebarDefault = () => {
         },
         {
             id: 8,
-            title: 'Evaluations',
+            title: 'Evaluation Permissions',
+            path: '/Permissions',
+            iconsrc: Permissionicon,
+        },
+        {
+            id: 9,
+            title: 'Thesis Evaluations',
             path: '/Evaluations',
             iconsrc: evaluationsicon,
         }
@@ -240,7 +247,7 @@ const SidebarDefault = () => {
                 <div className="text-gray-900 px-2 pt-4 flex flex-col border-r border-gray-350">
                     {menuItems.map((menuItem) => {
 
-                        console.log('role = ', role);
+                        console.log('role = ', role);   
                         console.log('role = ', role.includes("Supervisor"));
 
                         return (
