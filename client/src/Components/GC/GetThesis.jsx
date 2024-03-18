@@ -9,6 +9,7 @@ export default function GetThesis() {
         async function fetchthesisData() {
             try {
                 const response = await fetch('http://localhost:5000/gc/ReviewRequest', {
+                    method: 'GET',    
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `${Cookie.get('jwtoken')}`
