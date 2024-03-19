@@ -34,6 +34,9 @@ import MSRCAllThesis from './Components/Faculty/MSRCAllThesis';
 import MSRCThesisDetails from './Components/Faculty/MSRCThesisDetails';
 import AllProposalEvaluations from './Components/Faculty/Supervisor/AllProposalEvaluations';
 import AllInternalPropEvaluations from './Components/Faculty/Internal/AllInternalPropEvaluations';
+import AllMid1Evaluations from './Components/Faculty/Supervisor/AllMid1Evaluations';
+import SelectedMid1Details from './Components/Faculty/Supervisor/SelectedMid1Details';
+import AllMid1InternalEvaluations from './Components/Faculty/Internal/AllMid1InternalEvaluations';
 
 // Student Components
 import Studenthome from './Components/Student/Studenthome'
@@ -58,6 +61,7 @@ import PanelTime from './Components/GC/PanelTime';
 import Permissions from './Components/GC/Permissions';
 import Evaluations from './Components/GC/Evaluations';
 import EvaluationDetails from './Components/GC/EvaluationDetails';
+import EvaluationMid1Details from './Components/GC/EvaluationMid1Details';
 
 // Other Components
 import NotFoundPage from './Components/Error/NotFoundPage'
@@ -186,110 +190,117 @@ function App() {
 
             <RoleContext.Provider value={{ role, setRole }}>
               {/* <ThesisContext.Provider value={{ thesis, setThesis }}> */}
-                <div style={{ display: "flex" }}>
+              <div style={{ display: "flex" }}>
 
-                  {userDetails.userType && <SidebarDefault />}
+                {userDetails.userType && <SidebarDefault />}
 
+                <div className='w-full'>
                   <div className='w-full'>
-                    <div className='w-full'>
-                      <Routes>
+                    <Routes>
 
-                        {/* Main Page  */}
-                        {!authToken ? (
-                          <>
-                            <Route path='/' element={<LandingPage />} />
-                            {/* Login Pages  */}
-                            <Route path='/login' element={<LoginPage />} />
-                            <Route path='/gclogin' element={<GClogin />} />
-                          </>
-                        ) : (
-                          // Conditional rendering based on userType
-                          <>
-                            {userDetails.userType === 'faculty' && (
-                              // Render faculty pages for faculty user
+                      {/* Main Page  */}
+                      {!authToken ? (
+                        <>
+                          <Route path='/' element={<LandingPage />} />
+                          {/* Login Pages  */}
+                          <Route path='/login' element={<LoginPage />} />
+                          <Route path='/gclogin' element={<GClogin />} />
+                        </>
+                      ) : (
+                        // Conditional rendering based on userType
+                        <>
+                          {userDetails.userType === 'faculty' && (
+                            // Render faculty pages for faculty user
 
-                              <>
+                            <>
 
-                                <Route path='/' element={<Facultyhome />} />
-                                <Route path='viewAnnouncement' element={<FacultyviewAnnouncement />} />
-                                <Route path='/Supervisor' element={<SupervisorComp />} />
-                                <Route path='/MSRC' element={<MSRCComp />} />
-                                <Route path='/Internal' element={<InternalComp />} />
-                                <Route path='/HOD' element={<HODComp />} />
+                              <Route path='/' element={<Facultyhome />} />
+                              <Route path='viewAnnouncement' element={<FacultyviewAnnouncement />} />
+                              <Route path='/Supervisor' element={<SupervisorComp />} />
+                              <Route path='/MSRC' element={<MSRCComp />} />
+                              <Route path='/Internal' element={<InternalComp />} />
+                              <Route path='/HOD' element={<HODComp />} />
 
-                                {isSupervisor && (
-                                  <>
-                                    <Route path='/supAllRequests' element={<GetSynopsis />} />
-                                    <Route path='/supReviewRequest/:synopsisid' element={<GetSynopsisDetails />} />
-                                    <Route path='/AllProposalEvaluations' element={<AllProposalEvaluations />} />
-                                    <Route path='/selectedProposal/:rollno' element={<SelectedProposalDetails />} />
-                                  </>
-                                )}
-                                {isMSRC && (
-                                  <>
-                                    <Route path='/MSRCAllThesis' element={<MSRCAllThesis />} />
-                                    <Route path='/MSRCThesisDetails/:thesisid' element={<MSRCThesisDetails />} />
-                                  </>
-                                )}
-                                {isInternal && (
-                                  <>
+                              {isSupervisor && (
+                                <>
+                                  <Route path='/supAllRequests' element={<GetSynopsis />} />
+                                  <Route path='/supReviewRequest/:synopsisid' element={<GetSynopsisDetails />} />
+                                  <Route path='/AllProposalEvaluations' element={<AllProposalEvaluations />} />
+                                  <Route path='/selectedProposal/:rollno' element={<SelectedProposalDetails />} />
+                                  <Route path='/AllMid1Evaluations' element={<AllMid1Evaluations />} />
+                                  <Route path='/viewSelectedExaminableThesis/:thesisId' element={<SelectedMid1Details />} />
+
+                                </>
+                              )}
+                              {isMSRC && (
+                                <>
+                                  <Route path='/MSRCAllThesis' element={<MSRCAllThesis />} />
+                                  <Route path='/MSRCThesisDetails/:thesisid' element={<MSRCThesisDetails />} />
+                                </>
+                              )}
+                              {isInternal && (
+                                <>
                                   <Route path='/AllInternalProposalEvaluations' element={<AllInternalPropEvaluations />} />
                                   <Route path='/selectedProposal/:rollno' element={<SelectedProposalDetails />} />
-                                  </>
-                                )}
-                                {isHOD && (
-                                  <>
-                                    <Route path='/reviewThesis/:thesisid' element={<HODGetThesisDetails />} />
-                                  </>
-                                )}
-                                <Route path='/RoleTabs' element={<RoleTabs />} />
-                              </>
-                            )}
-                            {userDetails.userType === 'student' && (
-                              // Render student pages for student user
-                              <>
-                                <Route path='/' element={<Studenthome />} />
-                                <Route path='/synopsisForm' element={<SynopsisForm />} />
-                                <Route path='/fillSynopsis' element={<FillSynopsis />} />
-                                <Route path='/viewAnnouncement' element={<StudentviewAnnouncement />} />
-                                <Route path='/viewFeedback' element={<ViewFeedback />} />
-                                {/* ... (other student routes) */}
-                              </>
-                            )}
-                            {
-                              userDetails.userType === 'gc' && (
-                                // Render gc pages for gc user
-                                <>
-                                  <Route path='/' element={<GCDashboard />} />
-                                  <Route path='/addstudent' element={<AddStudent />} />
-                                  <Route path='/addfaculty' element={<AddFaculty />} />
-                                  <Route path='/viewstudent' element={<ViewStudent />} />
-                                  <Route path='/viewfaculty' element={<ViewFaculty />} />
-                                  <Route path='/updateFaculty/:facultyid' element={<UpdateFaculty />} />
-                                  <Route path='/updateStudent/:rollno' element={<UpdateStudent />} />
-                                  <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
-                                  <Route path='/viewAllThesis' element={<ThesisRecord />} />
-                                  <Route path='/ReviewRequest' element={<GetThesis />} />
-                                  <Route path='/ReviewRequest/:thesisid' element={<GetThesisDetails />} />
-                                  <Route path='/PanelTimelines' element={<PanelTime />} />
-                                  <Route path='/Permissions' element={<Permissions />} />
-                                  <Route path='/Evaluations' element={<Evaluations />} />
-                                  <Route path='viewPendingProposal/:rollno' element={<EvaluationDetails />} />
-                                  {/* ... (other gc routes) */}
+                                  <Route path='/AllMid1InternalEvaluations' element={<AllMid1InternalEvaluations />} />
+                                  <Route path='/viewSelectedExaminableThesis/:thesisId' element={<SelectedMid1Details />} />
+
                                 </>
-                              )
-                            }
-                          </>
-                        )}
+                              )}
+                              {isHOD && (
+                                <>
+                                  <Route path='/reviewThesis/:thesisid' element={<HODGetThesisDetails />} />
+                                </>
+                              )}
+                              <Route path='/RoleTabs' element={<RoleTabs />} />
+                            </>
+                          )}
+                          {userDetails.userType === 'student' && (
+                            // Render student pages for student user
+                            <>
+                              <Route path='/' element={<Studenthome />} />
+                              <Route path='/synopsisForm' element={<SynopsisForm />} />
+                              <Route path='/fillSynopsis' element={<FillSynopsis />} />
+                              <Route path='/viewAnnouncement' element={<StudentviewAnnouncement />} />
+                              <Route path='/viewFeedback' element={<ViewFeedback />} />
+                              {/* ... (other student routes) */}
+                            </>
+                          )}
+                          {
+                            userDetails.userType === 'gc' && (
+                              // Render gc pages for gc user
+                              <>
+                                <Route path='/' element={<GCDashboard />} />
+                                <Route path='/addstudent' element={<AddStudent />} />
+                                <Route path='/addfaculty' element={<AddFaculty />} />
+                                <Route path='/viewstudent' element={<ViewStudent />} />
+                                <Route path='/viewfaculty' element={<ViewFaculty />} />
+                                <Route path='/updateFaculty/:facultyid' element={<UpdateFaculty />} />
+                                <Route path='/updateStudent/:rollno' element={<UpdateStudent />} />
+                                <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
+                                <Route path='/viewAllThesis' element={<ThesisRecord />} />
+                                <Route path='/ReviewRequest' element={<GetThesis />} />
+                                <Route path='/ReviewRequest/:thesisid' element={<GetThesisDetails />} />
+                                <Route path='/PanelTimelines' element={<PanelTime />} />
+                                <Route path='/Permissions' element={<Permissions />} />
+                                <Route path='/Evaluations' element={<Evaluations />} />
+                                <Route path='/viewPendingProposal/:rollno' element={<EvaluationDetails />} />
+                                <Route path='/viewPendingMid/:rollno' element={<EvaluationMid1Details />} />
+                                {/* ... (other gc routes) */}
+                              </>
+                            )
+                          }
+                        </>
+                      )}
 
 
-                        {/* Error Pages */}
-                        <Route path='*' element={<NotFoundPage />} />
-                      </Routes>
+                      {/* Error Pages */}
+                      <Route path='*' element={<NotFoundPage />} />
+                    </Routes>
 
-                    </div>
                   </div>
                 </div>
+              </div>
               {/* </ThesisContext.Provider> */}
             </RoleContext.Provider>
           </div>

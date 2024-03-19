@@ -221,7 +221,7 @@ export default function PanelTime() {
             }
             const data = await response.json();
             console.log(data, "Time slots assigned successfully"); // Log the response from the server
-            window.alert(data, "Time slots assigned successfully")
+            window.alert(data.message, "Time slots assigned successfully")
             // Handle the response as required
         } catch (error) {
             console.error('Error assigning time slots:', error);

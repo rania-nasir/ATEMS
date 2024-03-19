@@ -7,20 +7,23 @@ import MSRCAllThesis from './MSRCAllThesis';
 import HODGetThesis from './HOD/GetThesis'
 import AllProposalEvaluations from './Supervisor/AllProposalEvaluations';
 import AllInternalPropEvaluations from './Internal/AllInternalPropEvaluations';
+import AllMid1Evaluations from './Supervisor/AllMid1Evaluations';
+import AllMid1InternalEvaluations from './Internal/AllMid1InternalEvaluations';
+
 
 const RoleTabs = () => {
     const { role } = useContext(RoleContext);
     const [activeIndex, setActiveIndex] = useState(0);
 
     const tabs = [
-        { role: 'Supervisor', panels: ['Thesis Requests', 'Proposal Defense'] },
-        { role: 'Internal', panels: ['Proposal Defense Internal Evaluations', 'Feedback'] },
+        { role: 'Supervisor', panels: ['Thesis Requests', 'Proposal Defense', 'Thesis 1 Mid Evaluation'] },
+        { role: 'Internal', panels: ['Proposal Defense Internal Evaluations', 'Thesis 1 Mid Internal Evaluation', 'Feedback'] },
         { role: 'MSRC', panels: ['MSRC Requests'] },
         { role: 'HOD', panels: ['Thesis Approval Requests'] },
     ];
 
     const userTabs = tabs.find((tab) => tab.role === role);
-    console.log('usertabs' ,userTabs);
+    console.log('usertabs', userTabs);
 
     return (
         <>
@@ -36,22 +39,33 @@ const RoleTabs = () => {
                                     )}
                                     {panel === "Proposal Defense" && (
                                         <>
-                                        <AllProposalEvaluations/>
+                                            <AllProposalEvaluations />
                                         </>
                                     )}
                                     {panel === "Proposal Defense Internal Evaluations" && (
                                         <>
-                                        <AllInternalPropEvaluations/>
+                                            <AllInternalPropEvaluations />
                                         </>
                                     )}
+                                    {panel === "Thesis 1 Mid Evaluation" && (
+                                        <>
+                                            <AllMid1Evaluations/>
+                                        </>
+                                    )}
+                                    {panel === "Thesis 1 Mid Internal Evaluation" && (
+                                        <>
+                                            <AllMid1InternalEvaluations/>
+                                        </>
+                                    )
+                                    }
                                     {panel === "Feedback" && (
                                         <p>Feedback</p>
                                     )}
                                     {panel === "MSRC Requests" && (
-                                        <MSRCAllThesis/>
+                                        <MSRCAllThesis />
                                     )}
                                     {panel === "Thesis Approval Requests" && (
-                                        <HODGetThesis/>
+                                        <HODGetThesis />
                                     )}
                                 </div>
                             </TabPanel>

@@ -4,6 +4,7 @@ import Cookie from 'js-cookie';
 
 export default function Evaluations() {
     const [allPendingProposals, setAllPendingProposals] = useState([]);
+    const [allPendingMids, setAllPendingMids] = useState([]);
 
     useEffect(() => {
         async function fetchAllPendingProposals() {
@@ -33,6 +34,34 @@ export default function Evaluations() {
         fetchAllPendingProposals();
     }, []);
 
+    useEffect(() => {
+        async function fetchAllPendingMids() {
+            try {
+                const response = await fetch('http://localhost:5000/gc/gcViewPendingMids', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${Cookie.get('jwtoken')}`
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setAllPendingMids(data.pendingMidReviews);
+                    console.log(data.message);
+                    if (data.message) {
+                        window.alert(data.message);
+                    }
+                } else {
+                    throw new Error('Failed to fetch data');
+                }
+            } catch (error) {
+                console.error('Failed to retrieve data: ', error);
+            }
+        }
+
+        fetchAllPendingMids();
+    }, []);
+
     return (
         <>
             <div className='m-2 p-2 grid grid-cols-1'>
@@ -42,6 +71,9 @@ export default function Evaluations() {
                     </h2>
                 </div>
                 <div className="m-6 shadow-md sm:rounded-lg col-span-1">
+                    <h3 className='text-left text-lg font-semibold tracking-tight text-gray-950'>
+                        Defense Proposal Evaluations
+                    </h3>
                     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
@@ -52,10 +84,7 @@ export default function Evaluations() {
                                     Student Name
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Batch
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Semester
+                                    Thesis Title
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Action
@@ -73,13 +102,10 @@ export default function Evaluations() {
                                             {proposal.stdname}
                                         </td>
                                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {proposal.batch}
+                                            {proposal.thesistitle}
                                         </td>
                                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {proposal.semester}
-                                        </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        <NavLink to={`/viewPendingProposal/${proposal.rollno}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            <NavLink to={`/viewPendingProposal/${proposal.rollno}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                 View Details
                                             </NavLink>
                                         </td>
@@ -89,6 +115,59 @@ export default function Evaluations() {
                                 <tr>
                                     <td colSpan="4" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
                                         No pending proposals found
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div className="m-6 shadow-md sm:rounded-lg col-span-1">
+                    <h3 className='text-left text-lg font-semibold tracking-tight text-gray-950'>
+                        Mid Evaluations
+                    </h3>
+                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" className="px-6 py-3">
+                                    Roll Number
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Student Name
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Thesis Title
+                                </th>
+                                <th scope="col" className="px-6 py-3">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {allPendingMids && allPendingMids.length > 0 ? (
+                                allPendingMids.map(proposal => (
+                                    <tr key={proposal.rollno} className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {proposal.rollno}
+                                        </td>
+                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {proposal.stdname}
+                                        </td>
+                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {proposal.thesistitle}
+                                        </td>
+                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            <NavLink to={`/viewPendingMid/${proposal.rollno}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                                View Details
+                                            </NavLink>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="4" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
+                                        No pending Mid evaluations found
                                     </td>
                                 </tr>
                             )}
