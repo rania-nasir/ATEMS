@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 const EvaluationDetails = () => {
@@ -9,7 +9,7 @@ const EvaluationDetails = () => {
     useEffect(() => {
         const fetchSelectedProposal = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/gc/viewPendingMid/${userId.rollno}`, {
+                const response = await fetch(`http://localhost:5000/gc/viewPendingProposal/${userId.rollno}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ const EvaluationDetails = () => {
                     <div className="mt-2 bg-teal-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
                         <div className="px-4 py-5 sm:px-6">
                             <p className="max-w-2xl text-md text-white">
-                                Proposal Evaluation Details
+                                Mid Evaluation Details
                             </p>
                         </div>
                         <div className="border-t border-gray-200">
@@ -148,7 +148,7 @@ const EvaluationDetails = () => {
                     </div>
                 </div>
             ) : (
-                <div>Loading Proposal Evaluation......</div>
+                <div>Loading Proposal Evaluation...</div>
             )}
 
             {/* Examiner Evaluation Section */}
@@ -251,7 +251,7 @@ const EvaluationDetails = () => {
                     </div>
                 </div>
             ) : (
-                <div>Loading Examiner Evaluation......</div>
+                <div>Loading Examiner Evaluation...</div>
             )}
 
             <div className='flex justify-center align-center mx-12'>

@@ -157,7 +157,7 @@ const getExaminableThesisDetails = async (req, res) => {
             where: {
                 thesisid: thesisId
             },
-            attributes: ['thesisid', 'thesistitle', 'rollno', 'researcharea', 'potentialareas', 'proposalfilename'],
+            attributes: ['thesisid', 'thesistitle', 'rollno', 'facultyid', 'supervisorname', 'researcharea', 'potentialareas', 'proposalfilename'],
         });
 
         if (!thesisDetails) {
