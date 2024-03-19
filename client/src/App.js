@@ -37,6 +37,9 @@ import AllInternalPropEvaluations from './Components/Faculty/Internal/AllInterna
 import AllMid1Evaluations from './Components/Faculty/Supervisor/AllMid1Evaluations';
 import SelectedMid1Details from './Components/Faculty/Supervisor/SelectedMid1Details';
 import AllMid1InternalEvaluations from './Components/Faculty/Internal/AllMid1InternalEvaluations';
+import AllFinal1Evaluations from './Components/Faculty/Supervisor/AllFinal1Evaluations';
+import SelectedFinal1Details from './Components/Faculty/Supervisor/SelectedFinal1Details';
+import AllFinal1InternalEvaluations from './Components/Faculty/Internal/AllFinal1InternalEvaluations';
 
 // Student Components
 import Studenthome from './Components/Student/Studenthome'
@@ -62,6 +65,7 @@ import Permissions from './Components/GC/Permissions';
 import Evaluations from './Components/GC/Evaluations';
 import EvaluationDetails from './Components/GC/EvaluationDetails';
 import EvaluationMid1Details from './Components/GC/EvaluationMid1Details';
+import EvaluationFinal1Details from './Components/GC/EvaluationFinal1Details';
 
 // Other Components
 import NotFoundPage from './Components/Error/NotFoundPage'
@@ -229,6 +233,8 @@ function App() {
                                   <Route path='/selectedProposal/:rollno' element={<SelectedProposalDetails />} />
                                   <Route path='/AllMid1Evaluations' element={<AllMid1Evaluations />} />
                                   <Route path='/viewSelectedExaminableThesis/:thesisId' element={<SelectedMid1Details />} />
+                                  <Route path='/AllFinal1Evaluations' element={<AllFinal1Evaluations />} />
+                                  <Route path='/viewSelectedFinalExaminableThesis/:thesisId' element={<SelectedFinal1Details />} />
 
                                 </>
                               )}
@@ -244,7 +250,8 @@ function App() {
                                   <Route path='/selectedProposal/:rollno' element={<SelectedProposalDetails />} />
                                   <Route path='/AllMid1InternalEvaluations' element={<AllMid1InternalEvaluations />} />
                                   <Route path='/viewSelectedExaminableThesis/:thesisId' element={<SelectedMid1Details />} />
-
+                                  <Route path='/AllFinal1InternalEvaluations' element={<AllFinal1InternalEvaluations />} />
+                                  <Route path='/viewSelectedFinalExaminableThesis/:thesisId' element={<SelectedFinal1Details />} />
                                 </>
                               )}
                               {isHOD && (
@@ -286,6 +293,8 @@ function App() {
                                 <Route path='/Evaluations' element={<Evaluations />} />
                                 <Route path='/viewPendingProposal/:rollno' element={<EvaluationDetails />} />
                                 <Route path='/viewPendingMid/:rollno' element={<EvaluationMid1Details />} />
+                                <Route path='/viewPendingFinal/:rollno' element={<EvaluationFinal1Details />} />
+
                                 {/* ... (other gc routes) */}
                               </>
                             )
