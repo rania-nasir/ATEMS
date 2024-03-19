@@ -1162,16 +1162,26 @@ const gcApproveFinalEvaluation = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const { rollno } = req.params;
+        const { thesisonegrade } = req.body;
 
         // Update all final evaluations for the given rollno
         const [updatedRows] = await finalevaluations.update(
-            { gcFinalCommentsReview: 'Approved' },
+            {
+                gcFinalCommentsReview: 'Approved',
+                thesisonegrade
+            },
+
             { where: { rollno } }
         );
+
+
+        if (!thesisonegrade) {
+            return res.json({ message: 'Thesis grade is required' });
+        }
 
         if (updatedRows > 0) {
 
@@ -1205,6 +1215,7 @@ const gcApproveFinalEvaluation = async (req, res) => {
                 const [updatedStudentCount] = await students.update(
                     {
                         comingevaluation: 'Mid2',
+                        thesisstatus: 2,
                         reevaluationstatus: 'false'
                     },
                     { where: { rollno } }
@@ -1217,7 +1228,7 @@ const gcApproveFinalEvaluation = async (req, res) => {
                     if (student) {
                         // Send approval email to student
                         const subject = 'Final Evaluation Approval';
-                        const text = 'Your Final Evaluation has been approved, You can now view the feedback';
+                        const text = 'Your Final Evaluation has been approved, You can now view the feedback, Grade will be updated on FLEX';
                         await sendMail(student.email, subject, text);
 
                         res.json({ message: 'Final Evaluation approved, comingevaluation status updated, and email sent to student' });
@@ -1225,13 +1236,13 @@ const gcApproveFinalEvaluation = async (req, res) => {
                         res.status(404).json({ error: 'Student not found' });
                     }
                 } else {
-                    res.status(404).json({ error: 'Final evaluation not approved or student not found' });
+                    res.json({ message: 'Final evaluation not approved or student not found' });
                 }
             } else {
-                res.status(404).json({ error: 'No Final evaluation found or not approved' });
+                res.json({ message: 'No Final evaluation found or not approved' });
             }
         } else {
-            res.status(404).json({ error: 'No Final evaluation found for the student' });
+            res.json({ message: 'No Final evaluation found for the student' });
         }
     } catch (error) {
         console.error('Error approving Final evaluation:', error);

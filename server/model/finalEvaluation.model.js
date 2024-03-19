@@ -96,6 +96,10 @@ const finalevaluations = sequelize.define('finalevaluations', {
             isIn: [['Pending', 'Approved', 'Rejected']]
         }
     },
+    thesisonegrade: {
+        type: DataTypes.CHAR,
+        allowNull: true
+    },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: true,
