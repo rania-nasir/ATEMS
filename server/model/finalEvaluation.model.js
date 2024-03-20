@@ -21,7 +21,7 @@ const finalevaluations = sequelize.define('finalevaluations', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    literatureReviewRank: {
+    literaturereviewrank: {
         type: DataTypes.ENUM,
         values: ['e', 'f', 'g', 'h'],
         allowNull: false
@@ -34,52 +34,52 @@ const finalevaluations = sequelize.define('finalevaluations', {
         type: DataTypes.STRING,
         allowNull: true // Nullable because it's only required if literatureReviewRank is 'g'
     },
-    comparativeAnalysisThorough: { // 2
+    comparativeanalysisthorough: { // 2
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    researchGapClearlyIdentified: { // 3
+    researchgapclearlyidentified: { // 3
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    researchProblemClearlyDefined: { // 4
+    researchproblemclearlydefined: { // 4
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    problemContextInLiterature: { // 5
+    problemcontextinliterature: { // 5
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    understandingOfSolution: { // 6
+    understandingofsolution: { // 6
         type: DataTypes.ENUM,
         values: ['e', 'f', 'g', 'h'],
         allowNull: false
     },
-    proposedWorkEvaluation: { // 7
+    proposedworkevaluation: { // 7
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    reportQuality: { // 8
+    reportquality: { // 8
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    reportOrganizationAcceptable: { // 9
+    reportorganizationacceptable: { // 9
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    communicationSkills: { // 10
+    communicationskills: { // 10
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
     },
-    questionsHandling: { // 11
+    questionshandling: { // 11
         type: DataTypes.ENUM,
         values: ['Good', 'Average', 'Bad'],
         allowNull: false
@@ -88,7 +88,7 @@ const finalevaluations = sequelize.define('finalevaluations', {
         type: DataTypes.TEXT('long'),
         allowNull: false
     },
-    gcFinalCommentsReview: {
+    gcfinalcommentsreview: {
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: 'Pending',
