@@ -6,6 +6,8 @@ const facReview = require('../controller/faculty/supReviewRequest.controller');
 const msrcReview = require('../controller/faculty/msrcReview.controller');
 const hodFunctions = require('../controller/hod/hod.controller')
 const examinerFunctions = require('../controller/faculty/examiner.controller');
+const thesis2supervisor = require('../controller/faculty/thesisTwo/supervisor.controller');
+const hodThesisTwo = require('../controller/hod/thesisTwo/hodThesisTwo.controller');
 const { authenticate } = require('../middleware/authMiddleware');
 const gcRouter = require('./gcRoutes');
 
@@ -56,5 +58,22 @@ facRouter.put('/evaluateSelectedThesisFinal', examinerFunctions.evaluateFinal);
 
 /* Feedback */
 facRouter.get('/viewAnnouncement', facFunctions.viewFacultyAnnouncements);
+
+
+
+/* Thesis-2 */
+
+//---Supervisor---
+facRouter.get('/getThesis2Students', thesis2supervisor.getThesis2Students);
+facRouter.get('/getThesis2StudentDetails/:rollno', thesis2supervisor.getThesis2StudentDetails);
+facRouter.put('/approveThesis2Request/:rollno', thesis2supervisor.approveThesis2Request);
+
+
+
+//---HOD---
+facRouter.get('/getHodThesis2Students', hodThesisTwo.getHodThesis2Students);
+facRouter.get('/getHodThesis2StudentDetails/:rollno', hodThesisTwo.getHodThesis2StudentDetails);
+facRouter.put('/approveHodThesis2Request/:rollno', hodThesisTwo.approveHodThesis2Request);
+
 
 module.exports = facRouter;

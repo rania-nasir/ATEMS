@@ -47,7 +47,7 @@ const registrations = sequelize.define('registrations', {
         defaultValue: [],
         allowNull: false
     },
-    completionDates: {
+    completiondates: {
         type: DataTypes.ARRAY(DataTypes.DATE),
         defaultValue: [],
         allowNull: false
@@ -72,6 +72,11 @@ const registrations = sequelize.define('registrations', {
         validate: {
             isIn: [['Pending', 'Approved']]
         }
+    },
+    gcmidevalpermission: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     },
     createdAt: {
       type: DataTypes.DATE,

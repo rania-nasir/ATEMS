@@ -3,6 +3,7 @@ const multer = require('multer');
 const gcRouter = express.Router();
 const gcFunctions = require("../controller/gc/gc.controller");
 const gcReview = require("../controller/gc/gcReviewRequest.controller")
+const gcThesisTwo = require("../controller/gc/thesisTwo/gcThesisTwo.controller")
 const { authenticate } = require('../middleware/authMiddleware');
 const upload = multer({ dest: 'uploads/' });
 const uploadMiddleware = upload.single('file');
@@ -72,5 +73,15 @@ gcRouter.get('/allSupervisors', gcFunctions.allSupervisors);
 gcRouter.get('/allThesisofSupervisor/:supervisorName', gcFunctions.allThesisofSupervisor);
 gcRouter.get('/thesisDetails/:thesistitle', gcFunctions.thesisDetails);
 
+
+//---Thesis-2----
+gcRouter.get('/thesisTwoRegRequests', gcThesisTwo.getThesisTwoRegRequests);
+gcRouter.get('/thesisTwoRegRequest/:rollno', gcThesisTwo.getThesisTwoRegRequestDetails);
+gcRouter.put('/approveThesisTwoRegRequest/:rollno', gcThesisTwo.approveThesisTwoRegRequest);
+gcRouter.put('/grantMidEvalPermission', gcThesisTwo.grantMidEvalPermission);
+gcRouter.put('/revokeMidEvalPermission', gcThesisTwo.revokeMidEvalPermission);
+gcRouter.get('/midEvaluationStatus', gcThesisTwo.getGCMidPermissionStatus);
+//gcRouter.put('/grantFinalEvalPermission', gcThesisTwo.grantFinalEvalPermission);
+//gcRouter.put('/revokeFinalEvalPermission', gcThesisTwo.revokeFinalEvalPermission);
 
 module.exports = gcRouter;
