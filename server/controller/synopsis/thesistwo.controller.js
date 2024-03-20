@@ -25,7 +25,7 @@ const thesisTwoRegistration = async (req, res) => {
             internalsid,
             tasktitles,
             objectives,
-            completionDates } = req.body;
+            completiondates } = req.body;
 
 
         const existingRegistration = await registrations.findOne({ where: { rollno } });
@@ -45,10 +45,11 @@ const thesisTwoRegistration = async (req, res) => {
             internalsid,
             tasktitles,
             objectives,
-            completionDates,
+            completiondates,
             supervisorapproval: 'Pending',
             gcapproval: 'Pending',
-            hodapproval: 'Pending'
+            hodapproval: 'Pending',
+            gcmidevalpermission: false
         });
 
         
