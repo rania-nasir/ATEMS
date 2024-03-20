@@ -1093,7 +1093,7 @@ const gcAllPendingFinalEvaluations = async (req, res) => {
         // Find all pending final evaluations
         const pendingFinalReviews = await finalevaluations.findAll({
             where: {
-                gcFinalCommentsReview: 'Pending'
+                gcfinalcommentsreview: 'Pending'
             },
             attributes: [
                 [sequelize.literal('DISTINCT "rollno"'), 'rollno'],
@@ -1169,19 +1169,36 @@ const gcApproveFinalEvaluation = async (req, res) => {
         const { thesisonegrade } = req.body;
 
         // Update all final evaluations for the given rollno
-        const [updatedRows] = await finalevaluations.update(
-            {
-                gcFinalCommentsReview: 'Approved',
-                thesisonegrade
-            },
+        // const [updatedRows] = await finalevaluations.update(
+        //     {
+        //         gcFinalCommentsReview: 'Approved',
+        //         thesisonegrade
+        //     },
 
-            { where: { rollno } }
-        );
+        //     { where: { rollno } }
+        // );
 
 
         if (!thesisonegrade) {
             return res.json({ message: 'Thesis grade is required' });
         }
+
+        let gcfinalcommentsreview = '';
+        let mailText = '';
+
+        if (thesisonegrade === 'A') {
+            gcfinalcommentsreview = 'Approved';
+            mailText = 'Your Final Evaluation has been approved, You can now view the feedback, Grade will be updated on FLEX.';
+        } else if (thesisonegrade === 'F') {
+            gcfinalcommentsreview = 'Rejected';
+            mailText = 'Your Final Evaluation has been rejected with an F grade, you have to resubmit thesis Proposal.';
+            
+        }
+
+        const [updatedRows] = await finalevaluations.update(
+            { gcfinalcommentsreview, thesisonegrade },
+            { where: { rollno } }
+        );
 
         if (updatedRows > 0) {
 
@@ -1189,7 +1206,7 @@ const gcApproveFinalEvaluation = async (req, res) => {
             const approvedFinalEvaluation = await finalevaluations.findAll({
                 where: {
                     rollno,
-                    gcFinalCommentsReview: 'Approved'
+                    gcfinalcommentsreview
                 }
             });
 
@@ -1214,8 +1231,8 @@ const gcApproveFinalEvaluation = async (req, res) => {
                 // Update the comingevaluation status in the students model
                 const [updatedStudentCount] = await students.update(
                     {
-                        comingevaluation: 'Mid2',
-                        thesisstatus: 2,
+                        comingevaluation: thesisonegrade === 'A' ? 'Mid2' : 'Proposal',
+                        thesisstatus: thesisonegrade === 'A' ? 2 : 1,
                         reevaluationstatus: 'false'
                     },
                     { where: { rollno } }
@@ -1227,11 +1244,20 @@ const gcApproveFinalEvaluation = async (req, res) => {
 
                     if (student) {
                         // Send approval email to student
-                        const subject = 'Final Evaluation Approval';
-                        const text = 'Your Final Evaluation has been approved, You can now view the feedback, Grade will be updated on FLEX';
-                        await sendMail(student.email, subject, text);
+                        const subject = 'Final Evaluation';
+                       // const text = 'Your Final Evaluation has been approved, You can now view the feedback, Grade will be updated on FLEX';
+                        await sendMail(student.email, subject, mailText);
 
-                        res.json({ message: 'Final Evaluation approved, comingevaluation status updated, and email sent to student' });
+                        if (thesisonegrade === 'F') {
+                            // Delete records from related models only if the grade is F
+                            await synopsis.destroy({ where: { rollno } });
+                            await thesis.destroy({ where: { rollno } });
+                            await proposalevaluations.destroy({ where: { rollno } });
+                            await midevaluations.destroy({ where: { rollno } });
+                            await finalevaluations.destroy({ where: { rollno } });
+                        }
+                    
+                        res.json({ message: 'Final Evaluation updated, comingevaluation status updated, and email sent to student' });
                     } else {
                         res.status(404).json({ error: 'Student not found' });
                     }

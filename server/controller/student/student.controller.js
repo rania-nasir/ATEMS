@@ -7,6 +7,7 @@ const { proposalevaluations } = require('../../model/proposalEvaluaton.model');
 const { Op } = require('sequelize');
 const { all } = require("../../router/stdRoutes");
 const { feedbacks } = require("../../model/feedback.model");
+const { thesis } = require("../../model/thesis.model");
 
 
 // Sign in function for student
@@ -87,7 +88,7 @@ const viewFeedback = async (req, res) => {
     const rollno = req.userId
     const feedbackList = await feedbacks.findAll({
       where: {
-        rollno: rollno, 
+        rollno: rollno,
       }
     });
 
@@ -122,10 +123,34 @@ const showStdData = async (req, res) => {
   }
 }
 
+
+const thesisData = async (req, res) => {
+  try {
+    const { rollno } = req.params;
+    const thesisData = await thesis.findOne({
+      where: { rollno },
+      attributes: { exclude: ['gcapproval', 'hodapproval', 'gcproposalpermission', 'createdAt', 'updatedAt'] }
+    });
+
+    if (thesisData) {
+      res.status(200).json(thesisData);
+    } else {
+      res.status(404).json({ message: 'Thesis not found' });
+    }
+  }
+  catch (error) {
+    console.error('Error retrieving thesis data:', error);
+    res.status(500).json({ message: 'An error occurred while retrieving thesis data' });
+  }
+
+}
+
+
 module.exports =
 {
   stdSignIn,
   viewStudentAnnouncements,
   viewFeedback,
-  showStdData
+  showStdData,
+  thesisData
 };
