@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
-const EvaluationMid1Details = () => {
+const EvaluationMid1Details = ({setShowDetails}) => {
     const [selectedMid, setSelectedMid] = useState(null);
     const userId = useParams();
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchSelectedMid = async () => {
@@ -46,6 +48,8 @@ const EvaluationMid1Details = () => {
                 // Proposal approved successfully, update UI or show a success message
                 console.log('Mid Evaluation approved successfully');
                 window.alert(data.message)
+                setShowDetails(false);
+                navigate('/Evaluations')
             } else {
                 // Handle error
                 console.error('Failed to approve proposal');

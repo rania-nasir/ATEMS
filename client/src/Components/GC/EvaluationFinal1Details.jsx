@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 
 
-const EvaluationFinal1Details = () => {
+const EvaluationFinal1Details = ({setShowDetails}) => {
     const [visible, setVisible] = useState(false);
     const [thesisonegrade, setthesisonegrade] = useState(null)
 
     const [selectedFinal, setSelectedFinal] = useState(null);
     const userId = useParams();
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchSelectedFinal = async () => {
@@ -63,6 +65,8 @@ const EvaluationFinal1Details = () => {
                 console.log('Final Evaluation approved successfully');
                 window.alert(data.message)
                 setVisible(false)
+                setShowDetails(false);
+                navigate('/Evaluations')
             } else {
                 // Handle error
                 console.error('Failed to approve proposal');

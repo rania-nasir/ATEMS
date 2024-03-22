@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
-const EvaluationDetails = () => {
+const EvaluationDetails = ({setShowDetails}) => {
     const [selectedProposal, setSelectedProposal] = useState(null);
     const userId = useParams();
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchSelectedProposal = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/gc/viewPendingMid/${userId.rollno}`, {
+                const response = await fetch(`http://localhost:5000/gc/viewPendingProposal/${userId.rollno}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -46,6 +48,8 @@ const EvaluationDetails = () => {
                 // Proposal approved successfully, update UI or show a success message
                 console.log('Proposal approved successfully');
                 window.alert(data.message)
+                setShowDetails(false);
+                navigate('/Evaluations')
             } else {
                 // Handle error
                 console.error('Failed to approve proposal');

@@ -2,43 +2,49 @@ import { useState, useEffect } from 'react';
 import Cookie from 'js-cookie';
 import { NavLink } from 'react-router-dom';
 
-export default function GetThesis() {
+export default function T2GetThesis({ setShowDetails }) {
     const [thesisData, setthesisData] = useState({ allThesis: [] });
 
-    useEffect(() => {
-        async function fetchthesisData() {
-            try {
-                const response = await fetch('http://localhost:5000/faculty/viewAllThesis', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `${Cookie.get('jwtoken')}`
-                    }
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setthesisData(data);
+    // useEffect(() => {
+    //     async function fetchthesisData() {
+    //         try {
+    //             const response = await fetch('http://localhost:5000/gc/ReviewRequest', {
+    //                 method: 'GET',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                     'Authorization': `${Cookie.get('jwtoken')}`
+    //                 }
+    //             });
+    //             if (response.ok) {
+    //                 const data = await response.json();
+    //                 setthesisData(data);
 
-                    // const rowData = data.map(item => item.thesisid);
+    //                 // const rowData = data.map(item => item.thesisid);
 
-                    console.log('thesis Data -> ', data)
+    //                 console.log('thesis Data -> ', data)
 
-                } else {
-                    throw new Error('Failed to fetch data');
-                }
-            } catch (error) {
-                console.error('Failed to retrieve data: ', error);
-            }
-        }
+    //             } else {
+    //                 throw new Error('Failed to fetch data');
+    //             }
+    //         } catch (error) {
+    //             console.error('Failed to retrieve data: ', error);
+    //         }
+    //     }
 
-        fetchthesisData();
-    }, []);
+    //     fetchthesisData();
+    // }, []);
+
+    const handleViewDetails = () => {
+        // Trigger setShowDetails when "View Details" link is clicked
+        setShowDetails(true);
+    };
 
     return (
         <>
             <div className='m-2'>
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-950">
-                        Thesis Approval Requests
+                        Thesis Requests
                     </h2>
                 </div>
                 <div class="m-6 shadow-md sm:rounded-lg">
@@ -87,7 +93,9 @@ export default function GetThesis() {
                                             {rowData.potentialareas}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <NavLink to={`/reviewThesis/${rowData.thesisid}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            <NavLink to={`/ReviewRequest/${rowData.thesisid}`}
+                                                onClick={() => handleViewDetails()} // Call handleViewDetails
+                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                 View Details
                                             </NavLink>
                                         </td>

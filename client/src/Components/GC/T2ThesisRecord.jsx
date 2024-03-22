@@ -1,37 +1,37 @@
 import { useState, useEffect } from 'react';
-import Cookie from 'js-cookie';
+// import Cookie from 'js-cookie';
 
-export default function ThesisRecord() {
+export default function T2ThesisRecord() {
     const [thesisData, setThesisData] = useState([]);
 
-    useEffect(() => {
-        async function fetchThesisData() {
-            try {
-                const response = await fetch('http://localhost:5000/gc/viewAllThesis', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `${Cookie.get('jwtoken')}`
-                    }
-                });
+    // useEffect(() => {
+    //     async function fetchThesisData() {
+    //         try {
+    //             const response = await fetch('http://localhost:5000/gc/viewAllThesis', {
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                     'Authorization': `${Cookie.get('jwtoken')}`
+    //                 }
+    //             });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(data);
-                    if (data && data.viewallThesis) {
-                        setThesisData(data.viewallThesis);
-                    } else {
-                        throw new Error('Data structure error');
-                    }
-                } else {
-                    throw new Error('Failed to fetch data');
-                }
-            } catch (error) {
-                console.error('Failed to retrieve data: ', error);
-            }
-        }
+    //             if (response.ok) {
+    //                 const data = await response.json();
+    //                 console.log(data);
+    //                 if (data && data.viewallThesis) {
+    //                     setThesisData(data.viewallThesis);
+    //                 } else {
+    //                     throw new Error('Data structure error');
+    //                 }
+    //             } else {
+    //                 throw new Error('Failed to fetch data');
+    //             }
+    //         } catch (error) {
+    //             console.error('Failed to retrieve data: ', error);
+    //         }
+    //     }
 
-        fetchThesisData();
-    }, []);
+    //     fetchThesisData();
+    // }, []);
 
     return (
         <>
@@ -74,10 +74,10 @@ export default function ThesisRecord() {
                                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {rowData.thesistitle}
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {rowData.gcapproval}
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {rowData.hodapproval}
                                         </td>
                                     </tr>

@@ -53,19 +53,19 @@ const NavbarDefault = () => {
     }, []);
 
     return (
-        <div className="mx-auto py-2 px-4 lg:px-8 lg:py-4 shadow" >
+        <div className="mx-auto py-1 px-4 lg:px-8 lg:py-4 shadow" >
             <Toast ref={toastTopCenter} position="top-center" />
             <div className="container mx-auto flex items-center justify-between text-blue-gray-900">
 
                 <Typography
                     as="a"
                     href="#"
-                    className="text-2xl font-sans mr-4 cursor-pointer py-1.5 font-medium"
+                    className="text-2xl font-sans mr-4 cursor-pointer py-0 font-medium"
                     style={{ color: "black" }}
                 >
                     <div className="flex justify-between items-center">
                         <NavLink to='/'>
-                            <img src={atems_logo} className="w-14" alt="logo" />
+                            <img src={atems_logo} className="w-12" alt="logo" />
                         </NavLink>
                         <ATEMS />
                     </div>

@@ -2,31 +2,67 @@ import React, { useState } from 'react';
 import { TabView, TabPanel } from 'primereact/tabview';
 import { useContext } from 'react';
 import { RoleContext } from '../../context/RoleContext';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import { ThesisContext } from '../../context/ThesisContext';
+
+import BackButton from '../BackButton';
+
+// Synopsis Requests
 import GetSynopsis from './GetSynopsis';
-import MSRCAllThesis from './MSRCAllThesis';
-import HODGetThesis from './HOD/GetThesis'
+import GetSynopsisDetails from './GetSynopsisDetails';
+
+// Proposal Defense
 import AllProposalEvaluations from './Supervisor/AllProposalEvaluations';
-import AllInternalPropEvaluations from './Internal/AllInternalPropEvaluations';
+import SelectedProposalDetails from './Supervisor/SelectedProposalDetails';
+
+// Mid 1 Evaluation
 import AllMid1Evaluations from './Supervisor/AllMid1Evaluations';
-import AllMid1InternalEvaluations from './Internal/AllMid1InternalEvaluations';
+import SelectedMid1Details from './Supervisor/SelectedMid1Details';
+
+// Final 1 Evaluation
 import AllFinal1Evaluations from './Supervisor/AllFinal1Evaluations';
+import SelectedFinal1Details from './Supervisor/SelectedFinal1Details';
+
+// MSRC Requests
+import MSRCAllThesis from './MSRCAllThesis';
+import MSRCThesisDetails from './MSRCThesisDetails';
+
+// HOD THesis Approval Requests
+import HODGetThesis from './HOD/HODGetThesis'
+import HODGetThesisDetails from './HOD/HODGetThesisDetails'
+
+// Internal
+import AllInternalPropEvaluations from './Internal/AllInternalPropEvaluations';
+import AllMid1InternalEvaluations from './Internal/AllMid1InternalEvaluations';
 import AllFinal1InternalEvaluations from './Internal/AllFinal1InternalEvaluations';
 
 
+
 const RoleTabs = () => {
+    const { thesisStatus } = useContext(ThesisContext); // Access thesisStatus from ThesisContext
+
+    const navigate = useNavigate(); // Initialize useNavigate hook
+
+    // Function to navigate back
+    const navigateBack = () => {
+        navigate(-1); // Navigate back to the previous URL
+    };
+
     const { role } = useContext(RoleContext);
     const [activeIndex, setActiveIndex] = useState(0);
 
+    const [showDetails, setShowDetails] = useState(false);
+
     const tabs = [
-        { role: 'Supervisor', panels: ['Thesis Requests', 'Proposal Defense', 'Thesis 1 Mid Evaluation', 'Thesis 1 Final Evaluation'] },
-        { role: 'Internal', panels: ['Proposal Defense Internal Evaluations', 'Thesis 1 Mid Internal Evaluation', 'Thesis 1 Final Internal Evaluation', 'Feedback'] },
-        { role: 'MSRC', panels: ['MSRC Requests'] },
+        { role: 'Supervisor', panels: ['Thesis Requests', 'Proposal Defense', 'Mid Evaluation', 'Final Evaluation'] },
+        { role: 'Internal', panels: ['Proposal Defense Evaluations', 'Mid Evaluations', 'Final Evaluations'] },
+        { role: 'MSRC', panels: ['MSRC Thesis Requests'] },
         { role: 'HOD', panels: ['Thesis Approval Requests'] },
     ];
 
     const userTabs = tabs.find((tab) => tab.role === role);
     console.log('usertabs', userTabs);
-
+    console.log("Thesis Status is role tabs : ", thesisStatus);
     return (
         <>
             <div className="card mt-1">
@@ -34,51 +70,146 @@ const RoleTabs = () => {
                     {userTabs &&
                         userTabs.panels.map((panel, index) => (
                             <TabPanel key={index} header={panel}>
-                                {/* Content for each tab panel */}
-                                <div className="m-0">
-                                    {panel === "Thesis Requests" && (
-                                        <GetSynopsis />
-                                    )}
-                                    {panel === "Proposal Defense" && (
-                                        <>
-                                            <AllProposalEvaluations />
-                                        </>
-                                    )}
-                                    {panel === "Proposal Defense Internal Evaluations" && (
-                                        <>
-                                            <AllInternalPropEvaluations />
-                                        </>
-                                    )}
-                                    {panel === "Thesis 1 Mid Evaluation" && (
-                                        <>
-                                            <AllMid1Evaluations/>
-                                        </>
-                                    )}
-                                    {panel === "Thesis 1 Final Evaluation" && (
-                                        <>
-                                            <AllFinal1Evaluations/>
-                                        </>
-                                    )}
-                                    {panel === "Thesis 1 Mid Internal Evaluation" && (
-                                        <>
-                                            <AllMid1InternalEvaluations/>
-                                        </>
-                                    )}
-                                    {panel === "Thesis 1 Final Internal Evaluation" && (
-                                        <>
-                                            <AllFinal1InternalEvaluations/>
-                                        </>
-                                    )}
-                                    {panel === "Feedback" && (
-                                        <p>Feedback</p>
-                                    )}
-                                    {panel === "MSRC Requests" && (
-                                        <MSRCAllThesis />
-                                    )}
-                                    {panel === "Thesis Approval Requests" && (
-                                        <HODGetThesis />
-                                    )}
-                                </div>
+                                {thesisStatus === 1 ? (
+                                    showDetails ? (
+                                        <div className="m-0">
+                                            {/* Your content for thesis status 1 when showDetails is true */}
+                                            <div className="m-0">
+
+                                                {/* Render Details component when showDetails is true */}
+                                                {/* SUPERVISORS */}
+                                                {panel === "Thesis Requests" && (
+                                                    <>
+                                                        <BackButton onClick={() => {
+                                                            setShowDetails(false); // Set showDetails to false
+                                                            navigateBack(); // Call the navigateBack function to navigate back
+                                                        }} />
+                                                        <Routes>
+                                                            <Route path='supReviewRequest/:synopsisId' element={<GetSynopsisDetails setShowDetails={setShowDetails} />} />
+                                                        </Routes>
+                                                    </>
+                                                )}
+                                                {panel === "Proposal Defense" && (
+                                                    <>
+                                                        <BackButton onClick={() => {
+                                                            setShowDetails(false); // Set showDetails to false
+                                                            navigateBack(); // Call the navigateBack function to navigate back
+                                                        }} />
+                                                        <Routes>
+                                                            <Route path='/selectedProposal/:rollno' element={<SelectedProposalDetails setShowDetails={setShowDetails} />} />
+                                                        </Routes>
+                                                    </>
+                                                )}
+                                                {panel === "Mid Evaluation" && (
+                                                    <>
+                                                        <BackButton onClick={() => {
+                                                            setShowDetails(false); // Set showDetails to false
+                                                            navigateBack(); // Call the navigateBack function to navigate back
+                                                        }} />
+                                                        <Routes>
+                                                            <Route path='/viewSelectedExaminableThesis/:thesisId' element={<SelectedMid1Details setShowDetails={setShowDetails} />} />
+                                                        </Routes>
+                                                    </>
+                                                )}
+                                                {panel === "Final Evaluation" && (
+                                                    <>
+                                                        <BackButton onClick={() => {
+                                                            setShowDetails(false); // Set showDetails to false
+                                                            navigateBack(); // Call the navigateBack function to navigate back
+                                                        }} />
+                                                        <Routes>
+                                                            <Route path='/viewSelectedFinalExaminableThesis/:thesisId' element={<SelectedFinal1Details setShowDetails={setShowDetails} />} />
+                                                        </Routes>
+                                                    </>
+                                                )}
+                                                {/* INTERNALS  */}
+                                                {panel === "Proposal Defense Evaluations" && (
+                                                    <>
+                                                        <BackButton onClick={() => {
+                                                            setShowDetails(false); // Set showDetails to false
+                                                            navigateBack(); // Call the navigateBack function to navigate back
+                                                        }} />
+                                                        <Routes>
+                                                            <Route path='/selectedProposal/:rollno' element={<SelectedProposalDetails setShowDetails={setShowDetails} />} />
+                                                        </Routes>
+                                                    </>
+                                                )}
+                                                {panel === "Mid Evaluations" && (
+                                                    <>
+                                                        <BackButton onClick={() => {
+                                                            setShowDetails(false); // Set showDetails to false
+                                                            navigateBack(); // Call the navigateBack function to navigate back
+                                                        }} />                                                <Routes>
+                                                            <Route path='/viewSelectedExaminableThesis/:thesisId' element={<SelectedMid1Details setShowDetails={setShowDetails} />} />
+                                                        </Routes>
+                                                    </>
+                                                )}
+                                                {panel === "Final Evaluations" && (
+                                                    <>
+                                                        <BackButton onClick={() => {
+                                                            setShowDetails(false); // Set showDetails to false
+                                                            navigateBack(); // Call the navigateBack function to navigate back
+                                                        }} />
+                                                        <Routes>
+                                                            <Route path='/viewSelectedFinalExaminableThesis/:thesisId' element={<SelectedFinal1Details setShowDetails={setShowDetails} />} />
+                                                        </Routes>
+                                                    </>
+                                                )}
+                                                {/* MSRCS  */}
+                                                {panel === "MSRC Thesis Requests" && (
+                                                    <>
+                                                        <BackButton onClick={() => {
+                                                            setShowDetails(false); // Set showDetails to false
+                                                            navigateBack(); // Call the navigateBack function to navigate back
+                                                        }} />
+                                                        <Routes>
+                                                            <Route path='/msrcThesisDetails/:thesisid' element={<MSRCThesisDetails setShowDetails={setShowDetails} />} />
+                                                        </Routes>
+                                                    </>
+                                                )}
+                                                {/* HOD  */}
+                                                {panel === "Thesis Approval Requests" && (
+                                                    <>
+                                                        <BackButton onClick={() => {
+                                                            setShowDetails(false); // Set showDetails to false
+                                                            navigateBack(); // Call the navigateBack function to navigate back
+                                                        }} />
+                                                        <Routes>
+                                                            <Route path='/reviewThesis/:thesisid' element={<HODGetThesisDetails setShowDetails={setShowDetails} />} />
+                                                        </Routes>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="m-0">
+                                            {/* Your content for thesis status 1 when showDetails is false */}
+                                            <div className="m-0">
+                                                {/* <Routes> */}
+                                                {/* Render All evaluations component when showDetails is false */}
+                                                {/* SUPERVISORS */}
+                                                {panel === "Thesis Requests" &&
+                                                    <GetSynopsis setShowDetails={setShowDetails} />}
+                                                {panel === "Proposal Defense" && <AllProposalEvaluations setShowDetails={setShowDetails} />}
+                                                {panel === "Mid Evaluation" && <AllMid1Evaluations setShowDetails={setShowDetails} />}
+                                                {panel === "Final Evaluation" && <AllFinal1Evaluations setShowDetails={setShowDetails} />}
+                                                {/* INTERNALS  */}
+                                                {panel === "Proposal Defense Evaluations" && <AllInternalPropEvaluations setShowDetails={setShowDetails} />}
+                                                {panel === "Mid Evaluations" && <AllMid1InternalEvaluations setShowDetails={setShowDetails} />}
+                                                {panel === "Final Evaluations" && <AllFinal1InternalEvaluations setShowDetails={setShowDetails} />}
+                                                {/* MSRC */}
+                                                {panel === "MSRC Thesis Requests" && <MSRCAllThesis setShowDetails={setShowDetails} />}
+                                                {/* HOD  */}
+                                                {panel === "Thesis Approval Requests" && <HODGetThesis setShowDetails={setShowDetails} />}
+                                                {/* </Routes> */}
+                                            </div>
+                                        </div>
+                                    )
+                                ) : (
+                                    <div>thesis 2 </div>
+                                )}
+
+
                             </TabPanel>
                         ))}
                 </TabView>

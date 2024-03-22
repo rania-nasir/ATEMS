@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Cookie from 'js-cookie';
 import { NavLink } from 'react-router-dom';
 
-export default function MSRCAllThesis() {
+export default function MSRCAllThesis({ setShowDetails }) {
     const [thesisData, setthesisData] = useState([]);
 
     useEffect(() => {
@@ -32,6 +32,11 @@ export default function MSRCAllThesis() {
 
         fetchthesisData();
     }, []);
+
+    const handleViewDetails = () => {
+        // Trigger setShowDetails when "View Details" link is clicked
+        setShowDetails(true);
+    };
 
     return (
         <>
@@ -69,7 +74,7 @@ export default function MSRCAllThesis() {
                         </tr>
                     </thead>
                     <tbody>
-                    {thesisData && thesisData.length > 0 ? (
+                        {thesisData && thesisData.length > 0 ? (
                             thesisData?.map(rowData => (
                                 <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={rowData.thesisid}>
                                     <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -91,7 +96,9 @@ export default function MSRCAllThesis() {
                                         {rowData.hodapproval}
                                     </td>
                                     <td className="px-6 py-4">
-                                        <NavLink to={`/msrcThesisDetails/${rowData.thesisid}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                        <NavLink to={`/msrcThesisDetails/${rowData.thesisid}`}
+                                            onClick={() => handleViewDetails()} // Call handleViewDetails
+                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                             View Details
                                         </NavLink>
                                     </td>

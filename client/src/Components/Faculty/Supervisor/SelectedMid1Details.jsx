@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Cookie from 'js-cookie';
 
-const SelectedMid1Details = () => {
+const SelectedMid1Details = ({ setShowDetails}) => {
     const thesisId = useParams().thesisId;
     const userId = Cookie.get('userId');
 
@@ -98,6 +98,7 @@ const SelectedMid1Details = () => {
                 // Handle successful submission, e.g., show a success message
                 console.log(data);
                 window.alert(data.message)
+                setShowDetails(false);
                 console.log('Evaluation submitted successfully');
             } else {
                 throw new Error('Failed to fetch faculty data');
