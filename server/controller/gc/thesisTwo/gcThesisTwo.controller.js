@@ -81,30 +81,39 @@ const grantMidEvalPermission = async (req, res) => {
         const records = await registrations.findAll(); // Fetch all records from the registrations table
 
         let allRecordsApproved = true; // Flag to track if all records have the required approvals
+        let allRecordsHaveThesisTwoReport = true; // Flag to track if all records have uploaded the thesis two report file
 
         for (const record of records) {
             if (record.supervisorapproval !== 'Approved' || record.gcapproval !== 'Approved' || record.hodapproval !== 'Approved') {
                 allRecordsApproved = false;
                 break; // Exit the loop as soon as we find a record with pending approval
             }
+
+            if (!record.thesistwofilename || record.thesistwofilename === '') {
+                allRecordsHaveThesisTwoReport = false;
+                break; // Exit the loop as soon as we find a record without a thesis two report file
+            }
         }
 
-        if (allRecordsApproved) {
+        if (allRecordsApproved && allRecordsHaveThesisTwoReport) {
             await registrations.update(
                 { gcmidevalpermission: true },
                 { where: {} } // Update all records
             );
 
             res.json({ message: 'Mid-evaluation permission granted for all records' });
-        } else {
+        } else if (!allRecordsApproved) {
             res.json({ message: 'Some registrations are pending for relevant approvals' });
+        } else if (!allRecordsHaveThesisTwoReport) {
+            res.json({ message: 'Some students have not uploaded their thesis two report file yet. Permission cannot be granted.' });
+        } else {
+            res.json({ message: 'Some registrations are pending for relevant approvals and/or thesis two report file upload.' });
         }
     } catch (error) {
         console.error('Error granting mid-evaluation permission:', error);
         res.status(500).json({ message: 'An error occurred while granting mid-evaluation permission' });
     }
-}
-
+};
 
 
 
@@ -113,7 +122,7 @@ const revokeMidEvalPermission = async (req, res) => {
         await registrations.update({
             gcmidevalpermission: false
         }, {
-            where: {} 
+            where: {}
         });
 
         res.json({ message: 'Mid-Evaluation permission revoked for all records' });
@@ -129,7 +138,7 @@ const revokeMidEvalPermission = async (req, res) => {
 
 const getGCMidPermissionStatus = async (req, res) => {
     try {
-        const record = await registrations.findOne(); 
+        const record = await registrations.findOne();
 
         if (record) {
             res.json({ gcmidevalpermission: record.gcmidevalpermission });
@@ -139,7 +148,7 @@ const getGCMidPermissionStatus = async (req, res) => {
         }
 
     } catch (error) {
-        
+
         console.error('Error getting mid-evaluation permission status:', error);
         res.status(500).json({ message: 'An error occurred while getting the permission status' });
     }

@@ -67,7 +67,10 @@ facRouter.get('/viewAnnouncement', facFunctions.viewFacultyAnnouncements);
 facRouter.get('/getThesis2Students', thesis2supervisor.getThesis2Students);
 facRouter.get('/getThesis2StudentDetails/:rollno', thesis2supervisor.getThesis2StudentDetails);
 facRouter.put('/approveThesis2Request/:rollno', thesis2supervisor.approveThesis2Request);
-
+facRouter.get('/supthesis2AllMidEvals', thesis2supervisor.supthesis2AllMidEvals);
+facRouter.get('/internalthesis2AllMidEvals', thesis2supervisor.internalthesis2AllMidEvals);
+facRouter.get('/mid2EvalDetails/:rollno', thesis2supervisor.mid2EvalDetails);
+facRouter.put('/evaluateMid2', thesis2supervisor.evaluateMid2);
 
 
 //---HOD---

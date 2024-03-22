@@ -3,6 +3,7 @@ const stdRouter = express.Router();
 const stdFunctions = require("../controller/student/student.controller");
 const synopsisController = require("../controller/synopsis/synopsis.controller");
 const thesistwoController = require("../controller/synopsis/thesistwo.controller")
+const studThesisTwoController =  require("../controller/student/thesisTwo/studThesisTwo.controller")
 const { authenticate } = require('../middleware/authMiddleware');
 const { synopsis } = require("../model/synopsis.model");
 
@@ -20,5 +21,6 @@ stdRouter.get("/viewFeedback", stdFunctions.viewFeedback); // Student views Feed
 
 
 stdRouter.post("/thesisTwoRegistration", thesistwoController.thesisTwoRegistration);
+stdRouter.put("/uploadThesisTwoReport", studThesisTwoController.uploadThesisTwoReport);
 
 module.exports = stdRouter;

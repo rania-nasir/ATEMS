@@ -78,6 +78,10 @@ const registrations = sequelize.define('registrations', {
         allowNull: false,
         defaultValue: false
     },
+    thesistwofilename: {
+        type: DataTypes.STRING, 
+        allowNull: true, 
+    },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: true,
