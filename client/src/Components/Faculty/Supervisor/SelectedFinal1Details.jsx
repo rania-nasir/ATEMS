@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Cookie from 'js-cookie';
 
-const SelectedFinal1Details = () => {
+const SelectedFinal1Details = ({ setShowDetails }) => {
     const thesisId = useParams().thesisId;
     const userId = Cookie.get('userId');
 
@@ -10,19 +10,19 @@ const SelectedFinal1Details = () => {
     const [thesisDetails, setThesisDetails] = useState({});
     const [studentDetails, setStudentDetails] = useState({});
     const [comment, setComment] = useState("");
-    const [literatureReviewRank, setLiteratureReviewRank] = useState("");
+    const [literaturereviewrank, setliteraturereviewrank] = useState("");
     const [paper1, setPaper1] = useState("");
     const [paper2, setPaper2] = useState("");
-    const [comparativeAnalysisThorough, setcomparativeAnalysisThorough] = useState("");
-    const [researchGapClearlyIdentified, setresearchGapClearlyIdentified] = useState("");
-    const [researchProblemClearlyDefined, setresearchProblemClearlyDefined] = useState("");
-    const [problemContextInLiterature, setproblemContextInLiterature] = useState("");
-    const [understandingOfSolution, setunderstandingOfSolution] = useState("");
-    const [proposedWorkEvaluation, setproposedWorkEvaluation] = useState("")
-    const[reportQuality, setreportQuality] = useState("")
-    const[reportOrganizationAcceptable, setreportOrganizationAcceptable] = useState("")
-    const[communicationSkills, setcommunicationSkills] = useState("")
-    const[questionsHandling, setquestionsHandling] = useState("")
+    const [comparativeanalysisthorough, setcomparativeAnalysisThorough] = useState("");
+    const [researchgapclearlyidentified, setresearchgapclearlyidentified] = useState("");
+    const [researchproblemclearlydefined, setresearchproblemclearlydefined] = useState("");
+    const [problemcontextinliterature, setproblemcontextinliterature] = useState("");
+    const [understandingofsolution, setunderstandingofsolution] = useState("");
+    const [proposedworkevaluation, setproposedworkevaluation] = useState("")
+    const[reportquality, setreportquality] = useState("")
+    const[reportorganizationacceptable, setreportorganizationacceptable] = useState("")
+    const[communicationskills, setcommunicationskills] = useState("")
+    const[questionshandling, setquestionshandling] = useState("")
 
     // Handle radio input changes
     const handleRadioChange = (event, setStateFunction) => {
@@ -86,19 +86,19 @@ const SelectedFinal1Details = () => {
                         thesistitle: thesisDetails.thesistitle,
                         facultyid: userId,
                         facname: facultyName,
-                        literatureReviewRank,
-                        paper1: literatureReviewRank === 'g' ? paper1 : null,
-                        paper2: literatureReviewRank === 'g' ? paper2 : null,
-                        comparativeAnalysisThorough,
-                        researchGapClearlyIdentified,
-                        researchProblemClearlyDefined,
-                        problemContextInLiterature,
-                        understandingOfSolution,
-                        proposedWorkEvaluation,
-                        reportQuality,
-                        reportOrganizationAcceptable,
-                        communicationSkills,
-                        questionsHandling,
+                        literaturereviewrank,
+                        paper1: literaturereviewrank === 'g' ? paper1 : null,
+                        paper2: literaturereviewrank === 'g' ? paper2 : null,
+                        comparativeanalysisthorough,
+                        researchgapclearlyidentified,
+                        researchproblemclearlydefined,
+                        problemcontextinliterature,
+                        understandingofsolution,
+                        proposedworkevaluation,
+                        reportquality,
+                        reportorganizationacceptable,
+                        communicationskills,
+                        questionshandling,
                         comments: comment
                     })
                 });
@@ -110,6 +110,7 @@ const SelectedFinal1Details = () => {
                 // Handle successful submission, e.g., show a success message
                 console.log(data);
                 window.alert(data)
+                setShowDetails(false);
                 console.log('Evaluation submitted successfully');
             } else {
                 throw new Error('Failed to fetch faculty data');
@@ -229,16 +230,16 @@ const SelectedFinal1Details = () => {
                                                 <ul className="text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                                     <li className="p-2 w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                                                         <div className="flex items-center ps-3">
-                                                            <input checked={literatureReviewRank === "e"}
-                                                                onChange={(e) => handleRadioChange(e, setLiteratureReviewRank)}
+                                                            <input checked={literaturereviewrank === "e"}
+                                                                onChange={(e) => handleRadioChange(e, setliteraturereviewrank)}
                                                                 id="list-radio-comprehensive" type="radio" value="e" name="list-radio-literature" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
                                                             <label htmlFor="list-radio-comprehensive" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">a. The Literature review is comprehensive with little or no choice of any significance work missing from the coverage</label>
                                                         </div>
                                                     </li>
                                                     <li className="p-2 w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                                                         <div className="flex items-center ps-3">
-                                                            <input checked={literatureReviewRank === "f"}
-                                                                onChange={(e) => handleRadioChange(e, setLiteratureReviewRank)}
+                                                            <input checked={literaturereviewrank === "f"}
+                                                                onChange={(e) => handleRadioChange(e, setliteraturereviewrank)}
                                                                 id="list-radio-Good" type="radio" value="f" name="list-radio-literature" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
                                                             <label htmlFor="list-radio-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">b. The literature review is Good with all the major works identified. Some works might be missing, but they would probably have no major impact on the identified research gap</label>
                                                         </div>
@@ -246,8 +247,8 @@ const SelectedFinal1Details = () => {
                                                     <li className="p-2 w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                                                         <div className="flex items-center ps-3 grid grid-cols-2">
                                                             <div className='col-span-2'>
-                                                                <input checked={literatureReviewRank === "g"}
-                                                                    onChange={(e) => handleRadioChange(e, setLiteratureReviewRank)}
+                                                                <input checked={literaturereviewrank === "g"}
+                                                                    onChange={(e) => handleRadioChange(e, setliteraturereviewrank)}
                                                                     id="list-radio-missing" type="radio" value="g" name="list-radio-literature" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
                                                                 <label htmlFor="list-radio-missing" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">c. The literature review is missing a number of significant papers</label>
 
@@ -264,8 +265,8 @@ const SelectedFinal1Details = () => {
                                                     </li>
                                                     <li className="p-2 w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                                                         <div className="flex items-center ps-3">
-                                                            <input checked={literatureReviewRank === "h"}
-                                                                onChange={(e) => handleRadioChange(e, setLiteratureReviewRank)}
+                                                            <input checked={literaturereviewrank === "h"}
+                                                                onChange={(e) => handleRadioChange(e, setliteraturereviewrank)}
                                                                 id="list-radio-poor" type="radio" value="h" name="list-radio-literature" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
                                                             <label htmlFor="list-radio-poor" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">d. The literature review is poor with a majority of litteratue not covered</label>
                                                         </div>
@@ -278,20 +279,20 @@ const SelectedFinal1Details = () => {
                                                 <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                                     <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                         <div className="flex items-center ps-3">
-                                                            <input id="horizontal-list-radio-researchGapClearlyIdentified-Good" type="radio" value="Good" checked={researchGapClearlyIdentified === "Good"} onChange={(e) => setresearchGapClearlyIdentified(e.target.value)} name="list-radio-researchGapClearlyIdentified" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                            <label htmlFor="horizontal-list-radio-researchGapClearlyIdentified-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
+                                                            <input id="horizontal-list-radio-researchgapclearlyidentified-Good" type="radio" value="Good" checked={researchgapclearlyidentified === "Good"} onChange={(e) => setresearchgapclearlyidentified(e.target.value)} name="list-radio-researchgapclearlyidentified" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                            <label htmlFor="horizontal-list-radio-researchgapclearlyidentified-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
                                                         </div>
                                                     </li>
                                                     <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                         <div className="flex items-center ps-3">
-                                                            <input id="horizontal-list-radio-researchGapClearlyIdentified-Average" type="radio" value="Average" checked={researchGapClearlyIdentified === "Average"} onChange={(e) => setresearchGapClearlyIdentified(e.target.value)} name="list-radio-researchGapClearlyIdentified" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                            <label htmlFor="horizontal-list-radio-researchGapClearlyIdentified-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
+                                                            <input id="horizontal-list-radio-researchgapclearlyidentified-Average" type="radio" value="Average" checked={researchgapclearlyidentified === "Average"} onChange={(e) => setresearchgapclearlyidentified(e.target.value)} name="list-radio-researchgapclearlyidentified" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                            <label htmlFor="horizontal-list-radio-researchgapclearlyidentified-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
                                                         </div>
                                                     </li>
                                                     <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                         <div className="flex items-center ps-3">
-                                                            <input id="horizontal-list-radio-researchGapClearlyIdentified-Bad" type="radio" value="Bad" checked={researchGapClearlyIdentified === "Bad"} onChange={(e) => setresearchGapClearlyIdentified(e.target.value)} name="list-radio-researchGapClearlyIdentified" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                            <label htmlFor="horizontal-list-radio-researchGapClearlyIdentified-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
+                                                            <input id="horizontal-list-radio-researchgapclearlyidentified-Bad" type="radio" value="Bad" checked={researchgapclearlyidentified === "Bad"} onChange={(e) => setresearchgapclearlyidentified(e.target.value)} name="list-radio-researchgapclearlyidentified" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                            <label htmlFor="horizontal-list-radio-researchgapclearlyidentified-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
                                                         </div>
                                                     </li>
                                                 </ul>
@@ -302,20 +303,20 @@ const SelectedFinal1Details = () => {
                                                 <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                                     <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                         <div className="flex items-center ps-3">
-                                                            <input id="horizontal-list-radio-comparativeAnalysisThorough-Good" type="radio" value="Good" checked={comparativeAnalysisThorough === "Good"} onChange={(e) => setcomparativeAnalysisThorough(e.target.value)} name="list-radio-comparativeAnalysisThorough" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                            <label htmlFor="horizontal-list-radio-comparativeAnalysisThorough-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
+                                                            <input id="horizontal-list-radio-comparativeanalysisthorough-Good" type="radio" value="Good" checked={comparativeanalysisthorough === "Good"} onChange={(e) => setcomparativeAnalysisThorough(e.target.value)} name="list-radio-comparativeanalysisthorough" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                            <label htmlFor="horizontal-list-radio-comparativeanalysisthorough-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
                                                         </div>
                                                     </li>
                                                     <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                         <div className="flex items-center ps-3">
-                                                            <input id="horizontal-list-radio-comparativeAnalysisThorough-Average" type="radio" value="Average" checked={comparativeAnalysisThorough === "Average"} onChange={(e) => setcomparativeAnalysisThorough(e.target.value)} name="list-radio-comparativeAnalysisThorough" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                            <label htmlFor="horizontal-list-radio-comparativeAnalysisThorough-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
+                                                            <input id="horizontal-list-radio-comparativeanalysisthorough-Average" type="radio" value="Average" checked={comparativeanalysisthorough === "Average"} onChange={(e) => setcomparativeAnalysisThorough(e.target.value)} name="list-radio-comparativeanalysisthorough" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                            <label htmlFor="horizontal-list-radio-comparativeanalysisthorough-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
                                                         </div>
                                                     </li>
                                                     <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                         <div className="flex items-center ps-3">
-                                                            <input id="horizontal-list-radio-comparativeAnalysisThorough-Bad" type="radio" value="Bad" checked={comparativeAnalysisThorough === "Bad"} onChange={(e) => setcomparativeAnalysisThorough(e.target.value)} name="list-radio-comparativeAnalysisThorough" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                            <label htmlFor="horizontal-list-radio-comparativeAnalysisThorough-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
+                                                            <input id="horizontal-list-radio-comparativeanalysisthorough-Bad" type="radio" value="Bad" checked={comparativeanalysisthorough === "Bad"} onChange={(e) => setcomparativeAnalysisThorough(e.target.value)} name="list-radio-comparativeanalysisthorough" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                            <label htmlFor="horizontal-list-radio-comparativeanalysisthorough-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
                                                         </div>
                                                     </li>
                                                 </ul>
@@ -335,20 +336,20 @@ const SelectedFinal1Details = () => {
                                                     <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-researchProblemClearlyDefined-Good" type="radio" value="Good" checked={researchProblemClearlyDefined === "Good"} onChange={(e) => setresearchProblemClearlyDefined(e.target.value)} name="list-radio-researchProblemClearlyDefined" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-researchProblemClearlyDefined-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
+                                                                <input id="horizontal-list-radio-researchproblemclearlydefined-Good" type="radio" value="Good" checked={researchproblemclearlydefined === "Good"} onChange={(e) => setresearchproblemclearlydefined(e.target.value)} name="list-radio-researchproblemclearlydefined" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-researchproblemclearlydefined-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
                                                             </div>
                                                         </li>
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-researchProblemClearlyDefined-Average" type="radio" value="Average" checked={researchProblemClearlyDefined === "Average"} onChange={(e) => setresearchProblemClearlyDefined(e.target.value)} name="list-radio-researchProblemClearlyDefined" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-researchProblemClearlyDefined-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
+                                                                <input id="horizontal-list-radio-researchproblemclearlydefined-Average" type="radio" value="Average" checked={researchproblemclearlydefined === "Average"} onChange={(e) => setresearchproblemclearlydefined(e.target.value)} name="list-radio-researchproblemclearlydefined" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-researchproblemclearlydefined-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
                                                             </div>
                                                         </li>
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-researchProblemClearlyDefined-Bad" type="radio" value="Bad" checked={researchProblemClearlyDefined === "Bad"} onChange={(e) => setresearchProblemClearlyDefined(e.target.value)} name="list-radio-researchProblemClearlyDefined" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-researchProblemClearlyDefined-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
+                                                                <input id="horizontal-list-radio-researchproblemclearlydefined-Bad" type="radio" value="Bad" checked={researchproblemclearlydefined === "Bad"} onChange={(e) => setresearchproblemclearlydefined(e.target.value)} name="list-radio-researchproblemclearlydefined" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-researchproblemclearlydefined-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
                                                             </div>
                                                         </li>
                                                     </ul>
@@ -357,20 +358,20 @@ const SelectedFinal1Details = () => {
                                                     <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-problemContextInLiterature-Good" type="radio" value="Good" checked={problemContextInLiterature === "Good"} onChange={(e) => setproblemContextInLiterature(e.target.value)} name="list-radio-problemContextInLiterature" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-problemContextInLiterature-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
+                                                                <input id="horizontal-list-radio-problemcontextinliterature-Good" type="radio" value="Good" checked={problemcontextinliterature === "Good"} onChange={(e) => setproblemcontextinliterature(e.target.value)} name="list-radio-problemcontextinliterature" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-problemcontextinliterature-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
                                                             </div>
                                                         </li>
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-problemContextInLiterature-Average" type="radio" value="Average" checked={problemContextInLiterature === "Average"} onChange={(e) => setproblemContextInLiterature(e.target.value)} name="list-radio-problemContextInLiterature" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-problemContextInLiterature-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
+                                                                <input id="horizontal-list-radio-problemcontextinliterature-Average" type="radio" value="Average" checked={problemcontextinliterature === "Average"} onChange={(e) => setproblemcontextinliterature(e.target.value)} name="list-radio-problemcontextinliterature" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-problemcontextinliterature-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
                                                             </div>
                                                         </li>
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-problemContextInLiterature-Bad" type="radio" value="Bad" checked={problemContextInLiterature === "Bad"} onChange={(e) => setproblemContextInLiterature(e.target.value)} name="list-radio-problemContextInLiterature" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-problemContextInLiterature-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
+                                                                <input id="horizontal-list-radio-problemcontextinliterature-Bad" type="radio" value="Bad" checked={problemcontextinliterature === "Bad"} onChange={(e) => setproblemcontextinliterature(e.target.value)} name="list-radio-problemcontextinliterature" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-problemcontextinliterature-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
                                                             </div>
                                                         </li>
                                                     </ul>
@@ -393,34 +394,34 @@ const SelectedFinal1Details = () => {
                                                 <ul className="text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                                     <li className="p-2 w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                                                         <div className="flex items-center ps-3">
-                                                            <input checked={understandingOfSolution === "e"}
-                                                                onChange={(e) => handleRadioChange(e, setunderstandingOfSolution)}
-                                                                id="list-radio-understandingOfSolution-noidea" type="radio" value="e" name="list-radio-understandingOfSolution" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                            <label htmlFor="list-radio-understandingOfSolution-noidea" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">a. The student has no idea about the solution</label>
+                                                            <input checked={understandingofsolution === "e"}
+                                                                onChange={(e) => handleRadioChange(e, setunderstandingofsolution)}
+                                                                id="list-radio-understandingofsolution-noidea" type="radio" value="e" name="list-radio-understandingofsolution" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                            <label htmlFor="list-radio-understandingofsolution-noidea" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">a. The student has no idea about the solution</label>
                                                         </div>
                                                     </li>
                                                     <li className="p-2 w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                                                         <div className="flex items-center ps-3">
-                                                            <input checked={understandingOfSolution === "f"}
-                                                                onChange={(e) => handleRadioChange(e, setunderstandingOfSolution)}
-                                                                id="list-radio-understandingOfSolution-someidea" type="radio" value="f" name="list-radio-understandingOfSolution" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                            <label htmlFor="list-radio-understandingOfSolution-someidea" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">b. The student has some idea about the solution and needs refinement</label>
+                                                            <input checked={understandingofsolution === "f"}
+                                                                onChange={(e) => handleRadioChange(e, setunderstandingofsolution)}
+                                                                id="list-radio-understandingofsolution-someidea" type="radio" value="f" name="list-radio-understandingofsolution" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                            <label htmlFor="list-radio-understandingofsolution-someidea" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">b. The student has some idea about the solution and needs refinement</label>
                                                         </div>
                                                     </li>
                                                     <li className="p-2 w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                                                     <div className="flex items-center ps-3">
-                                                            <input checked={understandingOfSolution === "g"}
-                                                                onChange={(e) => handleRadioChange(e, setunderstandingOfSolution)}
-                                                                id="list-radio-understandingOfSolution-highidea" type="radio" value="g" name="list-radio-understandingOfSolution" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                            <label htmlFor="list-radio-understandingOfSolution-highidea" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">c. The student has a high level idea about the solution</label>
+                                                            <input checked={understandingofsolution === "g"}
+                                                                onChange={(e) => handleRadioChange(e, setunderstandingofsolution)}
+                                                                id="list-radio-understandingofsolution-highidea" type="radio" value="g" name="list-radio-understandingofsolution" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                            <label htmlFor="list-radio-understandingofsolution-highidea" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">c. The student has a high level idea about the solution</label>
                                                         </div>
                                                     </li>
                                                     <li className="p-2 w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                                                         <div className="flex items-center ps-3">
-                                                            <input checked={understandingOfSolution === "h"}
-                                                                onChange={(e) => handleRadioChange(e, setunderstandingOfSolution)}
-                                                                id="list-radio-understandingOfSolution-clearidea" type="radio" value="h" name="list-radio-understandingOfSolution" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                            <label htmlFor="list-radio-understandingOfSolution-clearidea" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">d. The student has a clear idea about the solution to start the work</label>
+                                                            <input checked={understandingofsolution === "h"}
+                                                                onChange={(e) => handleRadioChange(e, setunderstandingofsolution)}
+                                                                id="list-radio-understandingofsolution-clearidea" type="radio" value="h" name="list-radio-understandingofsolution" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                            <label htmlFor="list-radio-understandingofsolution-clearidea" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">d. The student has a clear idea about the solution to start the work</label>
                                                         </div>
                                                     </li>
                                                 </ul>
@@ -428,20 +429,20 @@ const SelectedFinal1Details = () => {
                                                     <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-proposedWorkEvaluation-Good" type="radio" value="Good" checked={proposedWorkEvaluation === "Good"} onChange={(e) => setproposedWorkEvaluation(e.target.value)} name="list-radio-proposedWorkEvaluation" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-proposedWorkEvaluation-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
+                                                                <input id="horizontal-list-radio-proposedworkevaluation-Good" type="radio" value="Good" checked={proposedworkevaluation === "Good"} onChange={(e) => setproposedworkevaluation(e.target.value)} name="list-radio-proposedworkevaluation" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-proposedworkevaluation-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
                                                             </div>
                                                         </li>
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-proposedWorkEvaluation-Average" type="radio" value="Average" checked={proposedWorkEvaluation === "Average"} onChange={(e) => setproposedWorkEvaluation(e.target.value)} name="list-radio-proposedWorkEvaluation" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-proposedWorkEvaluation-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
+                                                                <input id="horizontal-list-radio-proposedworkevaluation-Average" type="radio" value="Average" checked={proposedworkevaluation === "Average"} onChange={(e) => setproposedworkevaluation(e.target.value)} name="list-radio-proposedworkevaluation" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-proposedworkevaluation-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
                                                             </div>
                                                         </li>
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-proposedWorkEvaluation-Bad" type="radio" value="Bad" checked={proposedWorkEvaluation === "Bad"} onChange={(e) => setproposedWorkEvaluation(e.target.value)} name="list-radio-proposedWorkEvaluation" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-proposedWorkEvaluation-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
+                                                                <input id="horizontal-list-radio-proposedworkevaluation-Bad" type="radio" value="Bad" checked={proposedworkevaluation === "Bad"} onChange={(e) => setproposedworkevaluation(e.target.value)} name="list-radio-proposedworkevaluation" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-proposedworkevaluation-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
                                                             </div>
                                                         </li>
                                                     </ul>
@@ -463,20 +464,20 @@ const SelectedFinal1Details = () => {
                                                     <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-reportQuality-Good" type="radio" value="Good" checked={reportQuality === "Good"} onChange={(e) => setreportQuality(e.target.value)} name="list-radio-reportQuality" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-reportQuality-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
+                                                                <input id="horizontal-list-radio-reportquality-Good" type="radio" value="Good" checked={reportquality === "Good"} onChange={(e) => setreportquality(e.target.value)} name="list-radio-reportquality" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-reportquality-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
                                                             </div>
                                                         </li>
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-reportQuality-Average" type="radio" value="Average" checked={reportQuality === "Average"} onChange={(e) => setreportQuality(e.target.value)} name="list-radio-reportQuality" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-reportQuality-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
+                                                                <input id="horizontal-list-radio-reportquality-Average" type="radio" value="Average" checked={reportquality === "Average"} onChange={(e) => setreportquality(e.target.value)} name="list-radio-reportquality" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-reportquality-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
                                                             </div>
                                                         </li>
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-reportQuality-Bad" type="radio" value="Bad" checked={reportQuality === "Bad"} onChange={(e) => setreportQuality(e.target.value)} name="list-radio-reportQuality" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-reportQuality-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
+                                                                <input id="horizontal-list-radio-reportquality-Bad" type="radio" value="Bad" checked={reportquality === "Bad"} onChange={(e) => setreportquality(e.target.value)} name="list-radio-reportquality" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-reportquality-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
                                                             </div>
                                                         </li>
                                                     </ul>
@@ -485,20 +486,20 @@ const SelectedFinal1Details = () => {
                                                     <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-reportOrganizationAcceptable-Good" type="radio" value="Good" checked={reportOrganizationAcceptable === "Good"} onChange={(e) => setreportOrganizationAcceptable(e.target.value)} name="list-radio-reportOrganizationAcceptable" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-reportOrganizationAcceptable-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
+                                                                <input id="horizontal-list-radio-reportorganizationacceptable-Good" type="radio" value="Good" checked={reportorganizationacceptable === "Good"} onChange={(e) => setreportorganizationacceptable(e.target.value)} name="list-radio-reportorganizationacceptable" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-reportorganizationacceptable-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
                                                             </div>
                                                         </li>
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-reportOrganizationAcceptable-Average" type="radio" value="Average" checked={reportOrganizationAcceptable === "Average"} onChange={(e) => setreportOrganizationAcceptable(e.target.value)} name="list-radio-reportOrganizationAcceptable" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-reportOrganizationAcceptable-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
+                                                                <input id="horizontal-list-radio-reportorganizationacceptable-Average" type="radio" value="Average" checked={reportorganizationacceptable === "Average"} onChange={(e) => setreportorganizationacceptable(e.target.value)} name="list-radio-reportorganizationacceptable" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-reportorganizationacceptable-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
                                                             </div>
                                                         </li>
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-reportOrganizationAcceptable-Bad" type="radio" value="Bad" checked={reportOrganizationAcceptable === "Bad"} onChange={(e) => setreportOrganizationAcceptable(e.target.value)} name="list-radio-reportOrganizationAcceptable" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-reportOrganizationAcceptable-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
+                                                                <input id="horizontal-list-radio-reportorganizationacceptable-Bad" type="radio" value="Bad" checked={reportorganizationacceptable === "Bad"} onChange={(e) => setreportorganizationacceptable(e.target.value)} name="list-radio-reportorganizationacceptable" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-reportorganizationacceptable-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
                                                             </div>
                                                         </li>
                                                     </ul>
@@ -522,20 +523,20 @@ const SelectedFinal1Details = () => {
                                                     <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-communicationSkills-Good" type="radio" value="Good" checked={communicationSkills === "Good"} onChange={(e) => setcommunicationSkills(e.target.value)} name="list-radio-communicationSkills" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-communicationSkills-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
+                                                                <input id="horizontal-list-radio-communicationskills-Good" type="radio" value="Good" checked={communicationskills === "Good"} onChange={(e) => setcommunicationskills(e.target.value)} name="list-radio-communicationskills" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-communicationskills-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
                                                             </div>
                                                         </li>
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-communicationSkills-Average" type="radio" value="Average" checked={communicationSkills === "Average"} onChange={(e) => setcommunicationSkills(e.target.value)} name="list-radio-communicationSkills" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-communicationSkills-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
+                                                                <input id="horizontal-list-radio-communicationskills-Average" type="radio" value="Average" checked={communicationskills === "Average"} onChange={(e) => setcommunicationskills(e.target.value)} name="list-radio-communicationskills" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-communicationskills-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
                                                             </div>
                                                         </li>
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-communicationSkills-Bad" type="radio" value="Bad" checked={communicationSkills === "Bad"} onChange={(e) => setcommunicationSkills(e.target.value)} name="list-radio-communicationSkills" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-communicationSkills-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
+                                                                <input id="horizontal-list-radio-communicationskills-Bad" type="radio" value="Bad" checked={communicationskills === "Bad"} onChange={(e) => setcommunicationskills(e.target.value)} name="list-radio-communicationskills" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-communicationskills-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
                                                             </div>
                                                         </li>
                                                     </ul>
@@ -544,20 +545,20 @@ const SelectedFinal1Details = () => {
                                                     <ul className="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-questionsHandling-Good" type="radio" value="Good" checked={questionsHandling === "Good"} onChange={(e) => setquestionsHandling(e.target.value)} name="list-radio-questionsHandling" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-questionsHandling-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
+                                                                <input id="horizontal-list-radio-questionshandling-Good" type="radio" value="Good" checked={questionshandling === "Good"} onChange={(e) => setquestionshandling(e.target.value)} name="list-radio-questionshandling" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-questionshandling-Good" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Good</label>
                                                             </div>
                                                         </li>
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-questionsHandling-Average" type="radio" value="Average" checked={questionsHandling === "Average"} onChange={(e) => setquestionsHandling(e.target.value)} name="list-radio-questionsHandling" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-questionsHandling-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
+                                                                <input id="horizontal-list-radio-questionshandling-Average" type="radio" value="Average" checked={questionshandling === "Average"} onChange={(e) => setquestionshandling(e.target.value)} name="list-radio-questionshandling" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-questionshandling-Average" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Average</label>
                                                             </div>
                                                         </li>
                                                         <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                                             <div className="flex items-center ps-3">
-                                                                <input id="horizontal-list-radio-questionsHandling-Bad" type="radio" value="Bad" checked={questionsHandling === "Bad"} onChange={(e) => setquestionsHandling(e.target.value)} name="list-radio-questionsHandling" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                                                                <label htmlFor="horizontal-list-radio-questionsHandling-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
+                                                                <input id="horizontal-list-radio-questionshandling-Bad" type="radio" value="Bad" checked={questionshandling === "Bad"} onChange={(e) => setquestionshandling(e.target.value)} name="list-radio-questionshandling" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                                                                <label htmlFor="horizontal-list-radio-questionshandling-Bad" className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Bad</label>
                                                             </div>
                                                         </li>
                                                     </ul>

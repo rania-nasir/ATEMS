@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'; // Import useParams hook
 import Cookies from 'js-cookie';
 
-const SelectedProposalDetails = () => {
+const SelectedProposalDetails = ({setShowDetails}) => {
     const userId = Cookies.get('userId');
 
     const { rollno } = useParams(); // Get rollno from URL params
@@ -135,6 +135,7 @@ const SelectedProposalDetails = () => {
                         if (data.message) {
                             // Handle success message
                             alert(data.message);
+                            setShowDetails(false);
                         } else {
                             // Handle error message
                             alert(data.error);

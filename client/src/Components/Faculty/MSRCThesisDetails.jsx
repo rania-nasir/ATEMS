@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Cookie from 'js-cookie';
 import { Card } from 'primereact/card';
 
-export default function MSRCThesisDetails() {
+export default function MSRCThesisDetails({ setShowDetails }) {
 
     const navigate = useNavigate();
 
@@ -70,7 +70,7 @@ export default function MSRCThesisDetails() {
             } else {
                 window.alert("Feedback Submitted Successfully");
                 console.log("Feedback Submitted Successfully");
-                navigate('/');
+                setShowDetails(false);
             }
         } else {
             window.alert("Something went wrong");

@@ -1,32 +1,32 @@
 import { useState, useEffect } from 'react';
 import Cookie from 'js-cookie'
 
-export default function ViewFeedback() {
+export default function T2ViewFeedback() {
     const [FeedbackData, setFeedbackData] = useState([]);
 
-    useEffect(() => {
-        async function fetchFeedbackData() {
-            try {
-                const response = await fetch('http://localhost:5000/std/viewFeedback', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `${Cookie.get('jwtoken')}`
-                    }
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(data);
-                    setFeedbackData(data);
-                } else {
-                    throw new Error('Failed to fetch data');
-                }
-            } catch (error) {
-                console.error('Failed to retrieve data: ', error);
-            }
-        }
+    // useEffect(() => {
+    //     async function fetchFeedbackData() {
+    //         try {
+    //             const response = await fetch('http://localhost:5000/std/viewFeedback', {
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                     'Authorization': `${Cookie.get('jwtoken')}`
+    //                 }
+    //             });
+    //             if (response.ok) {
+    //                 const data = await response.json();
+    //                 console.log(data);
+    //                 setFeedbackData(data);
+    //             } else {
+    //                 throw new Error('Failed to fetch data');
+    //             }
+    //         } catch (error) {
+    //             console.error('Failed to retrieve data: ', error);
+    //         }
+    //     }
 
-        fetchFeedbackData();
-    }, []); // Empty dependency array to execute only once on component mount
+    //     fetchFeedbackData();
+    // }, []); // Empty dependency array to execute only once on component mount
 
     return (
         <>

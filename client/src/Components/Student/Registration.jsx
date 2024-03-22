@@ -5,7 +5,7 @@ import { RadioButton } from "primereact/radiobutton";
 import SynopsisForm, { Fdata } from './SynopsisForm'
 import Cookies from 'js-cookie';
 
-const FillSynopsis = () => {
+const Registration = () => {
     const userId = Cookies.get('userId');
 
     const [rollno, setrollno] = useState([]);
@@ -90,7 +90,7 @@ const FillSynopsis = () => {
 
         console.log("Synopsis data:", synopsisData);
 
-        const res = await fetch("http://localhost:5000/std/fillSynopsis", {
+        const res = await fetch("http://localhost:5000/std/Registration", {
             method: "POST",
             headers: {
                 'Authorization': `${Cookies.get('jwtoken')}`,
@@ -125,7 +125,7 @@ const FillSynopsis = () => {
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="w-full my-4">
                     <h2 className="text-center text-2xl tracking-tight text-gray-950 font-bold">
-                        Proposal Synopsis Form
+                        Registration Form
                     </h2>
                 </div>
 
@@ -191,7 +191,7 @@ const FillSynopsis = () => {
 
                         <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
 
-                        <div className='grid grid-cols-2'>
+                        {/* <div className='grid grid-cols-2'>
                             <div className='p-2 col-span-2'>
                                 <div className='w-full px-3'>
                                     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
@@ -267,11 +267,11 @@ const FillSynopsis = () => {
                                 onClick={PostData}>
                                 Register
                             </button>
-                        </div>
+                        </div> */}
                     </form>
                 </div >
             </div >
         </>
     )
 }
-export default FillSynopsis;
+export default Registration;

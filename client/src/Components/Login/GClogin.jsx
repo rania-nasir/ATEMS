@@ -73,7 +73,7 @@ export default function GClogin() {
                 Cookies.set('userId', data.userId, { expires: 3 });
                 Cookies.set('userType', data.userType, { expires: 3 });
                 console.log("GC Login Successful");
-                navigate('/');
+                navigate('/Dashboard');
                 window.location.reload();
             }
         } else {

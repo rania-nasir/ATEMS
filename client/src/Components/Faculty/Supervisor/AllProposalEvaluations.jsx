@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Cookie from 'js-cookie';
 import { NavLink } from 'react-router-dom';
 
-export default function AllProposalEvaluations() {
+export default function AllProposalEvaluations({ setShowDetails }) {
     const [thesisData, setThesisData] = useState([]);
 
     useEffect(() => {
@@ -29,6 +29,12 @@ export default function AllProposalEvaluations() {
 
         fetchThesisData();
     }, []);
+
+    const handleViewDetails = () => {
+        // Trigger setShowDetails when "View Details" link is clicked
+        setShowDetails(true);
+    };
+
 
     return (
         <>
@@ -73,7 +79,9 @@ export default function AllProposalEvaluations() {
                                         <td className="px-4 py-4">{student?.thesis?.supervisorname}</td>
                                         <td className="px-4 py-4">{student?.thesis?.internals.join(', ')}</td>
                                         <td className="px-6 py-4">
-                                            <NavLink to={student?.rollno ? `/selectedProposal/${student.rollno}` : '#'} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            <NavLink to={student?.rollno ? `/selectedProposal/${student.rollno}` : '#'} 
+                                            onClick={() => handleViewDetails()} // Call handleViewDetails
+                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                 View Details
                                             </NavLink>
                                         </td>

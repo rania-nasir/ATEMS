@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Cookie from 'js-cookie';
 import { Dropdown } from 'primereact/dropdown';
 
-export default function GetThesisDetails() {
+export default function GetThesisDetails({ setShowDetails }) {
 
     const navigate = useNavigate();
     const { thesisid } = useParams();
@@ -11,8 +11,8 @@ export default function GetThesisDetails() {
 
     const [selectedInternal1, setselectedInternal1] = useState(null);
     const [selectedInternal2, setselectedInternal2] = useState(null);
-    const [researchArea1, setResearchArea1] = useState(''); 
-    const [researchArea2, setResearchArea2] = useState(''); 
+    const [researchArea1, setResearchArea1] = useState('');
+    const [researchArea2, setResearchArea2] = useState('');
 
     console.log('thesisid ==== ', thesisid);
 
@@ -79,7 +79,8 @@ export default function GetThesisDetails() {
             } else {
                 window.alert(data.message);
                 console.log("Accepted Thesis Successfully");
-                navigate('/');
+                navigate('/ReviewRequest')
+                setShowDetails(false);
             }
         } else {
             window.alert(data.message);
@@ -89,7 +90,7 @@ export default function GetThesisDetails() {
 
     return (
         <>
-         <div className='flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
+            <div className='flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
                 <div className="mt-2 bg-gray-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
                     <div className="px-4 py-5 sm:px-6">
                         <p className="max-w-2xl text-md text-white">

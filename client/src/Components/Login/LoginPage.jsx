@@ -195,7 +195,7 @@ const LoginPage = () => {
                 Cookies.set('userId', userId, { expires: 3 });
                 Cookies.set('userType', userType, { expires: 3 });
                 console.log("Login Successful");
-                navigate('/');
+                navigate('/Home');
                 window.location.reload();
             }
         } else {

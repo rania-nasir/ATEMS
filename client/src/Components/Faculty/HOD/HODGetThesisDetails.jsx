@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Cookie from 'js-cookie';
 
-export default function GetThesisDetails() {
+export default function HODGetThesisDetails({ setShowDetails }) {
 
     const navigate = useNavigate();
     const { thesisid } = useParams();
@@ -56,7 +56,7 @@ export default function GetThesisDetails() {
             } else {
                 window.alert("Accepted Thesis Successfully");
                 console.log("Accepted Thesis Successfully");
-                navigate('/');
+                setShowDetails(false);
             }
         } else {
             window.alert(data.message);
@@ -66,7 +66,7 @@ export default function GetThesisDetails() {
 
     return (
         <>
-         <div className='flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
+            <div className='flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
                 <div className="mt-2 bg-gray-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
                     <div className="px-4 py-5 sm:px-6">
                         <p className="max-w-2xl text-md text-white">

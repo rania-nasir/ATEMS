@@ -3,10 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Cookie from 'js-cookie';
 import { Dropdown } from 'primereact/dropdown';
 
-export default function GetSynopsisDetails() {
+export default function GetSynopsisDetails({setShowDetails}) {
 
     const navigate = useNavigate();
-    const { synopsisid } = useParams();
+    const { synopsisId } = useParams();
     const [synopsisData, setSynopsisData] = useState({ selectedSynopsis: null, facultyList: [] });
 
     const [selectedInternal1, setselectedInternal1] = useState(null);
@@ -17,7 +17,7 @@ export default function GetSynopsisDetails() {
     useEffect(() => {
         async function fetchSynopsisData() {
             try {
-                const response = await fetch(`http://localhost:5000/faculty/supReviewRequest/${synopsisid}`, {
+                const response = await fetch(`http://localhost:5000/faculty/supReviewRequest/${synopsisId}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ export default function GetSynopsisDetails() {
         }
 
         fetchSynopsisData();
-    }, [synopsisid]);
+    }, [synopsisId]);
 
     const selectedValue = synopsisData.facultyList.map(item => ({ label: item.name, value: item.name }))
 
@@ -58,7 +58,7 @@ export default function GetSynopsisDetails() {
 
         console.log("Internal Data =", InternalData);
 
-        const res = await fetch(`http://localhost:5000/faculty/approve-synopsis/${synopsisid}`, {
+        const res = await fetch(`http://localhost:5000/faculty/approve-synopsis/${synopsisId}`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -74,10 +74,11 @@ export default function GetSynopsisDetails() {
             if (data.message === "Invalid Credentials") {
                 window.alert("Invalid Credentials");
                 console.log("Invalid Credentials");
+                setShowDetails(false);
             } else {
                 window.alert("Accepted Synopsis Successfully");
                 console.log("Accepted Synopsis Successfully");
-                navigate('/');
+                setShowDetails(false);
             }
         } else {
             window.alert("Something went wrong");
@@ -89,7 +90,7 @@ export default function GetSynopsisDetails() {
         e.preventDefault();
     
         try {
-            const res = await fetch(`http://localhost:5000/faculty/decline-synopsis/${synopsisid}`, {
+            const res = await fetch(`http://localhost:5000/faculty/decline-synopsis/${synopsisId}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json',

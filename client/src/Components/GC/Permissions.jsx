@@ -135,6 +135,7 @@ export default function Permissions() {
 
             // Close the dialog after performing the action
             setProposalVisible(false);
+            // window.location.reload();
         } catch (error) {
             console.error('Error toggling proposal permission:', error);
             setMessage('Failed to toggle proposal permission');
@@ -177,6 +178,8 @@ export default function Permissions() {
 
             // Close the dialog after performing the action
             setMid1Visible(false);
+            // window.location.reload();
+
         } catch (error) {
             console.error('Error toggling mid1 permission:', error);
             setMessage('Failed to toggle mid1 permission');
@@ -219,6 +222,8 @@ export default function Permissions() {
 
             // Close the dialog after performing the action
             setMid1Visible(false);
+            // window.location.reload();
+
         } catch (error) {
             console.error('Error toggling mid1 permission:', error);
             setMessage('Failed to toggle mid1 permission');

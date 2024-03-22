@@ -2,14 +2,13 @@ import { useState, useEffect } from 'react';
 import Cookie from 'js-cookie';
 import { NavLink } from 'react-router-dom';
 
-export default function GetThesis({ setShowDetails }) {
+export default function HODGetThesis({ setShowDetails }) {
     const [thesisData, setthesisData] = useState({ allThesis: [] });
 
     useEffect(() => {
         async function fetchthesisData() {
             try {
-                const response = await fetch('http://localhost:5000/gc/ReviewRequest', {
-                    method: 'GET',
+                const response = await fetch('http://localhost:5000/faculty/viewAllThesis', {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `${Cookie.get('jwtoken')}`
@@ -44,7 +43,7 @@ export default function GetThesis({ setShowDetails }) {
             <div className='m-2'>
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-950">
-                        Thesis Requests
+                        Thesis Approval Requests
                     </h2>
                 </div>
                 <div class="m-6 shadow-md sm:rounded-lg">
@@ -93,7 +92,7 @@ export default function GetThesis({ setShowDetails }) {
                                             {rowData.potentialareas}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <NavLink to={`/ReviewRequest/${rowData.thesisid}`}
+                                            <NavLink to={`/reviewThesis/${rowData.thesisid}`}
                                                 onClick={() => handleViewDetails()} // Call handleViewDetails
                                                 className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                 View Details

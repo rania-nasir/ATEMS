@@ -487,22 +487,23 @@ const evaluateFinal = async (req, res) => {
             thesistitle,
             facultyid,
             facname,
-            literatureReviewRank,
+            literaturereviewrank,
             paper1,
             paper2,
-            comparativeAnalysisThorough,
-            researchGapClearlyIdentified,
-            researchProblemClearlyDefined,
-            problemContextInLiterature,
-            understandingOfSolution,
-            proposedWorkEvaluation,
-            reportQuality,
-            reportOrganizationAcceptable,
-            communicationSkills,
-            questionsHandling,
+            comparativeanalysisthorough,
+            researchgapclearlyidentified,
+            researchproblemclearlydefined,
+            problemcontextinliterature,
+            understandingofsolution,
+            proposedworkevaluation,
+            reportquality,
+            reportorganizationacceptable,
+            communicationskills,
+            questionshandling,
             comments,
         } = req.body;
 
+        console.log('literaturereviewrank:::', literaturereviewrank);
         const studentDetails = await students.findOne({
             where: {
                 rollno

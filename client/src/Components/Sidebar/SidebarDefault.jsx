@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
+
 import Cookies from "js-cookie";
-import { useContext } from 'react';
 import { RoleContext } from '../../context/RoleContext';
+import { ActiveTitleContext } from "../../context/ActiveTitleContext";
+
 import dashbboardicon from '../../Icons/dashboard.png';
 import recordsicon from '../../Icons/records.png';
 import requestsicon from '../../Icons/requests.png';
@@ -20,6 +22,7 @@ import Permissionicon from '../../Icons/permissions.png';
 
 
 const SidebarDefault = () => {
+    const { activeTitle, setActiveTitle } = useContext(ActiveTitleContext);
     const { role, setRole } = useContext(RoleContext);
 
     const userId = Cookies.get('userId');
@@ -57,7 +60,7 @@ const SidebarDefault = () => {
         {
             id: 1,
             title: 'Dashboard',
-            path: '/',
+            path: '/Dashboard',
             iconsrc: dashbboardicon,
         },
         {
@@ -114,7 +117,7 @@ const SidebarDefault = () => {
         {
             id: 1,
             title: 'Home',
-            path: '/',
+            path: '/Home',
             iconsrc: homeicon,
         },
         {
@@ -126,25 +129,25 @@ const SidebarDefault = () => {
         {
             id: 3,
             title: 'Supervisor Management',
-            path: '/Supervisor',
+            path: '/',
             iconsrc: Managementicon,
         },
         {
             id: 4,
             title: 'Internal Management',
-            path: '/Internal',
+            path: '/',
             iconsrc: Managmentsicon,
         },
         {
             id: 5,
             title: 'MSRC Management',
-            path: '/MSRC',
+            path: '/',
             iconsrc: Managmentsicon,
         },
         {
             id: 6,
             title: 'HOD Management',
-            path: '/HOD',
+            path: '/',
             iconsrc: Managingsicon,
         },
     ];
@@ -153,13 +156,13 @@ const SidebarDefault = () => {
         {
             id: 1,
             title: 'Home',
-            path: '/',
+            path: '/Home',
             iconsrc: homeicon,
         },
         {
             id: 2,
             title: 'Synopsis Form',
-            path: '/synopsisForm',
+            path: '/fillSynopsis',
             iconsrc: formicon,
         },
         {
@@ -179,14 +182,17 @@ const SidebarDefault = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        let defaultMenuItems;
         // Use userType to determine which sidebar items to display
         if (userType === "faculty") {
-            setMenuItems(facultySidebarItems);
+            defaultMenuItems = facultySidebarItems;
         } else if (userType === "student") {
-            setMenuItems(studentSidebarItems);
+            defaultMenuItems = studentSidebarItems;
         } else if (userType === "gc") {
-            setMenuItems(GCSidebarItems);
+            defaultMenuItems = GCSidebarItems;
         }
+
+        setMenuItems(defaultMenuItems);
     }, [userType]);
 
     const [isSupervisor, setIsSupervisor] = useState(false);
@@ -221,12 +227,15 @@ const SidebarDefault = () => {
 
     }, [facultyData]);
 
-    const [activeMenu, setActiveMenu] = useState(null);
+    const [activeMenu, setActiveMenu] = useState(1); // Initialize activeMenu with id 1
     const [menuItems, setMenuItems] = useState([]);
 
-    const handleMenuClick = (path, id) => {
+    const handleMenuClick = (path, id, title) => { // Include title in handleMenuClick function
+
+        setActiveMenu(id); // Update activeMenu on menu click
+        setActiveTitle(title);
         navigate(path);
-        setActiveMenu(activeMenu === id ? null : id);
+        console.log("sidebar title = ", activeTitle);
         if (userType === 'faculty') {
             // Check conditions for rendering based on role
             if ((id === 3 && isSupervisor)) {
@@ -247,14 +256,14 @@ const SidebarDefault = () => {
                 <div className="text-gray-900 px-2 pt-4 flex flex-col border-r border-gray-350">
                     {menuItems.map((menuItem) => {
 
-                        console.log('role = ', role);   
+                        console.log('role = ', role);
                         console.log('role = ', role.includes("Supervisor"));
 
                         return (
                             <div className="w-full" key={menuItem.id}>
                                 <NavLink
                                     to={menuItem.path}
-                                    onClick={() => handleMenuClick(menuItem.path, menuItem.id)}
+                                    onClick={() => handleMenuClick(menuItem.path, menuItem.id, menuItem.title)}
                                     className={`flex items-left w-full my-1 p-2 py-3 px-5 hover:bg-gray-200 ${activeMenu === menuItem.id ? 'bg-gray-200' : ''}`}
                                     style={{ borderRadius: "14px" }}
                                 >
@@ -270,4 +279,5 @@ const SidebarDefault = () => {
     );
 };
 
+// Export SidebarDefault component
 export default SidebarDefault;
