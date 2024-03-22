@@ -59,8 +59,8 @@ const SidebarDefault = () => {
     const GCSidebarItems = [
         {
             id: 1,
-            title: 'Dashboard',
-            path: '/Dashboard',
+            title: 'Home',
+            path: '/',
             iconsrc: dashbboardicon,
         },
         {
@@ -117,7 +117,7 @@ const SidebarDefault = () => {
         {
             id: 1,
             title: 'Home',
-            path: '/Home',
+            path: '/',
             iconsrc: homeicon,
         },
         {
@@ -156,7 +156,7 @@ const SidebarDefault = () => {
         {
             id: 1,
             title: 'Home',
-            path: '/Home',
+            path: '/',
             iconsrc: homeicon,
         },
         {
@@ -255,9 +255,6 @@ const SidebarDefault = () => {
             <div className="flex min-w-max">
                 <div className="text-gray-900 px-2 pt-4 flex flex-col border-r border-gray-350">
                     {menuItems.map((menuItem) => {
-
-                        console.log('role = ', role);
-                        console.log('role = ', role.includes("Supervisor"));
 
                         return (
                             <div className="w-full" key={menuItem.id}>

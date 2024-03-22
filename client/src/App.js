@@ -14,67 +14,20 @@ import LandingPage from './Components/Landing/LandingPage'
 import NavbarDefault from './Components/Navbar/NavbarDefault';
 import SidebarDefault from './Components/Sidebar/SidebarDefault';
 
-// import { useTitle } from './Components/Sidebar/SidebarDefault';
-
 // Login Components
 import LoginPage from './Components/Login/LoginPage';
 import GClogin from './Components/Login/GClogin';
 
-// Faculty Components
-// import RoleTabs from './Components/Faculty/RoleTabs'
-// import SupervisorComp from './Components/Faculty/Supervisor/SupervisorComp';
-// import SelectedProposalDetails from './Components/Faculty/Supervisor/SelectedProposalDetails';
-// import MSRCComp from './Components/Faculty/MSRC/MSRCComp';
-// import InternalComp from './Components/Faculty/Internal/InternalComp';
-// import HODComp from './Components/Faculty/HOD/HODComp';
-// import HODGetThesisDetails from './Components/Faculty/HOD/GetThesisDetails';
 import Facultyhome from './Components/Faculty/Facultyhome'
-// import GetSynopsis from './Components/Faculty/GetSynopsis';
-// import GetSynopsisDetails from './Components/Faculty/GetSynopsisDetails';
-// // import FacultyviewAnnouncement from './Components/Faculty/FacultyviewAnnouncement'
-// import MSRCAllThesis from './Components/Faculty/MSRCAllThesis';
-// import MSRCThesisDetails from './Components/Faculty/MSRCThesisDetails';
-// import AllProposalEvaluations from './Components/Faculty/Supervisor/AllProposalEvaluations';
-// import AllInternalPropEvaluations from './Components/Faculty/Internal/AllInternalPropEvaluations';
-// import AllMid1Evaluations from './Components/Faculty/Supervisor/AllMid1Evaluations';
-// import SelectedMid1Details from './Components/Faculty/Supervisor/SelectedMid1Details';
-// import AllMid1InternalEvaluations from './Components/Faculty/Internal/AllMid1InternalEvaluations';
-// import AllFinal1Evaluations from './Components/Faculty/Supervisor/AllFinal1Evaluations';
-// import SelectedFinal1Details from './Components/Faculty/Supervisor/SelectedFinal1Details';
-// import AllFinal1InternalEvaluations from './Components/Faculty/Internal/AllFinal1InternalEvaluations';
-
-// Student Components
 import Studenthome from './Components/Student/Studenthome'
-// import SynopsisForm from './Components/Student/SynopsisForm';
-// import FillSynopsis from './Components/Student/FillSynopsis';
-// import StudentviewAnnouncement from './Components/Student/StudentviewAnnouncement'
-// import ViewFeedback from './Components/Student/ViewFeedback';
-
-// GC Components
 import GCDashboard from './Components/GC/GCDashboard';
-// import AddStudent from './Components/GC/AddStudent'
-// import AddFaculty from './Components/GC/AddFaculty'
-// import ViewStudent from './Components/GC/ViewStudent';
-// import ViewFaculty from './Components/GC/ViewFaculty';
-// import UpdateFaculty from './Components/GC/UpdateFaculty';
-// import UpdateStudent from './Components/GC/UpdateStudent';
-// import MakeAnnouncement from './Components/GC/MakeAnnouncement';
-// import GetThesis from './Components/GC/GetThesis';
-// import GetThesisDetails from './Components/GC/GetThesisDetails';
-// import ThesisRecord from './Components/GC/ThesisRecord';
-// import PanelTime from './Components/GC/PanelTime';
-// import Permissions from './Components/GC/Permissions';
-// import Evaluations from './Components/GC/Evaluations';
-// import EvaluationDetails from './Components/GC/EvaluationDetails';
-// import EvaluationMid1Details from './Components/GC/EvaluationMid1Details';
-// import EvaluationFinal1Details from './Components/GC/EvaluationFinal1Details';
-
-// Other Components
-// import NotFoundPage from './Components/Error/NotFoundPage'
-import { RoleContext } from './context/RoleContext';
-import { ThesisContext } from './context/ThesisContext';
+import NotFoundPage from './Components/Error/NotFoundPage'
 import ThesisTabs from './Components/ThesisTabs';
 import CommonSection from './Components/CommonSection';
+
+// Context Components
+import { RoleContext } from './context/RoleContext';
+import { ThesisContext } from './context/ThesisContext';
 import { ActiveTitleContext } from "./context/ActiveTitleContext";
 
 
@@ -190,6 +143,16 @@ function App() {
   // console.log('Active Title in app.js : ', activeTitle);
   const sidebararray = ["Home", "Dashboard", "View Announcement", "Make Announcement", "Faculty Records", "Student Records"];
 
+  useEffect(() => {
+    if (!activeTitle) {
+      // If activeTitle is null (page refresh), set it to "Home"
+      setActiveTitle("Home");
+      // if (userDetails.userType === 'gc') {
+      //   setActiveTitle("Dashboard");
+      // }
+    }
+  }, [activeTitle]);
+
 
   return (
     <>
@@ -243,96 +206,37 @@ function App() {
 
                               {userDetails.userType === 'faculty' && (
                                 // Render faculty pages for faculty user
-
                                 <>
-
-                                  <Route path='/Home' element={<Facultyhome />} />
-                                  {/* <Route path='viewAnnouncement' element={<FacultyviewAnnouncement />} /> */}
-                                  {/* <Route path='/Supervisor' element={<SupervisorComp />} /> */}
-                                  {/* <Route path='/MSRC' element={<MSRCComp />} /> */}
-                                  {/* <Route path='/Internal' element={<InternalComp />} /> */}
-                                  {/* <Route path='/HOD' element={<HODComp />} /> */}
-
-                                  {isSupervisor && (
-                                    <>
-                                      {/* <Route path='/supAllRequests' element={<GetSynopsis />} /> */}
-                                      {/* <Route path='/supReviewRequest/:synopsisId' element={<GetSynopsisDetails />} /> */}
-                                      {/* <Route path='/AllProposalEvaluations' element={<AllProposalEvaluations />} /> */}
-                                      {/* <Route path='/selectedProposal/:rollno' element={<SelectedProposalDetails />} /> */}
-                                      {/* <Route path='/AllMid1Evaluations' element={<AllMid1Evaluations />} /> */}
-                                      {/* <Route path='/viewSelectedExaminableThesis/:thesisId' element={<SelectedMid1Details />} /> */}
-                                      {/* <Route path='/AllFinal1Evaluations' element={<AllFinal1Evaluations />} /> */}
-                                      {/* <Route path='/viewSelectedFinalExaminableThesis/:thesisId' element={<SelectedFinal1Details />} /> */}
-
-                                    </>
+                                  {activeTitle === 'Home' && (
+                                    <Route path='/' element={<Facultyhome />} />
                                   )}
-                                  {isMSRC && (
-                                    <>
-                                      {/* <Route path='/MSRCAllThesis' element={<MSRCAllThesis />} /> */}
-                                      {/* <Route path='/MSRCThesisDetails/:thesisid' element={<MSRCThesisDetails />} /> */}
-                                    </>
-                                  )}
-                                  {isInternal && (
-                                    <>
-                                      {/* <Route path='/AllInternalProposalEvaluations' element={<AllInternalPropEvaluations />} />
-                                      <Route path='/selectedProposal/:rollno' element={<SelectedProposalDetails />} />
-                                      <Route path='/AllMid1InternalEvaluations' element={<AllMid1InternalEvaluations />} />
-                                      <Route path='/viewSelectedExaminableThesis/:thesisId' element={<SelectedMid1Details />} />
-                                      <Route path='/AllFinal1InternalEvaluations' element={<AllFinal1InternalEvaluations />} />
-                                      <Route path='/viewSelectedFinalExaminableThesis/:thesisId' element={<SelectedFinal1Details />} /> */}
-                                    </>
-                                  )}
-                                  {isHOD && (
-                                    <>
-                                      {/* <Route path='/reviewThesis/:thesisid' element={<HODGetThesisDetails />} /> */}
-                                    </>
-                                  )}
-                                  {/* <Route path='/RoleTabs' element={<RoleTabs />} /> */}
                                 </>
                               )}
                               {userDetails.userType === 'student' && (
                                 // Render student pages for student user
                                 <>
-                                  <Route path='/Home' element={<Studenthome />} />
-                                  {/* <Route path='/synopsisForm' element={<SynopsisForm />} /> */}
-                                  {/* <Route path='/fillSynopsis' element={<FillSynopsis />} /> */}
-                                  {/* <Route path='/viewAnnouncement' element={<StudentviewAnnouncement />} /> */}
-                                  {/* <Route path='/viewFeedback' element={<ViewFeedback />} /> */}
-                                  {/* ... (other student routes) */}
+                                  {activeTitle === 'Home' && (
+                                    <Route path='/' element={<Studenthome />} />
+                                  )}
                                 </>
                               )}
                               {
                                 userDetails.userType === 'gc' && (
                                   // Render gc pages for gc user
                                   <>
-                                    <Route path='/Dashboard' element={<GCDashboard />} />
-                                    {/* <Route path='/addstudent' element={<AddStudent />} /> */}
-                                    {/* <Route path='/addfaculty' element={<AddFaculty />} /> */}
-                                    {/* <Route path='/viewstudent' element={<ViewStudent />} /> */}
-                                    {/* <Route path='/viewfaculty' element={<ViewFaculty />} /> */}
-                                    {/* <Route path='/updateFaculty/:facultyid' element={<UpdateFaculty />} /> */}
-                                    {/* <Route path='/updateStudent/:rollno' element={<UpdateStudent />} /> */}
-                                    {/* <Route path='/makeAnnouncement' element={<MakeAnnouncement />} /> */}
-                                    {/* <Route path='/viewAllThesis' element={<ThesisRecord />} /> */}
-                                    {/* <Route path='/ReviewRequest' element={<GetThesis />} /> */}
-                                    {/* <Route path='/ReviewRequest/:thesisid' element={<GetThesisDetails />} /> */}
-                                    {/* <Route path='/PanelTimelines' element={<PanelTime />} /> */}
-                                    {/* <Route path='/Permissions' element={<Permissions />} /> */}
-                                    {/* <Route path='/Evaluations' element={<Evaluations />} /> */}
-                                    {/* <Route path='/viewPendingProposal/:rollno' element={<EvaluationDetails />} /> */}
-                                    {/* <Route path='/viewPendingMid/:rollno' element={<EvaluationMid1Details />} /> */}
-                                    {/* <Route path='/viewPendingFinal/:rollno' element={<EvaluationFinal1Details />} /> */}
-
-                                    {/* ... (other gc routes) */}
+                                    {activeTitle === 'Home' && (
+                                      <Route path='/' element={<GCDashboard />} />
+                                    )}
                                   </>
                                 )
                               }
                             </>
                           )}
 
-
                           {/* Error Pages */}
-                          {/* <Route path='*' element={<NotFoundPage />} /> */}
+                          {activeTitle === "Home" && (
+                            <Route path='*' element={<NotFoundPage />} />
+                          )}
                         </Routes>
 
                       </div>
