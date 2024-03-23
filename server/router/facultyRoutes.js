@@ -26,6 +26,11 @@ facRouter.delete('/decline-synopsis/:synopsisId', facReview.declineSynopsis); //
 facRouter.get('/supviewPropEvalsStudents', facReview.superisorviewPropEvals);
 facRouter.get('/selectedProposal/:rollno', facReview.selectedProposalDetails);
 facRouter.post('/evaluateProposal/:rollno', facReview.evaluateProposal);
+facRouter.get('/supViewPendingTitleRequests', facReview.getTitleChangeRequests);
+facRouter.get('/supViewPendingTitleDetails/:rollno', facReview.getTitleChangeDetails);
+facRouter.post('/supApprovePendingTitleRequests/:rollno', facReview.ApproveTitleChangeSupervisor);
+facRouter.post('/supRejectPendingTitleRequests/:rollno', facReview.RejectTitleChangeSupervisor);
+
 
 
 //Internals
@@ -36,6 +41,10 @@ facRouter.get('/internalviewPropEvalsStudents', facReview.interalviewPropEvals);
 facRouter.get('/msrcAllThesis', msrcReview.getAcceptedThesis); // MSRC fetches the lists of all thesis in accepted state
 facRouter.get('/msrcThesisDetails/:thesisId', msrcReview.getThesisDetails); // MSRC fetches details of a single thesis
 facRouter.post('/msrcSubmitFeedback/:thesisId', msrcReview.setThesisFeedback); // MSRC provides feedback on a single thesis
+facRouter.get('/msrcViewPendingTitleRequests', msrcReview.getTitleChangeRequests);
+facRouter.get('/msrcViewPendingTitleDetails/:rollno', msrcReview.getTitleChangeDetails);
+facRouter.post('/msrcApprovePendingTitleRequests/:rollno', msrcReview.ApproveTitleChangeMSRC);
+facRouter.post('/msrcRejectPendingTitleRequests/:rollno', msrcReview.RejectTitleChangeMSRC);
 
 
 /*HOD */

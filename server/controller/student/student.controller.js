@@ -8,6 +8,7 @@ const { Op } = require('sequelize');
 const { all } = require("../../router/stdRoutes");
 const { feedbacks } = require("../../model/feedback.model");
 const { thesis } = require("../../model/thesis.model");
+const { titlerequests } = require("../../model/requestTitle.model");
 
 
 // Sign in function for student
@@ -145,10 +146,92 @@ const thesisData = async (req, res) => {
 
 }
 
+const viewTitleChangeFrom = async (req, res) => {
+  try {
+    const rollno = req.userId;
+    const studentData = await students.findOne({
+      where: {
+        rollno: rollno
+      },
+      // attributes: { exclude: ['password'] } 
+    });
+
+    if (studentData) {
+      res.status(200).json(studentData);
+    } else {
+      res.status(404).json({ message: 'Student not found' });
+    }
+
+    const thesisData = await thesis.findOne({
+      where: {
+        rollno: rollno
+      },
+    });
+
+    if (thesisData) {
+      res.status(200).json(thesisData);
+    } else {
+      res.status(404).json({ message: 'Thesis not found' });
+    }
+
+  } catch (error) {
+    console.error('Error submitting title change request : ', error);
+    res.status(500).json({ message: 'An error occurred while submitting request for title change' });
+  }
+}
+
 const requestTitleChange = async (req, res) => {
   try {
     const rollno = req.userId;
 
+    const newThesisTitle = req.body.newThesisTitle;
+
+    const studentData = await students.findOne({
+      where: {
+        rollno: rollno
+      },
+      // attributes: { exclude: ['password'] } 
+    });
+
+    if (!studentData) {
+      res.status(404).json({ message: 'Student not found' });
+    }
+
+    const thesisData = await thesis.findOne({
+      where: {
+        rollno: rollno
+      },
+    });
+
+    if (!thesisData) {
+      res.status(404).json({ message: 'Thesis not found' });
+    }
+
+    if (thesisData) {
+      await titlerequests.create({
+        thesisid: thesisData.thesisid,
+        rollno: rollno,
+        stdname: studentData.name,
+        email: studentData.email,
+        thesisstatus: studentData.thesisstatus,
+        currentThesisTitle: thesisData.thesistitle,
+        newThesisTitle: newThesisTitle,
+        supervisorname: thesisData.supervisorname,
+        supervisorid: thesisData.facultyid,
+        supervisorReview: 'Pending',
+        msrcReview: 'Pending',
+      });
+
+      const newtitleChangeRequest = await titlerequests.findOne({ where: { rollno } });
+      if (newtitleChangeRequest) {
+        res.json({ message: 'Request for Title change successfully submitted', request: newtitleChangeRequest });
+      }
+      else {
+        res.status(500).json({ message: 'An error occurred while submitting request for title change' });
+      }
+    } else {
+      res.status(404).json({ message: 'Thesis not found' });
+    }
 
   } catch (error) {
     console.error('Error submitting title change request : ', error);
@@ -163,5 +246,7 @@ module.exports =
   viewStudentAnnouncements,
   viewFeedback,
   showStdData,
-  thesisData
+  thesisData,
+  viewTitleChangeFrom,
+  requestTitleChange
 };

@@ -7,6 +7,7 @@ const { feedbacks } = require("../../model/feedback.model");
 const { proposalevaluations } = require("../../model/proposalEvaluaton.model");
 const { sendMail } = require("../../config/mailer");
 const { Op, Model } = require('sequelize');
+const { titlerequests } = require("../../model/requestTitle.model");
 
 
 /* Supervisor Review Requests Controller */
@@ -466,7 +467,7 @@ const selectedProposalDetails = async (req, res) => {
             return;
         }
 
-        res.json({ message:'Proposal Evaluations are open' , student: selectedStudentDetails, thesis: selectedThesisDetails });
+        res.json({ message: 'Proposal Evaluations are open', student: selectedStudentDetails, thesis: selectedThesisDetails });
     } catch (error) {
         console.error('Error fetching selected proposal details:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -568,6 +569,143 @@ const evaluateProposal = async (req, res) => {
     }
 };
 
+const getTitleChangeRequests = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+
+        const pendingTitleChangeRequests = await titlerequests.findAll({
+            where: {
+                supervisorid: facultyId,
+                supervisorReview: 'Pending',
+            }
+        });
+
+        if (pendingTitleChangeRequests) {
+            res.json({ pendingTitleChangeRequests });
+        }
+        else {
+            res.status(404).json({ error: 'No pending title change requests found' });
+        }
+
+
+    } catch (error) {
+        console.error('Error fetching pending title requests:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+const getTitleChangeDetails = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const rollno = req.params.rollno;
+
+        const TitleRequestDetails = await titlerequests.findOne({
+            where: {
+                supervisorid: facultyId,
+                rollno: rollno,
+                supervisorReview: 'Pending',
+            }
+        });
+
+        if (TitleRequestDetails) {
+            res.json(TitleRequestDetails);
+        }
+        else {
+            res.status(404).json({ error: 'No pending title change requests found' });
+        }
+
+    } catch (error) {
+        console.error('Error fetching pending title request:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+const ApproveTitleChangeSupervisor = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const rollno = req.params.rollno;
+
+        const change = req.body.change;
+        const comments = req.body.comments;
+
+        const TitleRequestDetails = await titlerequests.findOne({
+            where: {
+                supervisorid: facultyId,
+                rollno: rollno,
+                supervisorReview: 'Pending',
+            }
+        });
+
+        if (TitleRequestDetails) {
+            const [updatedRows] = await titlerequests.update(
+                {
+                    supervisorReview: 'Approved',
+                    estimatedChange: change,
+                    supervisorComments: comments,
+                },
+                { where: { rollno: rollno } }
+            );
+            if (updatedRows > 0) {
+                res.json('Request Approved and Forwarded to MSRC');
+            }
+            else {
+                res.status(500).json({ error: 'Error approving pending title request' });
+            }
+        }
+        else {
+            res.status(404).json({ error: 'No pending title change requests found' });
+        }
+
+
+    } catch (error) {
+        console.error('Error approving pending title request:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+const RejectTitleChangeSupervisor = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const rollno = req.params.rollno;
+
+        const change = req.body.change;
+        const comments = req.body.comments;
+
+        const TitleRequestDetails = await titlerequests.findOne({
+            where: {
+                supervisorid: facultyId,
+                rollno: rollno,
+                supervisorReview: 'Pending',
+            }
+        });
+
+        if (TitleRequestDetails) {
+            const [updatedRows] = await titlerequests.update(
+                {
+                    supervisorReview: 'Rejected',
+                    estimatedChange: change,
+                    supervisorComments: comments,
+                },
+                { where: { rollno: rollno } }
+            );
+            if (updatedRows > 0) {
+                res.json('Request Rejected');
+            }
+            else {
+                res.status(500).json({ error: 'Error rejecting pending title request' });
+            }
+        }
+        else {
+            res.status(404).json({ error: 'No pending title change requests found' });
+        }
+
+
+    } catch (error) {
+        console.error('Error rejecting pending title request:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 
 
 module.exports =
@@ -579,6 +717,10 @@ module.exports =
     superisorviewPropEvals,
     interalviewPropEvals,
     selectedProposalDetails,
-    evaluateProposal
+    evaluateProposal,
+    getTitleChangeRequests,
+    getTitleChangeDetails,
+    ApproveTitleChangeSupervisor,
+    RejectTitleChangeSupervisor
 };
 

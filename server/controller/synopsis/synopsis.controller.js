@@ -4,7 +4,7 @@ const { students } = require("../../model/student.model");
 const { faculties } = require("../../model/faculty.model");
 const { synopsis } = require("../../model/synopsis.model");
 const { Op, Model } = require('sequelize');
-const multer = require ('multer');
+const multer = require('multer');
 const upload = require('../../middleware/multer');
 
 /*Synopsis Controller*/
@@ -45,7 +45,8 @@ const sendFaculties = async (req, res) => {
 // Moving synopsis data from frontend to backend and creating a synopsis
 const fillSynopsis = async (req, res) => {
     try {
-        
+        console.log("Pass");
+
         // Call the multer middleware to handle file upload
         upload(req, res, async function (err) {
             if (err instanceof multer.MulterError) {
@@ -59,7 +60,7 @@ const fillSynopsis = async (req, res) => {
             const studentrollno = req.userId;
             const potentialareas = req.body.potentialareas;
             const proposalfilename = req.file.filename;
-            
+
             const existingSynopsis = await synopsis.findOne({ // Find an existing synopsis by the student
                 where: {
                     rollno: studentrollno,
@@ -83,7 +84,7 @@ const fillSynopsis = async (req, res) => {
             }
 
             const facultyid = faculty.facultyid;
-            
+
             // Email sending
             const student = await students.findOne({
                 where: {
