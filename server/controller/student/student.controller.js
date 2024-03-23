@@ -145,6 +145,17 @@ const thesisData = async (req, res) => {
 
 }
 
+const requestTitleChange = async (req, res) => {
+  try {
+    const rollno = req.userId;
+
+
+  } catch (error) {
+    console.error('Error submitting title change request : ', error);
+    res.status(500).json({ message: 'An error occurred while submitting request for title change' });
+  }
+}
+
 
 module.exports =
 {
