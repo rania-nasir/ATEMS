@@ -5,7 +5,6 @@ const twomidevaluations = sequelize.define('twomidevaluations', {
     rollno: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
     },
 
     stdname: {
@@ -32,7 +31,7 @@ const twomidevaluations = sequelize.define('twomidevaluations', {
         type: DataTypes.STRING,
         allowNull: true,
         validate: {
-            isIn: [['Ready', 'CN', 'F']]
+            isIn: [['Pending', 'Ready', 'CN', 'F']]
         }
     },
 
