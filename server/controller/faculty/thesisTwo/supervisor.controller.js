@@ -2,7 +2,9 @@
 const { sequelize } = require("../../../config/sequelize");
 const { thesis } = require('../../../model/thesis.model');
 const { students } = require("../../../model/student.model");
+const { faculties } = require("../../../model/faculty.model");
 const { registrations } = require("../../../model/thesistwo/registration.model");
+const { twomidevaluations } = require("../../../model/thesistwo/thesisTwoMidEval.model")
 const { Op } = require('sequelize');
 
 
@@ -106,7 +108,7 @@ const supthesis2AllMidEvals = async (req, res) => {
         }
 
 
-        const examinableThesis = await thesis.findAll({
+        const examinableThesis = await registrations.findAll({
             where: {
                 [Op.or]: [
                     { facultyid: facultyId },
@@ -170,7 +172,7 @@ const internalthesis2AllMidEvals = async (req, res) => {
         }
 
 
-        const examinableThesis = await thesis.findAll({
+        const examinableThesis = await registrations.findAll({
             where: {
                 [Op.or]: [
                     { internalsid: { [Op.contains]: [facultyId] } }
@@ -234,7 +236,7 @@ const mid2EvalDetails = async (req, res) => {
             return res.status(404).json({ error: 'No evaluations found for this student' });
         }
 
-        return res.json(registrations);
+        return res.json(registrationsThesis2);
     } catch (error) {
         console.error('Error fetching mid2 evaluations:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -244,11 +246,74 @@ const mid2EvalDetails = async (req, res) => {
 
 const evaluateMid2 = async (req, res) => {
     try {
+        const {
+            rollno,
+            stdname,
+            thesistitle,
+            facultyid,
+            facultyname,
+            reportfilename,
+            englishlevel,
+            abstract,
+            introduction,
+            research,
+            literaturereview,
+            researchgap,
+            researchproblem,
+            summary,
+            researchcontribution,
+            worktechniality,
+            completeevaluation,
+            relevantrefs,
+            format,
+            visuals,
+            comments,
+            externaldefense,
+            suggestions,
+            grade
+        } = req.body;
 
-    }
 
-    catch {
+        const existingEvaluation = await twomidevaluations.findOne({ where: { facultyid, rollno } });
+        if (existingEvaluation) {
+            res.status(400).json({ error: 'You have already evaluated this thesis proposal' });
+            return;
+        }
 
+        // Validate request body fields here if necessary
+
+        const newEvaluation = await twomidevaluations.create({
+            rollno,
+            stdname,
+            thesistitle,
+            facultyid,
+            facultyname,
+            gcapproval : 'Pending',
+            reportfilename,
+            englishlevel,
+            abstract,
+            introduction,
+            research,
+            literaturereview,
+            researchgap,
+            researchproblem,
+            summary,
+            researchcontribution,
+            worktechniality,
+            completeevaluation,
+            relevantrefs,
+            format,
+            visuals,
+            comments,
+            externaldefense,
+            suggestions,
+            grade
+        });
+
+        return res.status(200).json({ message: 'Mid 2 evaluation completed successfully', evaluation: newEvaluation });
+    } catch (error) {
+        console.error('Error evaluating mid 2:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 
 };

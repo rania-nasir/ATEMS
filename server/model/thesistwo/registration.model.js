@@ -94,10 +94,10 @@ const registrations = sequelize.define('registrations', {
 
 
 sequelize.sync().then(() => {
-    console.log('Synopsis table created successfully!');
+    console.log('Thesis-2 Registration table created successfully!');
 }).catch((error) => {
     console.error('Unable to create table : ', error);
 });
 
-// Export the Synopsis model
+// Export the Thesis-2 Registration model
 module.exports = { registrations }; 

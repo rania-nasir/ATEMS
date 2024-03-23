@@ -1,4 +1,8 @@
 const { sequelize } = require("../../../config/sequelize");
+const { faculties } = require("../../../model/faculty.model");
+const { students } = require("../../../model/student.model");
+const { sendMail } = require("../../../config/mailer");
+const { twomidevaluations } = require("../../../model/thesistwo/thesisTwoMidEval.model");
 const { registrations } = require("../../../model/thesistwo/registration.model");
 const { Op } = require('sequelize');
 
@@ -154,6 +158,269 @@ const getGCMidPermissionStatus = async (req, res) => {
     }
 }
 
+
+// const getAllMid2Evaluations = async (req, res) => {
+//     try {
+//         const facultyId = req.userId;
+//         const faculty = await faculties.findOne({
+//             where: {
+//                 facultyid: facultyId,
+//                 role: {
+//                     [Op.contains]: ["GC"]
+//                 },
+//             }
+//         });
+
+//         if (!faculty) {
+//             return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+//         }
+
+//         // Query to retrieve the value of gcmidevalpermission from thesis table
+//         const gcMidEvalPermission = await registrations.findOne({
+//             attributes: ['gcmidevalpermission'],
+//             limit: 1
+//         });
+
+//         // Check if a record was found
+//         if (gcMidEvalPermission) {
+//             const permissionValue = gcMidEvalPermission.gcmidevalpermission;
+
+//             if (permissionValue === false) {
+//                 // Query to find all pending proposals
+//                 const pendingMid2Evaluations = await twomidevaluations.findAll({
+//                     where: {
+//                         gcapproval: 'Pending'
+//                     },
+//                     attributes: [
+//                         [sequelize.literal('DISTINCT "rollno"'), 'rollno'],
+//                         'stdname',
+//                         'thesistitle'
+//                     ]
+//                 });
+
+//                 // Check if all pending proposals have been evaluated by Supervisor and Internals
+//                 const allMid2Evaluated = await Promise.all(pendingMid2Evaluations.map(async (mid2Eval) => {
+//                     const { rollno } = mid2Eval;
+
+//                     // Query to find thesis record by rollno
+//                     const mid2Reocrd = await registrations.findOne({ where: { rollno } });
+//                     if (!mid2Reocrd) return false;
+
+//                     const { internals, supervisorname } = mid2Reocrd;
+
+//                     // Check if each internal has provided feedback for the proposal
+//                     const internalFeedbacks = await twomidevaluations.findAll({
+//                         where: {
+//                             rollno,
+//                             facultyname: internals,
+//                             gcapproval: 'Pending'
+//                         }
+//                     });
+//                     const internsEvaluated = internals.every(internal => {
+//                         return internalFeedbacks.some(feedback => feedback.facultyname === internal);
+//                     });
+
+//                     // Check if supervisor has provided feedback for the proposal
+//                     const supervisorFeedback = await twomidevaluations.findOne({
+//                         where: {
+//                             rollno,
+//                             facultyname: supervisorname,
+//                             gcapproval: 'Pending'
+//                         }
+//                     });
+//                     const supervisorEvaluated = supervisorFeedback !== null;
+
+//                     return supervisorEvaluated && internsEvaluated;
+//                 }));
+
+//                 // If all mid evals are evaluated, send response
+//                 if (allMid2Evaluated.every(evaluated => evaluated)) {
+//                     res.json({ pendingMid2Evaluations });
+//                 } else {
+//                     res.json({ message: "Not all pending mids have been evaluated by Supervisor and Internals" });
+//                 }
+//             } else {
+//                 res.json({ message: "Mid Evaluations are being evaluated. Revoke the permssion to complete the action" });
+//             }
+//         } else {
+//             res.status(404).json({ message: "No Mid record found" });
+//         }
+//     } catch (error) {
+//         console.error('Error fetching pending mid 2 evaluation:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// }
+
+
+const getAllMid2Evaluations = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        // Query to retrieve the value of gcmidevalpermission from thesis table
+        const gcMidEvalPermission = await registrations.findOne({
+            attributes: ['gcmidevalpermission'],
+            limit: 1
+        });
+
+        // Check if a record was found
+        if (gcMidEvalPermission) {
+            const permissionValue = gcMidEvalPermission.gcmidevalpermission;
+
+            if (permissionValue === false) {
+                // Query to find all pending proposals
+                const pendingMid2Evaluations = await twomidevaluations.findAll({
+                    where: {
+                        gcapproval: 'Pending'
+                    },
+                    attributes: [
+                        [sequelize.literal('DISTINCT "rollno"'), 'rollno'],
+                        'stdname',
+                        'thesistitle'
+                    ]
+                });
+
+                res.json({ pendingMid2Evaluations });
+            } else {
+                res.json({ message: "Mid Evaluations are being evaluated. Revoke the permission to complete the action" });
+            }
+        } else {
+            res.status(404).json({ message: "No Mid record found" });
+        }
+    } catch (error) {
+        console.error('Error fetching pending mid 2 evaluation:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+
+
+
+const getSelectedMid2EvaluationDetails = async (req, res) => {
+    try {
+        const { rollno } = req.params;
+
+        const selectedMidEvaluation = await twomidevaluations.findAll({
+            where: {
+                rollno
+            }
+        });
+
+        if (selectedMidEvaluation) {
+            res.json({ selectedMidEvaluation });
+        } else {
+            res.status(404).json({ error: 'Mid Evaluation not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching mid evaluation details:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+
+
+
+const approveMid2Evaluation = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        // Check if the faculty has the GC role
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
+        }
+
+        const { rollno } = req.params;
+        const { gcapproval } = req.body;
+
+        if (!gcapproval) {
+            return res.json({ message: 'Mid approval is required from your side' });
+        }
+
+        await twomidevaluations.update(
+            { gcapproval },
+            { where: { rollno } }
+        );
+
+        // Get student email
+        const student = await students.findOne({ where: { rollno } });
+        const studentEmail = student ? student.email : '';
+
+        // Email notification logic based on gcapproval status
+        let emailSubject = '';
+        let emailText = '';
+
+        switch (gcapproval) {
+            case 'Ready':
+                emailSubject = 'Mid Evaluation Passed';
+                emailText = 'Your Mid Evaluation has been approved. You will be informed about external evaluations soon.';
+                // Update relevant student record in students model
+                await students.update(
+                    { comingevaluation: 'Final2' },
+                    { where: { rollno } }
+                );
+                break;
+            case 'CN':
+                emailSubject = 'Continuation Required';
+                emailText = 'You need to continue further for one more semester to improve your thesis work.';
+                break;
+            case 'F':
+                emailSubject = 'Mid Evaluation Failed';
+                emailText = 'Unfortunately, your Mid Evaluation has been failed. You need to re-register for Thesis 2.';
+                break;
+            default:
+                break;
+        }
+
+        // Send email to student
+        await sendMail(studentEmail, emailSubject, emailText);
+
+        // Create feedback if comments are provided
+        if (req.body.comments) {
+            await feedbacks.create({
+                rollno,
+                facultyid: facultyId,
+                facultyname: faculty.name,
+                feedbackContent: req.body.comments,
+                feedbackType: 'Thesis-2 Mid',
+            });
+        }
+
+        if (gcapproval === 'CN' || gcapproval === 'F') {
+            await twomidevaluations.destroy({ where: { rollno } });
+            await registrations.destroy({ where: { rollno } });
+        }
+
+        res.json({ message: `Mid Evaluation status updated to ${gcapproval} and email sent to student` });
+
+    } catch (error) {
+        console.error('Error approving Mid 2 evaluation:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+}
+
+
+
+
 module.exports =
 {
     getThesisTwoRegRequests,
@@ -161,5 +428,8 @@ module.exports =
     approveThesisTwoRegRequest,
     grantMidEvalPermission,
     revokeMidEvalPermission,
-    getGCMidPermissionStatus
+    getGCMidPermissionStatus,
+    getAllMid2Evaluations,
+    getSelectedMid2EvaluationDetails,
+    approveMid2Evaluation
 }
