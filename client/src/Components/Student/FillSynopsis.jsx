@@ -125,79 +125,80 @@ const FillSynopsis = () => {
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                 <div className="w-full my-4">
                     <h2 className="text-center text-2xl tracking-tight text-gray-950 font-bold">
-                        Proposal Synopsis Form
+                        {/* Proposal Synopsis Form */}
+                        MS Thesis/ Project 1 Supervisor Consent Form
                     </h2>
                 </div>
 
                 <div className="mt-6 sm:mx-auto">
-                    <form class="sm:mx-auto" enctype="multipart/form-data">
+                    <form className="sm:mx-auto" enctype="multipart/form-data">
                         <div className='grid grid-cols-3'>
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                                         for="grid-first-name">
                                         Roll Number
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="20F-1234" value={rollno.rollno} />
                                 </div>
                             </div>
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Name
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="Muhammad Ahmad" value={rollno.name} />
                                 </div>
                             </div>
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         CGPA
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="3.16" value={rollno.cgpa} />
                                 </div>
                             </div>
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Email
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="abc@gmail.com" value={rollno.email} />
                                 </div>
                             </div>
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Mobile
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="12345678901" value={rollno.mobile} />
                                 </div>
                             </div>
                             <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Semester
                                     </label>
-                                    <input class="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="8" value={rollno.semester} />
                                 </div>
                             </div>
                         </div>
 
-                        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+                        <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
 
                         <div className='grid grid-cols-2'>
                             <div className='p-2 col-span-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Thesis Title
                                     </label>
-                                    <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         value={user.synopsistitle}
                                         onChange={handleInputs}
                                         required
@@ -208,7 +209,7 @@ const FillSynopsis = () => {
                             </div>
                             <div className='p-2 col-span-2'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Potential Areas
                                     </label>
                                     <div className="card flex justify-content-center py-2">
@@ -228,7 +229,7 @@ const FillSynopsis = () => {
 
                             <div className='p-2 col-span-1'>
                                 <div className='w-full px-3'>
-                                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                                    <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Select Supervisor
                                     </label>
                                     <Dropdown
@@ -261,16 +262,16 @@ const FillSynopsis = () => {
                                 </div>
                             </div>
                         </div>
-                        <div class="m-2 px-3">
-                            <button class="block flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                        <div className="m-2 px-3">
+                            <button className="block flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
                                 type="button"
                                 onClick={PostData}>
                                 Register
                             </button>
                         </div>
                     </form>
-                </div >
-            </div >
+                </div>
+            </div>
         </>
     )
 }

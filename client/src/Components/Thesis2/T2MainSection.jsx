@@ -12,7 +12,7 @@ import T2ViewFeedback from '../Student/T2ViewFeedback';
 import T2ThesisRecord from '../GC/T2ThesisRecord';
 
 import T2GetThesis from '../GC/T2GetThesis';
-import GetThesisDetails from '../GC/GetThesisDetails';
+import T2GetThesisDetails from '../GC/T2GetThesisDetails';
 
 import T2PanelTime from '../GC/T2PanelTime';
 import T2Permissions from '../GC/T2Permissions';
@@ -48,7 +48,7 @@ export default function T2MainSection() {
     return (
         <>
             <div 
-            // style={{ border: "1px solid purple" }}
+            style={{ border: "1px solid purple" }}
             >
 
                 {/* Define routes for each user type and active title */}
@@ -88,7 +88,7 @@ export default function T2MainSection() {
                                             navigateBack(); // Call the navigateBack function to navigate back
                                         }} />
                                         <Routes>
-                                            <Route path="/ReviewRequest/:thesisid" element={<GetThesisDetails setShowDetails={setShowDetails} />} />
+                                            <Route path="/thesisTwoRegRequest/:rollno" element={<T2GetThesisDetails setShowDetails={setShowDetails} />} />
                                         </Routes>
                                     </>
                                 )}
