@@ -466,7 +466,7 @@ const selectedProposalDetails = async (req, res) => {
             return;
         }
 
-        res.json({ message:'Proposal Evaluations are open' , student: selectedStudentDetails, thesis: selectedThesisDetails });
+        res.json({ message: 'Proposal Evaluations are open', student: selectedStudentDetails, thesis: selectedThesisDetails });
     } catch (error) {
         console.error('Error fetching selected proposal details:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -568,6 +568,19 @@ const evaluateProposal = async (req, res) => {
     }
 };
 
+const getTitleChangeRequests = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+
+
+
+
+    } catch (error) {
+        console.error('Error fetching pending title requests:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 
 
 module.exports =
@@ -579,6 +592,7 @@ module.exports =
     superisorviewPropEvals,
     interalviewPropEvals,
     selectedProposalDetails,
-    evaluateProposal
+    evaluateProposal,
+    getTitleChangeRequests
 };
 
