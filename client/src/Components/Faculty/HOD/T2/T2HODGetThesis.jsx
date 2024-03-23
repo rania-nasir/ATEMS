@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import Cookie from 'js-cookie';
 import { NavLink } from 'react-router-dom';
 
-export default function T2GetThesis({ setShowDetails }) {
+export default function T2HODGetThesis({ setShowDetails }) {
     const [thesisData, setthesisData] = useState({ pendingRequests: [] });
 
     useEffect(() => {
         async function fetchthesisData() {
             try {
-                const response = await fetch('http://localhost:5000/gc/thesisTwoRegRequests', {
+                const response = await fetch('http://localhost:5000/faculty/getHodThesis2Students', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ export default function T2GetThesis({ setShowDetails }) {
             <div className='m-2'>
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                     <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-950">
-                        Thesis 2 Registration Requests
+                        Thesis 2 Registration Requests HOD
                     </h2>
                 </div>
                 <div class="m-6 shadow-md sm:rounded-lg">
@@ -84,7 +84,7 @@ export default function T2GetThesis({ setShowDetails }) {
                                             ))}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <NavLink to={`/thesisTwoRegRequest/${rowData.rollno}`}
+                                            <NavLink to={`/getHodThesis2StudentDetails/${rowData.rollno}`}
                                                 onClick={() => handleViewDetails()} // Call handleViewDetails
                                                 className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                 View Details
