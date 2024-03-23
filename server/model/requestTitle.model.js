@@ -46,19 +46,31 @@ const titlerequests = sequelize.define('titlerequests', {
     },
     supervisorComments: {
         type: DataTypes.TEXT('long'),
-        allowNull: false
+        defaultValue: '',
+        allowNull: true
     },
     estimatedChange: {
         type: DataTypes.STRING,
-        allowNull: false
+        defaultValue: '',
+        allowNull: true
+    },
+    supervisorReview: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'Pending',
+        validate: {
+            isIn: [['Pending', 'Approved', 'Rejected']]
+        }
     },
     msrcid: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        defaultValue: 0,
+        allowNull: true
     },
     msrcComments: {
         type: DataTypes.TEXT('long'),
-        allowNull: false
+        defaultValue: '',
+        allowNull: true
     },
     msrcReview: {
         type: DataTypes.STRING,

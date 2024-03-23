@@ -146,10 +146,9 @@ const thesisData = async (req, res) => {
 
 }
 
-const requestTitleChange = async (req, res) => {
+const viewTitleChangeFrom = async (req, res) => {
   try {
     const rollno = req.userId;
-
     const studentData = await students.findOne({
       where: {
         rollno: rollno
@@ -175,26 +174,63 @@ const requestTitleChange = async (req, res) => {
       res.status(404).json({ message: 'Thesis not found' });
     }
 
+  } catch (error) {
+    console.error('Error submitting title change request : ', error);
+    res.status(500).json({ message: 'An error occurred while submitting request for title change' });
+  }
+}
+
+const requestTitleChange = async (req, res) => {
+  try {
+    const rollno = req.userId;
+
     const newThesisTitle = req.body.newThesisTitle;
 
-    await titlerequests.create({
-      thesisid: thesisData.thesisid,
-      rollno: rollno,
-      stdname: studentData.stdname,
-      email: studentData.email,
-      thesisstatus: thesisData.thesisstatus,
-      currentThesisTitle: thesisData.currentThesisTitle,
-      newThesisTitle: newThesisTitle,
-      supervisorname: thesisData.supervisorname,
-      supervisorId: thesisData.facultyid,
+    const studentData = await students.findOne({
+      where: {
+        rollno: rollno
+      },
+      // attributes: { exclude: ['password'] } 
     });
 
-    const newtitleChangeRequest = await titlerequests.findOne({ where: { rollno } });
-    if (newtitleChangeRequest) {
-      res.json({ message: 'Request for Title change successfully submitted', request: newtitleChangeRequest });
+    if (!studentData) {
+      res.status(404).json({ message: 'Student not found' });
     }
-    else {
-      res.status(500).json({ message: 'An error occurred while submitting request for title change' });
+
+    const thesisData = await thesis.findOne({
+      where: {
+        rollno: rollno
+      },
+    });
+
+    if (!thesisData) {
+      res.status(404).json({ message: 'Thesis not found' });
+    }
+
+    if (thesisData) {
+      await titlerequests.create({
+        thesisid: thesisData.thesisid,
+        rollno: rollno,
+        stdname: studentData.name,
+        email: studentData.email,
+        thesisstatus: studentData.thesisstatus,
+        currentThesisTitle: thesisData.thesistitle,
+        newThesisTitle: newThesisTitle,
+        supervisorname: thesisData.supervisorname,
+        supervisorid: thesisData.facultyid,
+        supervisorReview: 'Pending',
+        msrcReview: 'Pending',
+      });
+
+      const newtitleChangeRequest = await titlerequests.findOne({ where: { rollno } });
+      if (newtitleChangeRequest) {
+        res.json({ message: 'Request for Title change successfully submitted', request: newtitleChangeRequest });
+      }
+      else {
+        res.status(500).json({ message: 'An error occurred while submitting request for title change' });
+      }
+    } else {
+      res.status(404).json({ message: 'Thesis not found' });
     }
 
   } catch (error) {
@@ -211,5 +247,6 @@ module.exports =
   viewFeedback,
   showStdData,
   thesisData,
+  viewTitleChangeFrom,
   requestTitleChange
 };
