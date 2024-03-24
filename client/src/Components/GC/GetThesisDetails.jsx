@@ -1,16 +1,17 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react'
+import { useParams } from 'react-router-dom';
 import Cookie from 'js-cookie';
 import { Dropdown } from 'primereact/dropdown';
+import viewfile from '../../Icons/openfile.png';
+import { Toast } from 'primereact/toast';
 
 export default function GetThesisDetails({ setShowDetails }) {
 
-    const navigate = useNavigate();
+    const toastTopCenter = useRef(null);
+
     const { thesisid } = useParams();
     const [ThesisData, setThesisData] = useState({ selectedThesis: null, facultyList: [] });
 
-    const [selectedInternal1, setselectedInternal1] = useState(null);
-    const [selectedInternal2, setselectedInternal2] = useState(null);
     const [researchArea1, setResearchArea1] = useState('');
     const [researchArea2, setResearchArea2] = useState('');
 
@@ -41,10 +42,34 @@ export default function GetThesisDetails({ setShowDetails }) {
         fetchThesisData();
     }, [thesisid]);
 
+    const [selectedInternal1, setselectedInternal1] = useState(null);
+    const [selectedInternal2, setselectedInternal2] = useState(null);
+
     const selectedValue = ThesisData.facultyList ? ThesisData.facultyList.map(item => ({ label: item.name, value: item.name })) : [];
+
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
+
 
     const approveData = async (e) => {
         e.preventDefault();
+
+        // Check if any required field is empty
+        if (!selectedInternal1 || !selectedInternal2) {
+            showMessage('error', 'Please Select the Internals before approving.');
+            return; // Exit the function if any field is empty
+        }
+
+        if (selectedInternal1 === selectedInternal2) {
+            showMessage('error', 'Internals must be different for a thesis.');
+            return; // Exit the function if any field is empty
+        }
+
+        if (!researchArea1 || !researchArea2) {
+            showMessage('error', 'Please mention the Research Area before approving.');
+            return; // Exit the function if any field is empty
+        }
 
         const final_internal1 = selectedInternal1;
         const final_internal2 = selectedInternal2;
@@ -52,8 +77,8 @@ export default function GetThesisDetails({ setShowDetails }) {
         const InternalData = {
             final_internal1,
             final_internal2,
-            researchArea1,
-            researchArea2
+            internal1researcharea: researchArea1, // Correct the key names here
+            internal2researcharea: researchArea2
         }
 
         console.log("Internal Data =", InternalData);
@@ -73,43 +98,34 @@ export default function GetThesisDetails({ setShowDetails }) {
         console.log("Response data:", data); // Log the response data
 
         if (res.status === 200) {
-            if (data.message === "Invalid Credentials") {
-                window.alert(data.message);
+            if (data.message === "Thesis approved successfully. Email has been send to all respective members") {
+                showMessage('success', data.message);
                 console.log(data.message);
             } else {
-                window.alert(data.message);
-                console.log("Accepted Thesis Successfully");
-                navigate('/ReviewRequest')
-                setShowDetails(false);
+                showMessage('error', data.message);
+                console.log(data.message);
             }
         } else {
-            window.alert(data.message);
-            console.log(data.message);
+            showMessage('error', "System Error. Please try later!");
+            console.log("Invalid Input", data);
         }
     }
 
     return (
         <>
-            <div className='flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
+         <Toast ref={toastTopCenter} position="top-center" />
+            <div className='flex flex-1 flex-col justify-center items-center px-6 my-2 lg:px-8'>
                 <div className="mt-2 bg-gray-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
                     <div className="px-4 py-5 sm:px-6">
                         <p className="max-w-2xl text-md text-white">
-                            Thesis Registration Synopsis Request Details
+                            MS Thesis/ project 1 Synopsis Approval Request Details
                         </p>
                     </div>
                     {ThesisData.selectedThesis && (
                         <div className="border-t border-gray-200">
                             <dl>
-                                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <div className="sm:col-span-1">
-                                        <dt className="text-sm font-medium text-gray-500">
-                                            Thesis ID:
-                                        </dt>
-                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                            {ThesisData.selectedThesis.thesisid}
-                                        </dd>
-                                    </div>
-                                    <div className="sm:col-span-1">
+                                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6">
+                                    <div className="sm:col-span-4">
                                         <dt className="text-sm font-medium text-gray-500">
                                             Thesis Title:
                                         </dt>
@@ -117,19 +133,37 @@ export default function GetThesisDetails({ setShowDetails }) {
                                             {ThesisData.selectedThesis.thesistitle}
                                         </dd>
                                     </div>
-                                    <div className="sm:col-span-1">
+                                    <div className="sm:col-span-4">
                                         <dt className="text-sm font-medium text-gray-500">
-                                            Roll Number
+                                            Potential Areas
                                         </dt>
                                         <dd className="text-sm text-gray-900">
-                                            {ThesisData.selectedThesis.rollno}
+                                            {ThesisData.selectedThesis.potentialareas}
                                         </dd>
                                     </div>
                                 </div>
-                                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">
-                                            Supervisor ID:
+                                            Student Roll No
+                                        </dt>
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                            {ThesisData.selectedThesis.rollno}
+                                        </dd>
+                                    </div>
+                                    <div className="sm:col-span-1">
+                                        <dt className="text-sm font-medium text-gray-500">
+                                            Student Name
+                                        </dt>
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                            {ThesisData.selectedThesis.stdname}
+                                        </dd>
+                                    </div>
+                                </div>
+                                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
+                                    <div className="sm:col-span-1">
+                                        <dt className="text-sm font-medium text-gray-500">
+                                            Supervisor ID
                                         </dt>
                                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
                                             {ThesisData.selectedThesis.facultyid}
@@ -137,46 +171,38 @@ export default function GetThesisDetails({ setShowDetails }) {
                                     </div>
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">
-                                            Internal 1:
+                                            Supervisor Name
                                         </dt>
                                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                            {/* {ThesisData.selectedThesis.thesistitle} */}
+                                            {ThesisData.selectedThesis.supervisorname}
                                         </dd>
                                     </div>
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">
-                                            Internal 2:
+                                            Internals Name
                                         </dt>
-                                        <dd className="text-sm text-gray-900">
-                                            {/* {ThesisData.selectedThesis.rollno} */}
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                            {ThesisData.selectedThesis.internals.join(', ')}
+                                        </dd>
+                                    </div>
+                                    <div className="sm:col-span-1">
+                                        <dt className="text-sm font-medium text-gray-500">
+                                            Research Areas
+                                        </dt>
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                            {ThesisData.selectedThesis.researcharea.join(', ')}
                                         </dd>
                                     </div>
                                 </div>
-                                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <div className="sm:col-span-1">
-                                        <dt className="text-sm font-medium text-gray-500">
-                                            Thesis Status
-                                        </dt>
-                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                            {ThesisData.selectedThesis.gcapproval}
-                                        </dd>
-                                    </div>
-                                    <div className="sm:col-span-1">
-                                        <dt className="text-sm font-medium text-gray-500">
-                                            Potential Areas
-                                        </dt>
-                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                            {ThesisData.selectedThesis.potentialareas}
-                                        </dd>
-                                    </div>
-                                    {/* Display file URL */}
+                                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">
                                             Proposal File
                                         </dt>
-                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0 w-[10%]">
                                             <a href={`http://localhost:5000${ThesisData.selectedThesis.fileURL}`} target="_blank" rel="noopener noreferrer" type='application/pdf'>
-                                                View Proposal
+                                                {/* View Proposal */}
+                                                <img width={28} src={viewfile} alt="icon" />
                                             </a>
                                         </dd>
                                     </div>

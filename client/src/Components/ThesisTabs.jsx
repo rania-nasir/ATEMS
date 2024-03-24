@@ -16,9 +16,9 @@ export default function ThesisTabs() {
     console.log("Thesis Status: ", thesisStatus);
 
 
-    if (activeTitle === 'Home' || activeTitle === 'Dashboard') {
-        return null; // Don't render anything if activeTitle is Home or Dashboard
-    }
+    // if (activeTitle === 'Home' || activeTitle === 'Dashboard' || activeTitle === 'View Feedback' || activeTitle === 'View Announcement') {
+    //     return null; // Don't render anything if activeTitle is Home or Dashboard
+    // }
 
     return (
         <ThesisContext.Provider value={{ thesisStatus }}> {/* Provide thesisStatus value */}

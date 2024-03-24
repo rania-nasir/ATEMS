@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react'
+import { useParams } from 'react-router-dom';
 import Cookie from 'js-cookie';
 import { Dropdown } from 'primereact/dropdown';
+import viewfile from '../../Icons/openfile.png';
+import { Toast } from 'primereact/toast';
 
-export default function GetSynopsisDetails({setShowDetails}) {
+export default function GetSynopsisDetails({ setShowDetails }) {
 
-    const navigate = useNavigate();
+    const toastTopCenter = useRef(null);
+
     const { synopsisId } = useParams();
     const [synopsisData, setSynopsisData] = useState({ selectedSynopsis: null, facultyList: [] });
 
@@ -41,8 +44,28 @@ export default function GetSynopsisDetails({setShowDetails}) {
 
     const selectedValue = synopsisData.facultyList.map(item => ({ label: item.name, value: item.name }))
 
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
+
     const approveData = async (e) => {
         e.preventDefault();
+
+        // Check if any required field is empty
+        if (!selectedInternal1 || !selectedInternal2) {
+            showMessage('error', 'Please Select the Internals before approving.');
+            return; // Exit the function if any field is empty
+        }
+
+        if (selectedInternal1 === selectedInternal2) {
+            showMessage('error', 'Internals must be different for a thesis.');
+            return; // Exit the function if any field is empty
+        }
+
+        if (!researchArea1 || !researchArea2) {
+            showMessage('error', 'Please mention the Research Area before approving.');
+            return; // Exit the function if any field is empty
+        }
 
         const internal1 = selectedInternal1;
         const internal2 = selectedInternal2;
@@ -71,24 +94,26 @@ export default function GetSynopsisDetails({setShowDetails}) {
         console.log("Response data:", data); // Log the response data
 
         if (res.status === 200) {
-            if (data.message === "Invalid Credentials") {
-                window.alert("Invalid Credentials");
-                console.log("Invalid Credentials");
-                setShowDetails(false);
+            if (data.message === "Internal members selected successfully and Synopsis approved. Email already sent to respective members.") {
+                showMessage('success', data.message);
+                console.log(data.message);
+                // Wait for 3 seconds before setting setShowDetails(false)
+                setTimeout(() => {
+                    setShowDetails(false);
+                }, 3000);
             } else {
-                window.alert("Accepted Synopsis Successfully");
-                console.log("Accepted Synopsis Successfully");
-                setShowDetails(false);
+                showMessage('error', data.message);
+                console.log(data.message);
             }
         } else {
-            window.alert("Something went wrong");
-            console.log("Something went wrong");
+            showMessage('error', "System Error. Please try later!");
+            console.log("Invalid Input", data);
         }
     }
 
     const declineData = async (e) => {
         e.preventDefault();
-    
+
         try {
             const res = await fetch(`http://localhost:5000/faculty/decline-synopsis/${synopsisId}`, {
                 method: "DELETE",
@@ -97,52 +122,47 @@ export default function GetSynopsisDetails({setShowDetails}) {
                     'Authorization': `${Cookie.get('jwtoken')}`
                 }
             });
-    
+
             if (res.ok) {
                 const data = await res.json();
                 console.log("Response data:", data); // Log the response data
-    
-                if (data.error) {
-                    window.alert(data.error);
-                    console.log("Error:", data.error);
+
+                if (data.message === "Synopsis rejected successfully and deleted from the synopsis table") {
+                    showMessage('success', data.message);
+                    console.log(data.message);
+                    // Wait for 3 seconds before setting setShowDetails(false)
+                    setTimeout(() => {
+                        setShowDetails(false);
+                    }, 3000);
                 } else {
-                    window.alert("Rejected Synopsis Successfully");
-                    console.log("Rejected Synopsis Successfully");
-                    navigate('/');
+                    showMessage('error', data.message);
+                    console.log(data.message);
                 }
             } else {
-                window.alert("Something went wrong");
-                console.log("Something went wrong");
+                showMessage('error', "System Error. Please try later!");
+                console.log("Invalid Input");
             }
         } catch (error) {
-            console.error('Error declining synopsis:', error);
-            window.alert("Something went wrong");
-            console.log("Something went wrong");
+            showMessage('error', "System Error. Please try later!");
+            console.log("System Error. Please try later!", error);
         }
     }
-    
+
     return (
         <>
-            <div className='flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
+            <Toast ref={toastTopCenter} position="top-center" />
+            <div className='flex flex-1 flex-col justify-center items-center px-6 my-2 lg:px-8'>
                 <div className="mt-2 bg-gray-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
                     <div className="px-4 py-5 sm:px-6">
                         <p className="max-w-2xl text-md text-white">
-                            Thesis Registration Synopsis Request Details
+                            MS Thesis/ Project 1 Registration Synopsis Request Details
                         </p>
                     </div>
                     {synopsisData.selectedSynopsis && (
                         <div className="border-t border-gray-200">
                             <dl>
-                                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <div className="sm:col-span-1">
-                                        <dt className="text-sm font-medium text-gray-500">
-                                            Thesis ID:
-                                        </dt>
-                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                            {synopsisData.selectedSynopsis.synopsisid}
-                                        </dd>
-                                    </div>
-                                    <div className="sm:col-span-1">
+                                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6">
+                                    <div className="sm:col-span-4">
                                         <dt className="text-sm font-medium text-gray-500">
                                             Thesis Title:
                                         </dt>
@@ -150,17 +170,17 @@ export default function GetSynopsisDetails({setShowDetails}) {
                                             {synopsisData.selectedSynopsis.synopsistitle}
                                         </dd>
                                     </div>
-                                    <div className="sm:col-span-1">
+                                    <div className="sm:col-span-4">
                                         <dt className="text-sm font-medium text-gray-500">
-                                            Thesis Status
+                                            Potential Areas
                                         </dt>
                                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                            {synopsisData.selectedSynopsis.synopsisstatus}
+                                            {synopsisData.selectedSynopsis.potentialareas}
                                         </dd>
                                     </div>
                                 </div>
-                                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                <div className="sm:col-span-1">
+                                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
+                                    <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">
                                             Roll Number
                                         </dt>
@@ -176,14 +196,6 @@ export default function GetSynopsisDetails({setShowDetails}) {
                                             {synopsisData.selectedSynopsis.stdname}
                                         </dd>
                                     </div>
-                                    <div className="sm:col-span-1">
-                                        <dt className="text-sm font-medium text-gray-500">
-                                            Potential Areas
-                                        </dt>
-                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                            {synopsisData.selectedSynopsis.potentialareas}
-                                        </dd>
-                                    </div>
                                     {/* Display file URL */}
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">
@@ -197,9 +209,10 @@ export default function GetSynopsisDetails({setShowDetails}) {
                                         <dt className="text-sm font-medium text-gray-500">
                                             Proposal File
                                         </dt>
-                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
+                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0 w-[10%]">
                                             <a href={`http://localhost:5000${synopsisData.selectedSynopsis.fileURL}`} target="_blank" rel="noopener noreferrer" type='application/pdf'>
-                                                View Proposal
+                                                {/* View Proposal */}
+                                                <img width={28} src={viewfile} alt="icon" />
                                             </a>
                                         </dd>
                                     </div>

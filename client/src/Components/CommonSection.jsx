@@ -26,20 +26,20 @@ export default function CommonSection() {
     else {
         if (userType === 'student') {
             if (activeTitle === 'View Announcement') {
-                renderedComponent = <StudentviewAnnouncement />;
+                // renderedComponent = <StudentviewAnnouncement />;
             }
         } else if (userType === 'faculty') {
             if (activeTitle === 'View Announcement') {
-                renderedComponent = <FacultyviewAnnouncement />;
+                // renderedComponent = <FacultyviewAnnouncement />;
             }
         } else if (userType === 'gc') {
-            if (activeTitle === 'Make Announcement') {
-                renderedComponent = <MakeAnnouncement />;
-            } else if (activeTitle === 'Student Records') {
-                renderedComponent = <ViewStudent />
-            } else if (activeTitle === 'Faculty Records') {
-                renderedComponent = <ViewFaculty />
-            }
+            // if (activeTitle === 'Make Announcement') {
+            //     renderedComponent = <MakeAnnouncement />;
+            // } else if (activeTitle === 'Student Records') {
+            //     renderedComponent = <ViewStudent />
+            // } else if (activeTitle === 'Faculty Records') {
+            //     renderedComponent = <ViewFaculty />
+            // }
         }
     }
     return (

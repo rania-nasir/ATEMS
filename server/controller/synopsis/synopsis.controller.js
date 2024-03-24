@@ -61,6 +61,8 @@ const fillSynopsis = async (req, res) => {
             const potentialareas = req.body.potentialareas;
             const proposalfilename = req.file.filename;
 
+            console.log(req.body);
+
             const existingSynopsis = await synopsis.findOne({ // Find an existing synopsis by the student
                 where: {
                     rollno: studentrollno,
@@ -68,7 +70,7 @@ const fillSynopsis = async (req, res) => {
             });
 
             if (existingSynopsis) {
-                return res.status(400).json({ error: 'Request already exists for this roll number' });
+                return res.json({ message: 'You already sent a synopsis request' });
             }
 
             const faculty = await faculties.findOne({
@@ -80,7 +82,7 @@ const fillSynopsis = async (req, res) => {
             });
 
             if (!faculty) {
-                return res.status(404).json({ error: 'Faculty not found' });
+                return res.json({ message: 'Please Select the Supervisor first' });
             }
 
             const facultyid = faculty.facultyid;
@@ -118,7 +120,7 @@ const fillSynopsis = async (req, res) => {
 
             sendMail(toEmail, subject, text);
 
-            res.status(200).json({ message: 'Synopsis created successfully', synopsis: newSynopsis });
+            res.status(200).json({ message: 'Synopsis created successfully. Email has been send to your supervisor', synopsis: newSynopsis });
 
         });
 
@@ -127,5 +129,4 @@ const fillSynopsis = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
-
 module.exports = { fillSynopsis, sendFaculties };

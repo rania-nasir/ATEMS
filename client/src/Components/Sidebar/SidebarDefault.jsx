@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import Cookies from "js-cookie";
 import { RoleContext } from '../../context/RoleContext';
@@ -130,25 +131,25 @@ const SidebarDefault = () => {
         {
             id: 3,
             title: 'Supervisor Management',
-            path: '/',
+            path: '/Supervisor',
             iconsrc: Managementicon,
         },
         {
             id: 4,
             title: 'Internal Management',
-            path: '/',
+            path: '/Internal',
             iconsrc: Managmentsicon,
         },
         {
             id: 5,
             title: 'MSRC Management',
-            path: '/',
+            path: '/MSRC',
             iconsrc: Managmentsicon,
         },
         {
             id: 6,
             title: 'HOD Management',
-            path: '/',
+            path: '/HOD',
             iconsrc: Managingsicon,
         },
     ];
@@ -234,7 +235,7 @@ const SidebarDefault = () => {
 
     }, [facultyData]);
 
-    const [activeMenu, setActiveMenu] = useState(1); // Initialize activeMenu with id 1
+    const [activeMenu, setActiveMenu] = useState(""); // Initialize activeMenu with id 1
     const [menuItems, setMenuItems] = useState([]);
 
     const handleMenuClick = (path, id, title) => { // Include title in handleMenuClick function

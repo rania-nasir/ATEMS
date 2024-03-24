@@ -42,29 +42,23 @@ export default function GetThesis({ setShowDetails }) {
     return (
         <>
             <div className='m-2'>
-                <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-950">
-                        Thesis Requests
+                <div className="sm:mx-auto w-full">
+                    <h2 className="pb-2 text-center text-2xl tracking-tight text-gray-950 font-semibold">
+                        MS Thesis/ Project 1 Requests
                     </h2>
                 </div>
-                <div class="m-6 shadow-md sm:rounded-lg">
+                <div class="overflow-x-auto m-6 shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3">
-                                    Thesis ID
-                                </th>
-                                <th scope="col" class="px-6 py-3">
                                     Student Roll No.
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Supervisor ID
+                                    Supervisor Name
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Thesis Title
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Potential Areas
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Action
@@ -77,20 +71,14 @@ export default function GetThesis({ setShowDetails }) {
                             <tbody>
                                 {thesisData.allThesis.map(rowData => (
                                     <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={rowData.thesisid}>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {rowData.thesisid}
-                                        </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.rollno}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {rowData.facultyid}
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                            {rowData.supervisorname}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900">
                                             {rowData.thesistitle}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {rowData.potentialareas}
                                         </td>
                                         <td className="px-6 py-4">
                                             <NavLink to={`/ReviewRequest/${rowData.thesisid}`}

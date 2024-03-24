@@ -6,7 +6,6 @@ import BackButton from '../BackButton';
 
 // student 
 import FillSynopsis from '../Student/FillSynopsis';
-import ViewFeedback from '../Student/ViewFeedback';
 import ReportSubmission from '../Student/ReportSubmission'
 
 // GC 
@@ -58,7 +57,6 @@ export default function T1MainSection() {
                         <Routes>
                             <Route path="/reportSubmission" element={<ReportSubmission />} />
                             <Route path="/fillSynopsis" element={<FillSynopsis />} />
-                            <Route path="/viewFeedback" element={<ViewFeedback />} />
                         </Routes>
                     </>
                 )}
