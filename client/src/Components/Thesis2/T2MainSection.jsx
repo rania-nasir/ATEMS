@@ -7,6 +7,7 @@ import BackButton from '../BackButton';
 // student 
 import Registration from '../Student/Registration';
 import T2ViewFeedback from '../Student/T2ViewFeedback';
+import T2ReportSubmission from '../Student/T2ReportSubmission'
 
 // GC 
 import T2ThesisRecord from '../GC/T2ThesisRecord';
@@ -18,9 +19,7 @@ import T2PanelTime from '../GC/T2PanelTime';
 import T2Permissions from '../GC/T2Permissions';
 
 import T2Evaluations from '../GC/T2Evaluations';
-// import EvaluationDetails from '../GC/EvaluationDetails';
-// import EvaluationMid1Details from '../GC/EvaluationMid1Details';
-// import EvaluationFinal1Details from '../GC/EvaluationFinal1Details';
+import T2MidEvaluationDetails from '../GC/T2EvaluationMidDetails';
 
 // Faculty
 import SupervisorComp from '../Faculty/Supervisor/SupervisorComp';
@@ -47,14 +46,15 @@ export default function T2MainSection() {
 
     return (
         <>
-            <div 
-            style={{ border: "1px solid purple" }}
+            <div
+                style={{ border: "1px solid purple" }}
             >
 
                 {/* Define routes for each user type and active title */}
                 {userType === 'student' && (
                     <>
                         <Routes>
+                            <Route path="/reportSubmission" element={<T2ReportSubmission />} />
                             <Route path="/fillSynopsis" element={<Registration />} />
                             <Route path="/viewFeedback" element={<T2ViewFeedback />} />
                         </Routes>
@@ -98,13 +98,10 @@ export default function T2MainSection() {
                                             setShowDetails(false); // Set showDetails to false
                                             navigateBack(); // Call the navigateBack function to navigate back
                                         }} />
+                                        <Routes>
+                                            <Route path="/viewMid2Evaluation/:rollno" element={<T2MidEvaluationDetails setShowDetails={setShowDetails} />} />
+                                        </Routes>
                                         {/* <Routes>
-                                            <Route path="/viewPendingProposal/:rollno" element={<EvaluationDetails setShowDetails={setShowDetails} />} />
-                                        </Routes>
-                                        <Routes>
-                                            <Route path="/viewPendingMid/:rollno" element={<EvaluationMid1Details setShowDetails={setShowDetails} />} />
-                                        </Routes>
-                                        <Routes>
                                             <Route path="/viewPendingFinal/:rollno" element={<EvaluationFinal1Details setShowDetails={setShowDetails} />} />
                                         </Routes> */}
                                     </>

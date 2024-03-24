@@ -19,6 +19,7 @@ import Managingsicon from '../../Icons/Managings.png';
 import formicon from '../../Icons/form.png';
 import feedbackicon from '../../Icons/feedback.png'
 import Permissionicon from '../../Icons/permissions.png';
+import ReportIcon from '../../Icons/report.png';
 
 
 const SidebarDefault = () => {
@@ -173,6 +174,12 @@ const SidebarDefault = () => {
         },
         {
             id: 4,
+            title: 'Report Submission',
+            path: '/reportSubmission',
+            iconsrc: ReportIcon,
+        },
+        {
+            id: 5,
             title: 'View Feedback',
             path: '/viewFeedback',
             iconsrc: feedbackicon,
