@@ -30,6 +30,10 @@ facRouter.get('/supViewPendingTitleRequests', facReview.getTitleChangeRequests);
 facRouter.get('/supViewPendingTitleDetails/:rollno', facReview.getTitleChangeDetails);
 facRouter.post('/supApprovePendingTitleRequests/:rollno', facReview.ApproveTitleChangeSupervisor);
 facRouter.post('/supRejectPendingTitleRequests/:rollno', facReview.RejectTitleChangeSupervisor);
+facRouter.get('/supViewPendingSupChangeRequests', facReview.getSupervisorChangeRequests);
+facRouter.get('/supViewPendingSupChangeDetails/:rollno', facReview.getSupervisorChangeDetails);
+facRouter.post('/supApprovePendingSupChangeRequests/:rollno', facReview.approveSupervisorChangeSup);
+facRouter.post('/supRejectPendingSupChangeRequests/:rollno', facReview.rejectSupervisorChangeSup);
 
 
 
@@ -41,10 +45,7 @@ facRouter.get('/internalviewPropEvalsStudents', facReview.interalviewPropEvals);
 facRouter.get('/msrcAllThesis', msrcReview.getAcceptedThesis); // MSRC fetches the lists of all thesis in accepted state
 facRouter.get('/msrcThesisDetails/:thesisId', msrcReview.getThesisDetails); // MSRC fetches details of a single thesis
 facRouter.post('/msrcSubmitFeedback/:thesisId', msrcReview.setThesisFeedback); // MSRC provides feedback on a single thesis
-facRouter.get('/msrcViewPendingSupervisorRequests', msrcReview.getSupervisorChangeRequests);
-facRouter.get('/msrcViewPendingSupervisorDetails/:rollno', msrcReview.getSupervisorChangeDetails);
-facRouter.post('/msrcApprovePendingSupervisorChange/:rollno', msrcReview.approveSupervisorChangeMSRC);
-facRouter.post('/msrcRejectPendingSupervisorChange/:rollno', msrcReview.rejectSupervisorChangeMSRC);
+
 
 /*HOD */
 facRouter.get('/viewAllThesis', hodFunctions.getThesis);
@@ -52,8 +53,8 @@ facRouter.get('/reviewThesis/:thesisId', hodFunctions.onethesisDetails); // GC f
 facRouter.put('/approveThesis/:thesisId', hodFunctions.hodapproveThesis); // GC approves synopsis which creates thesis
 facRouter.get('/hodViewPendingSupervisorRequests', hodFunctions.getSupervisorChangeRequests);
 facRouter.get('/hodViewPendingSupervisorDetails/:rollno', hodFunctions.getSupervisorChangeDetails);
-facRouter.post('/hodApprovePendingSupervisorChange/:rollno', hodFunctions.approveSupervisorChangeMSRC);
-facRouter.post('/hodRejectPendingSupervisorChange/:rollno', hodFunctions.rejectSupervisorChangeMSRC);
+facRouter.post('/hodApprovePendingSupervisorChange/:rollno', hodFunctions.approveSupervisorChangeHOD);
+facRouter.post('/hodRejectPendingSupervisorChange/:rollno', hodFunctions.rejectSupervisorChangeHOD);
 
 /*Examiners */
 /* Mid */

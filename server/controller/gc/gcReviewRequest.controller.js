@@ -10,6 +10,7 @@ const { Op, Model } = require('sequelize');
 const { midevaluations } = require("../../model/midEvaluation.model");
 const { finalevaluations } = require("../../model/finalEvaluation.model")
 const { titlerequests } = require("../../model/requestTitle.model");
+const { supchangerequests } = require("../../model/requestSupervisor.model");
 
 let isProposalEvaluationApproved = false; // Flag for prop eval status
 let isMidEvaluationApproved = false; // Flag for mid eval status
@@ -1473,6 +1474,185 @@ const RejectTitleChangeGC = async (req, res) => {
     }
 }
 
+const getSupervisorChangeRequests = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const faculty = await faculties.findOne({
+            attributes: ['facultyid', 'name'],
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"] // GC Check
+                },
+            }
+        });
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        const pendingSupervisorChangeRequests = await supchangerequests.findAll({
+            where: {
+                currSupReview: 'Approved',
+                gcReview: 'Pending',
+            }
+        });
+
+        if (!pendingSupervisorChangeRequests) {
+            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+        }
+
+        res.json(pendingSupervisorChangeRequests);
+
+    } catch (error) {
+        console.error('Error fetching pending supervisor requests:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+const getSupervisorChangeDetails = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const rollno = req.params.rollno;
+
+        const faculty = await faculties.findOne({
+            attributes: ['facultyid', 'name'],
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"] // GC Check
+                },
+            }
+        });
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        const supervisorRequestDetails = await supchangerequests.findOne({
+            where: {
+                rollno: rollno,
+                currSupReview: 'Approved',
+                gcReview: 'Pending',
+            }
+        });
+
+        if (!supervisorRequestDetails) {
+            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+        }
+
+        res.json(supervisorRequestDetails);
+
+    } catch (error) {
+        console.error('Error fetching pending supervisor request:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+const approveSupervisorChangeGC = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const rollno = req.params.rollno;
+        const comments = req.body.comments;
+
+        const faculty = await faculties.findOne({
+            attributes: ['facultyid', 'name'],
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"] // GC Check
+                },
+            }
+        });
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        const SupervisorRequestDetails = await supchangerequests.findOne({
+            where: {
+                rollno: rollno,
+                currSupReview: 'Approved',
+                gcReview: 'Pending',
+            }
+        });
+
+        if (SupervisorRequestDetails) {
+            const [updatedRows] = await supchangerequests.update(
+                {
+                    //msrcid: facultyId,
+                    gcReview: 'Approved',
+                    gcComments: comments,
+                },
+                { where: { rollno: rollno } }
+            );
+            if (updatedRows > 0) {
+
+                return res.json('Supervisor Change Request Approved and forwarded to HOD');
+            }
+            else {
+                return res.status(500).json({ error: 'Error approving pending supervisor change request' });
+            }
+        }
+        else {
+            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+        }
+    } catch (error) {
+        console.error('Error approving pending title request:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+const rejectSupervisorChangeGC = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const rollno = req.params.rollno;
+        const comments = req.body.comments;
+
+        const faculty = await faculties.findOne({
+            attributes: ['facultyid', 'name'],
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"] // GC Check
+                },
+            }
+        });
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        const SupervisorRequestDetails = await supchangerequests.findOne({
+            where: {
+                rollno: rollno,
+                currSupReview: 'Approved',
+                gcReview: 'Pending',
+            }
+        });
+
+        if (SupervisorRequestDetails) {
+            const [updatedRows] = await supchangerequests.update(
+                {
+                    //msrcid: facultyId,
+                    gcReview: 'Rejected',
+                    gcComments: comments,
+                },
+                { where: { rollno: rollno } }
+            );
+            if (updatedRows > 0) {
+
+                return res.json('Supervisor Change Request Rejected');
+            }
+            else {
+                return res.status(500).json({ error: 'Error rejecting pending supervisor change request' });
+            }
+        }
+        else {
+            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+        }
+    } catch (error) {
+        console.error('Error approving pending title request:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 
 
 
@@ -1505,5 +1685,9 @@ module.exports =
     getTitleChangeRequests,
     getTitleChangeDetails,
     ApproveTitleChangeGC,
-    RejectTitleChangeGC
+    RejectTitleChangeGC,
+    getSupervisorChangeRequests,
+    getSupervisorChangeDetails,
+    approveSupervisorChangeGC,
+    rejectSupervisorChangeGC
 };

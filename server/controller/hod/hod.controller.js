@@ -211,7 +211,7 @@ const getSupervisorChangeRequests = async (req, res) => {
             where: {
                 facultyid: facultyId,
                 role: {
-                    [Op.contains]: ["HOD"] // MSRC Check
+                    [Op.contains]: ["HOD"] // HOD Check
                 },
             }
         });
@@ -221,7 +221,8 @@ const getSupervisorChangeRequests = async (req, res) => {
 
         const pendingSupervisorChangeRequests = await supchangerequests.findAll({
             where: {
-                msrcReview: 'Approved',
+                currSupReview: 'Approved',
+                gcReview: 'Approved',
                 hodReview: 'Pending',
             }
         });
@@ -248,7 +249,7 @@ const getSupervisorChangeDetails = async (req, res) => {
             where: {
                 facultyid: facultyId,
                 role: {
-                    [Op.contains]: ["HOD"] // MSRC Check
+                    [Op.contains]: ["HOD"] // HOD Check
                 },
             }
         });
@@ -259,7 +260,8 @@ const getSupervisorChangeDetails = async (req, res) => {
         const supervisorRequestDetails = await supchangerequests.findOne({
             where: {
                 rollno: rollno,
-                msrcReview: 'Approved',
+                currSupReview: 'Approved',
+                gcReview: 'Approved',
                 hodReview: 'Pending',
             }
         });
@@ -276,7 +278,7 @@ const getSupervisorChangeDetails = async (req, res) => {
     }
 }
 
-const approveSupervisorChangeMSRC = async (req, res) => {
+const approveSupervisorChangeHOD = async (req, res) => {
     try {
         const facultyId = req.userId;
         const rollno = req.params.rollno;
@@ -286,7 +288,7 @@ const approveSupervisorChangeMSRC = async (req, res) => {
             where: {
                 facultyid: facultyId,
                 role: {
-                    [Op.contains]: ["HOD"] // MSRC Check
+                    [Op.contains]: ["HOD"] // HOD Check
                 },
             }
         });
@@ -297,7 +299,8 @@ const approveSupervisorChangeMSRC = async (req, res) => {
         const SupervisorRequestDetails = await supchangerequests.findOne({
             where: {
                 rollno: rollno,
-                msrcReview: 'Approved',
+                currSupReview: 'Approved',
+                gcReview: 'Approved',
                 hodReview: 'Pending',
             }
         });
@@ -339,7 +342,7 @@ const approveSupervisorChangeMSRC = async (req, res) => {
     }
 }
 
-const rejectSupervisorChangeMSRC = async (req, res) => {
+const rejectSupervisorChangeHOD = async (req, res) => {
     try {
         const facultyId = req.userId;
         const rollno = req.params.rollno;
@@ -349,7 +352,7 @@ const rejectSupervisorChangeMSRC = async (req, res) => {
             where: {
                 facultyid: facultyId,
                 role: {
-                    [Op.contains]: ["HOD"] // MSRC Check
+                    [Op.contains]: ["HOD"] // HOD Check
                 },
             }
         });
@@ -360,7 +363,8 @@ const rejectSupervisorChangeMSRC = async (req, res) => {
         const SupervisorRequestDetails = await supchangerequests.findOne({
             where: {
                 rollno: rollno,
-                msrcReview: 'Approved',
+                currSupReview: 'Approved',
+                gcReview: 'Approved',
                 hodReview: 'Pending',
             }
         });
@@ -398,7 +402,7 @@ module.exports =
     hodapproveThesis,
     getSupervisorChangeRequests,
     getSupervisorChangeDetails,
-    approveSupervisorChangeMSRC,
-    rejectSupervisorChangeMSRC
+    approveSupervisorChangeHOD,
+    rejectSupervisorChangeHOD
 
 }
