@@ -58,7 +58,20 @@ const supchangerequests = sequelize.define('supchangerequests', {
         type: DataTypes.TEXT('long'),
         allowNull: false
     },
-    msrcReview: {
+    currSupReview: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'Pending',
+        validate: {
+            isIn: [['Pending', 'Approved', 'Rejected']]
+        }
+    },
+    gcComments: {
+        type: DataTypes.TEXT('long'),
+        defaultValue: '',
+        allowNull: true
+    },
+    gcReview: {
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: 'Pending',

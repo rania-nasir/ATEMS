@@ -51,6 +51,11 @@ gcRouter.get('/gcViewPendingTitleDetails/:rollno', gcReview.getTitleChangeDetail
 gcRouter.post('/ApprovePendingTitleRequests/:rollno', gcReview.ApproveTitleChangeGC);
 gcRouter.post('/RejectPendingTitleRequests/:rollno', gcReview.RejectTitleChangeGC);
 
+gcRouter.get('/gcViewPendingSupervisorRequests', gcReview.getSupervisorChangeRequests);
+gcRouter.get('/gcViewPendingSupervisorDetails/:rollno', gcReview.getSupervisorChangeDetails);
+gcRouter.post('/ApprovePendingSupervisorChange/:rollno', gcReview.approveSupervisorChangeGC);
+gcRouter.post('/RejectPendingSupervisorChange/:rollno', gcReview.rejectSupervisorChangeGC);
+
 gcRouter.put('/grantPropEvalPermission', gcReview.grantPropEvalPermission);
 gcRouter.put('/revokePropEvalPermission', gcReview.revokePropEvalPermission);
 gcRouter.put('/grantMidEvalPermission', gcReview.grantMidEvalPermission);

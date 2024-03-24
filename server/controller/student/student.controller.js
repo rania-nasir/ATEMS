@@ -360,7 +360,8 @@ const requestSupervisorChange = async (req, res) => {
       newsupervisorname: newSupervisorName,
       newsupervisorid: newSupervisorid,
       initiatorComments: comments,
-      msrcReview: 'Pending',
+      currSupReview: 'Pending',
+      gcReview: 'Pending',
       hodReview: 'Pending',
     });
 
