@@ -291,10 +291,15 @@ const getGCProposalPermissionStatus = async (req, res) => {
             limit: 1 // Limit to one result as we only need one value
         });
 
-        // Check if a record was found
         if (gcProposalPermission) {
             const permissionValue = gcProposalPermission.gcproposalpermission;
-            res.json({ gcproposalpermission: permissionValue });
+            if (permissionValue === 'Granted') {
+                res.json({ gcproposalpermission: true });
+            } else if (permissionValue === 'Revoke') {
+                res.json({ gcproposalpermission: false });
+            } else {
+                res.status(404).json({ message: "No thesis record found" });
+            }
         } else {
             res.status(404).json({ message: "No thesis record found" });
         }
@@ -303,7 +308,6 @@ const getGCProposalPermissionStatus = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
-
 
 
 

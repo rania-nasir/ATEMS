@@ -7,6 +7,7 @@ import BackButton from '../BackButton';
 // student 
 import FillSynopsis from '../Student/FillSynopsis';
 import ViewFeedback from '../Student/ViewFeedback';
+import ReportSubmission from '../Student/ReportSubmission'
 
 // GC 
 import ThesisRecord from '../GC/ThesisRecord';
@@ -47,7 +48,7 @@ export default function T1MainSection() {
 
     return (
         <>
-            <div 
+            <div
             // style={{ border: "1px solid red" }}
             >
 
@@ -55,6 +56,7 @@ export default function T1MainSection() {
                 {userType === 'student' && (
                     <>
                         <Routes>
+                            <Route path="/reportSubmission" element={<ReportSubmission />} />
                             <Route path="/fillSynopsis" element={<FillSynopsis />} />
                             <Route path="/viewFeedback" element={<ViewFeedback />} />
                         </Routes>

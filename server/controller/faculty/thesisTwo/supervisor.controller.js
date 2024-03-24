@@ -141,6 +141,7 @@ const supthesis2AllMidEvals = async (req, res) => {
             return res.status(403).json({ error: 'Mid evaluations are not open yet.' });
         }
 
+        console.log("Examinable Permission ::: ", examinableThesisWithPermission);
         return res.json(examinableThesisWithPermission);
 
     } catch (error) {
@@ -218,7 +219,7 @@ const internalthesis2AllMidEvals = async (req, res) => {
 const mid2EvalDetails = async (req, res) => {
 
     try {
-        const rollno = req.params.rollno;
+        const { rollno } = req.params;
         const student = await students.findOne({ where: { rollno } });
 
         if (!student) {

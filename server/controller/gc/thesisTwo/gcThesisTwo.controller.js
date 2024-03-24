@@ -105,7 +105,7 @@ const grantMidEvalPermission = async (req, res) => {
                 { where: {} } // Update all records
             );
 
-            res.json({ message: 'Mid-evaluation permission granted for all records' });
+            res.json({ message: 'Mid 2 evaluation permission granted for all records' });
         } else if (!allRecordsApproved) {
             res.json({ message: 'Some registrations are pending for relevant approvals' });
         } else if (!allRecordsHaveThesisTwoReport) {
@@ -114,7 +114,7 @@ const grantMidEvalPermission = async (req, res) => {
             res.json({ message: 'Some registrations are pending for relevant approvals and/or thesis two report file upload.' });
         }
     } catch (error) {
-        console.error('Error granting mid-evaluation permission:', error);
+        console.error('Error granting mid 2 evaluation permission:', error);
         res.status(500).json({ message: 'An error occurred while granting mid-evaluation permission' });
     }
 };
@@ -129,11 +129,11 @@ const revokeMidEvalPermission = async (req, res) => {
             where: {}
         });
 
-        res.json({ message: 'Mid-Evaluation permission revoked for all records' });
+        res.json({ message: 'Mid 2 Evaluation permission revoked for all records' });
 
     } catch (error) {
 
-        console.error('Error revoking mid-evaluation permission:', error);
+        console.error('Error revoking mid 2 evaluation permission:', error);
         res.status(500).json({ message: 'An error occurred while revoking mid-evaluation permission' });
     }
 }
