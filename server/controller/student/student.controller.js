@@ -9,6 +9,8 @@ const { all } = require("../../router/stdRoutes");
 const { feedbacks } = require("../../model/feedback.model");
 const { thesis } = require("../../model/thesis.model");
 const { titlerequests } = require("../../model/requestTitle.model");
+const { faculty } = require("../../model/faculty.model");
+const { supchangerequests } = require("../../model/requestSupervisor.model");
 
 
 // Sign in function for student
@@ -239,6 +241,155 @@ const requestTitleChange = async (req, res) => {
   }
 }
 
+const viewSupervisorChangeForm = async (req, res) => {
+  try {
+    const rollno = req.userId;
+    const studentData = await students.findOne({
+      where: {
+        rollno: rollno
+      },
+      // attributes: { exclude: ['password'] } 
+    });
+
+    if (studentData) {
+      res.status(200).json(studentData);
+    } else {
+      res.status(404).json({ message: 'Student not found' });
+    }
+
+    const thesisData = await thesis.findOne({
+      where: {
+        rollno: rollno
+      },
+    });
+
+    const supervisorData = await faculty.findOne({
+      where: {
+        facultyid: thesisData.facultyid
+      }
+    })
+
+    if (supervisorData) {
+      res.status(200).json(supervisorData);
+    } else {
+      res.status(404).json({ message: 'Supervisor not found' });
+    }
+
+    if (thesisData) {
+      res.status(200).json(thesisData);
+    } else {
+      res.status(404).json({ message: 'Thesis not found' });
+    }
+
+    let SupervisorList;
+    // Fetch the list of all faculties in the table to select for supervisor,
+    if (selectedSynopsis.role !== 'Supervisor') {
+      SupervisorList = await faculties.findAll({
+        attributes: ['facultyid', 'name', 'role'],
+        where: {
+          role: { [Op.contains]: ['Supervisor'] },
+          facultyid: { [Op.not]: thesisData.facultyid } // Exclude the current faculty member
+        }
+      });
+    } else {
+      SupervisorList = await faculties.findAll({
+        attributes: ['facultyid', 'name', 'role'],
+        where: {
+          role: { [Op.contains]: ['Supervisor'] }
+        }
+      });
+    }
+    res.json({ SupervisorList });
+
+  } catch (error) {
+    console.error('Error viewing supervisor change request : ', error);
+    res.status(500).json({ message: 'An error occurred while viewing form for supervisor change' });
+  }
+}
+
+const requestSupervisorChange = async (req, res) => {
+  try {
+    const rollno = req.userId;
+
+    const ideaProposalBy = req.body.ideaProposalBy;
+    const allowSameTopic = req.body.allowSameTopic;
+    const newSupervisorName = req.body.newSupervisorName;
+    const comments = req.body.comments;
+
+    const studentData = await students.findOne({
+      where: {
+        rollno: rollno
+      },
+      // attributes: { exclude: ['password'] } 
+    });
+
+    if (!studentData) {
+      res.status(404).json({ message: 'Student not found' });
+    }
+
+    const thesisData = await thesis.findOne({
+      where: {
+        rollno: rollno
+      },
+    });
+
+    if (!thesisData) {
+      res.status(404).json({ message: 'Thesis not found' });
+    }
+
+    const supervisorData = await faculty.findOne({
+      where: {
+        facultyid: thesisData.facultyid
+      }
+    })
+
+    if (supervisorData) {
+      res.status(200).json(supervisorData);
+    } else {
+      res.status(404).json({ message: 'Supervisor not found' });
+    }
+
+    const newSupervisorid = facultyList.find(faculty => faculty.name === newSupervisorName)?.facultyid;
+
+    if (!newSupervisorid) {
+      return res.status(400).json({ error: 'Invalid supervisor name' });
+    }
+
+    // Validating that current supervisor and new supervisor are not the same
+    if (thesisData.facultyId === newSupervisorid) {
+      return res.status(400).json({ error: 'Current Supervisor and New Supervisor must be different' });
+    }
+
+    await supchangerequests.create({
+      thesisid: thesisData.thesisid,
+      rollno: rollno,
+      stdname: studentData.stdname,
+      thesisstatus: studentData.thesisstatus,
+      ideaproposedby: ideaProposalBy,
+      allowsametopic: allowSameTopic,
+      currsupervisorname: supervisorData.name,
+      currsupervisorid: supervisorData.facultyid,
+      newsupervisorname: newSupervisorName,
+      newsupervisorid: newSupervisorid,
+      initiatorComments: comments,
+      msrcReview: 'Pending',
+      hodReview: 'Pending',
+    });
+
+    const newSupervisorChangeRequest = await supchangerequests.findOne({ where: { rollno } });
+    if (newSupervisorChangeRequest) {
+      res.json({ message: 'Request for Supervisor change successfully submitted', request: newSupervisorChangeRequest });
+    }
+    else {
+      res.status(500).json({ message: 'An error occurred while submitting request for supervisor change' });
+    }
+
+  } catch (error) {
+    console.error('Error submitting supervisor change request : ', error);
+    res.status(500).json({ message: 'An error occurred while submitting request for supervisor change' });
+  }
+}
+
 
 module.exports =
 {
@@ -248,5 +399,7 @@ module.exports =
   showStdData,
   thesisData,
   viewTitleChangeFrom,
-  requestTitleChange
+  requestTitleChange,
+  viewSupervisorChangeForm,
+  requestSupervisorChange
 };
