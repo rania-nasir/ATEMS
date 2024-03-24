@@ -46,6 +46,11 @@ gcRouter.put('/updateFaculty/:facultyid', gcFunctions.updateFaculty); // GC upda
 gcRouter.delete('/deleteStudent/:rollno', gcFunctions.deleteStudent);// GC deletes student
 gcRouter.delete('/deleteFaculty/:facultyid', gcFunctions.deleteFaculty);// GC deletes faculty
 
+gcRouter.get('/gcViewPendingTitleRequests', gcReview.getTitleChangeRequests);
+gcRouter.get('/gcViewPendingTitleDetails/:rollno', gcReview.getTitleChangeDetails);
+gcRouter.post('/ApprovePendingTitleRequests/:rollno', gcReview.ApproveTitleChangeGC);
+gcRouter.post('/RejectPendingTitleRequests/:rollno', gcReview.RejectTitleChangeGC);
+
 gcRouter.put('/grantPropEvalPermission', gcReview.grantPropEvalPermission);
 gcRouter.put('/revokePropEvalPermission', gcReview.revokePropEvalPermission);
 gcRouter.put('/grantMidEvalPermission', gcReview.grantMidEvalPermission);

@@ -646,7 +646,7 @@ const ApproveTitleChangeSupervisor = async (req, res) => {
                 { where: { rollno: rollno } }
             );
             if (updatedRows > 0) {
-                res.json('Request Approved and Forwarded to MSRC');
+                res.json('Request Approved and Forwarded to GC');
             }
             else {
                 res.status(500).json({ error: 'Error approving pending title request' });

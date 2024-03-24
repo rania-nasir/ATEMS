@@ -9,6 +9,7 @@ const { sendMail } = require("../../config/mailer");
 const { Op, Model } = require('sequelize');
 const { midevaluations } = require("../../model/midEvaluation.model");
 const { finalevaluations } = require("../../model/finalEvaluation.model")
+const { titlerequests } = require("../../model/requestTitle.model");
 
 let isProposalEvaluationApproved = false; // Flag for prop eval status
 let isMidEvaluationApproved = false; // Flag for mid eval status
@@ -1196,7 +1197,7 @@ const gcApproveFinalEvaluation = async (req, res) => {
         } else if (thesisonegrade === 'F') {
             gcfinalcommentsreview = 'Rejected';
             mailText = 'Your Final Evaluation has been rejected with an F grade, you have to resubmit thesis Proposal.';
-            
+
         }
 
         const [updatedRows] = await finalevaluations.update(
@@ -1249,7 +1250,7 @@ const gcApproveFinalEvaluation = async (req, res) => {
                     if (student) {
                         // Send approval email to student
                         const subject = 'Final Evaluation';
-                       // const text = 'Your Final Evaluation has been approved, You can now view the feedback, Grade will be updated on FLEX';
+                        // const text = 'Your Final Evaluation has been approved, You can now view the feedback, Grade will be updated on FLEX';
                         await sendMail(student.email, subject, mailText);
 
                         if (thesisonegrade === 'F') {
@@ -1260,7 +1261,7 @@ const gcApproveFinalEvaluation = async (req, res) => {
                             await midevaluations.destroy({ where: { rollno } });
                             await finalevaluations.destroy({ where: { rollno } });
                         }
-                    
+
                         res.json({ message: 'Final Evaluation updated, comingevaluation status updated, and email sent to student' });
                     } else {
                         res.status(404).json({ error: 'Student not found' });
@@ -1279,6 +1280,198 @@ const gcApproveFinalEvaluation = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+const getTitleChangeRequests = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const faculty = await faculties.findOne({
+            attributes: ['facultyid', 'name'],
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"] // GC Check
+                },
+            }
+        });
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        const pendingTitleChangeRequests = await titlerequests.findAll({
+            where: {
+                supervisorReview: 'Approved',
+                gcReview: 'Pending',
+            }
+        });
+
+        if (!pendingTitleChangeRequests) {
+            return res.status(404).json({ error: 'No pending title change requests found' });
+        }
+
+        res.json(pendingTitleChangeRequests)
+
+    } catch (error) {
+        console.error('Error fetching pending title requests:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+const getTitleChangeDetails = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const rollno = req.params.rollno;
+
+        const faculty = await faculties.findOne({
+            attributes: ['facultyid', 'name'],
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"] // GC Check
+                },
+            }
+        });
+
+
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        const TitleRequestDetails = await titlerequests.findOne({
+            where: {
+                rollno: rollno,
+                supervisorReview: 'Approved',
+                gcReview: 'Pending',
+            }
+        });
+
+        if (!TitleRequestDetails) {
+            return res.status(404).json({ error: 'No pending title change requests found' });
+        }
+
+        res.json(TitleRequestDetails);
+
+    } catch (error) {
+        console.error('Error fetching pending title request:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+const ApproveTitleChangeGC = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const rollno = req.params.rollno;
+        const comments = req.body.comments;
+
+        const faculty = await faculties.findOne({
+            attributes: ['facultyid', 'name'],
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"] // GC Check
+                },
+            }
+        });
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        const TitleRequestDetails = await titlerequests.findOne({
+            where: {
+                rollno: rollno,
+                supervisorReview: 'Approved',
+                gcReview: 'Pending',
+            }
+        });
+
+        if (TitleRequestDetails) {
+            const [updatedRows] = await titlerequests.update(
+                {
+                    gcid: facultyId,
+                    gcReview: 'Approved',
+                    gcComments: comments,
+                },
+                { where: { rollno: rollno } }
+            );
+            if (updatedRows > 0) {
+                const [updatedRowsForThesis] = await thesis.update({
+                    thesistitle: TitleRequestDetails.newThesisTitle,
+                }, { where: { rollno: rollno } });
+
+                if (updatedRowsForThesis > 0) {
+                    res.json('Title Change Request Approved');
+                }
+                else {
+                    res.status(500).json({ error: 'Error approving pending title request' });
+                }
+            }
+            else {
+                res.status(500).json({ error: 'Error approving pending title request' });
+            }
+        }
+        else {
+            res.status(404).json({ error: 'No pending title change requests found' });
+        }
+
+
+    } catch (error) {
+        console.error('Error approving pending title request:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+const RejectTitleChangeGC = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const rollno = req.params.rollno;
+        const comments = req.body.comments;
+
+        const faculty = await faculties.findOne({
+            attributes: ['facultyid', 'name'],
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"] // GC Check
+                },
+            }
+        });
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+        const TitleRequestDetails = await titlerequests.findOne({
+            where: {
+                rollno: rollno,
+                supervisorReview: 'Approved',
+                gcReview: 'Pending',
+            }
+        });
+
+        if (TitleRequestDetails) {
+            const [updatedRows] = await titlerequests.update(
+                {
+                    gcid: facultyId,
+                    gcReview: 'Rejected',
+                    gcComments: comments,
+                },
+                { where: { rollno: rollno } }
+            );
+            if (updatedRows > 0) {
+                res.json('Title Change Request Rejected');
+            }
+            else {
+                res.status(500).json({ error: 'Error rejecting pending title request' });
+            }
+        }
+        else {
+            res.status(404).json({ error: 'No pending title change requests found' });
+        }
+
+
+    } catch (error) {
+        console.error('Error rejecting pending title request:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
 
 
 
@@ -1308,5 +1501,9 @@ module.exports =
     gcFinalPermissionStatus,
     gcAllPendingFinalEvaluations,
     gcSelectedFinalEvaluationDetails,
-    gcApproveFinalEvaluation
+    gcApproveFinalEvaluation,
+    getTitleChangeRequests,
+    getTitleChangeDetails,
+    ApproveTitleChangeGC,
+    RejectTitleChangeGC
 };

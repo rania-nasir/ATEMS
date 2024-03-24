@@ -62,17 +62,17 @@ const titlerequests = sequelize.define('titlerequests', {
             isIn: [['Pending', 'Approved', 'Rejected']]
         }
     },
-    msrcid: {
+    gcid: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
         allowNull: true
     },
-    msrcComments: {
+    gcComments: {
         type: DataTypes.TEXT('long'),
         defaultValue: '',
         allowNull: true
     },
-    msrcReview: {
+    gcReview: {
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: 'Pending',
