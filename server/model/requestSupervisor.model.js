@@ -28,7 +28,7 @@ const supchangerequests = sequelize.define('supchangerequests', {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            isIn: [['Supervisor, Student']]
+            isIn: [['Supervisor', 'Student']]
         }
     },
     allowsametopic: {

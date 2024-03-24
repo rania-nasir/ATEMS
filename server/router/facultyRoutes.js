@@ -45,12 +45,19 @@ facRouter.get('/msrcViewPendingTitleRequests', msrcReview.getTitleChangeRequests
 facRouter.get('/msrcViewPendingTitleDetails/:rollno', msrcReview.getTitleChangeDetails);
 facRouter.post('/msrcApprovePendingTitleRequests/:rollno', msrcReview.ApproveTitleChangeMSRC);
 facRouter.post('/msrcRejectPendingTitleRequests/:rollno', msrcReview.RejectTitleChangeMSRC);
-
+facRouter.get('/msrcViewPendingSupervisorRequests', msrcReview.getSupervisorChangeRequests);
+facRouter.get('/msrcViewPendingSupervisorDetails/:rollno', msrcReview.getSupervisorChangeDetails);
+facRouter.post('/msrcApprovePendingSupervisorChange/:rollno', msrcReview.approveSupervisorChangeMSRC);
+facRouter.post('/msrcRejectPendingSupervisorChange/:rollno', msrcReview.rejectSupervisorChangeMSRC);
 
 /*HOD */
 facRouter.get('/viewAllThesis', hodFunctions.getThesis);
 facRouter.get('/reviewThesis/:thesisId', hodFunctions.onethesisDetails); // GC fetches details of a single accepted synopsis
 facRouter.put('/approveThesis/:thesisId', hodFunctions.hodapproveThesis); // GC approves synopsis which creates thesis
+facRouter.get('/hodViewPendingSupervisorRequests', hodFunctions.getSupervisorChangeRequests);
+facRouter.get('/hodViewPendingSupervisorDetails/:rollno', hodFunctions.getSupervisorChangeDetails);
+facRouter.post('/hodApprovePendingSupervisorChange/:rollno', hodFunctions.approveSupervisorChangeMSRC);
+facRouter.post('/hodRejectPendingSupervisorChange/:rollno', hodFunctions.rejectSupervisorChangeMSRC);
 
 /*Examiners */
 /* Mid */
