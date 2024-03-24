@@ -25,6 +25,19 @@ import NotFoundPage from './Components/Error/NotFoundPage'
 import ThesisTabs from './Components/ThesisTabs';
 import CommonSection from './Components/CommonSection';
 
+
+// --------------
+import MakeAnnouncement from './Components/GC/MakeAnnouncement';
+import ViewStudent from './Components/GC/ViewStudent';
+import ViewFaculty from './Components/GC/ViewFaculty';
+
+import StudentviewAnnouncement from './Components/Student/StudentviewAnnouncement';
+import ViewFeedback from './Components/Student/ViewFeedback';
+
+import FacultyviewAnnouncement from './Components/Faculty/FacultyviewAnnouncement';
+
+
+
 // Context Components
 import { RoleContext } from './context/RoleContext';
 import { ThesisContext } from './context/ThesisContext';
@@ -141,7 +154,7 @@ function App() {
   }, [activeTitle]);
 
   // console.log('Active Title in app.js : ', activeTitle);
-  const sidebararray = ["Home", "Dashboard", "View Announcement", "Make Announcement", "Faculty Records", "Student Records"];
+  const sidebararray = ["Home", "Dashboard", "View Announcement", "View Feedback", "Make Announcement", "Faculty Records", "Student Records"];
 
   useEffect(() => {
     if (!activeTitle) {
@@ -171,12 +184,13 @@ function App() {
         </header>
       ) : (
         <>
-          <NavbarDefault />
+
           <div className='mr-2'>
 
             <RoleContext.Provider value={{ role, setRole }}>
               <ThesisContext.Provider value={{ thesis, setThesis }}>
                 <ActiveTitleContext.Provider value={{ activeTitle, setActiveTitle }}>
+                  <NavbarDefault />
                   <div style={{ display: "flex" }}>
 
                     {userDetails.userType && <SidebarDefault />}
@@ -187,7 +201,7 @@ function App() {
                         {/* Conditional rendering based on activeTitle and sidebararray */}
                         {firstLoad ? null : (
                           (!activeTitle || !sidebararray.includes(activeTitle)) ?
-                            <ThesisTabs /> : <CommonSection />
+                            <ThesisTabs /> : null
                         )}
 
                         <Routes>
@@ -207,26 +221,40 @@ function App() {
                               {userDetails.userType === 'faculty' && (
                                 // Render faculty pages for faculty user
                                 <>
-                                  {activeTitle === 'Home' && (
+                                  <Route path='/' element={<Facultyhome />} />
+                                  <Route path='/viewAnnouncement' element={<FacultyviewAnnouncement />} />
+                                  <Route path='/fillSynopsis' element={<ThesisTabs />} />
+                                  {/* {activeTitle === 'Home' && (
                                     <Route path='/' element={<Facultyhome />} />
-                                  )}
+                                  )} */}
                                 </>
                               )}
                               {userDetails.userType === 'student' && (
                                 // Render student pages for student user
                                 <>
-                                  {activeTitle === 'Home' && (
+                                  <Route path='/' element={<Studenthome />} />
+                                  <Route path='/viewAnnouncement' element={<StudentviewAnnouncement />} />
+                                  <Route path='/ViewFeedback' element={<ViewFeedback />} />
+                                  <Route path='/Supervisor' elememt={<ThesisTabs />} />
+                                  <Route path='/Internal' element={<ThesisTabs />} />
+                                  <Route path='/MSRC' element={<ThesisTabs />} />
+                                  <Route path='/HOD' element={<ThesisTabs />} />
+                                  {/* {activeTitle === 'Home' && (
                                     <Route path='/' element={<Studenthome />} />
-                                  )}
+                                  )} */}
                                 </>
                               )}
                               {
                                 userDetails.userType === 'gc' && (
                                   // Render gc pages for gc user
                                   <>
-                                    {activeTitle === 'Home' && (
+                                    <Route path='/' element={<GCDashboard />} />
+                                    <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
+                                    <Route path='/viewfaculty' element={<ViewFaculty />} />
+                                    <Route path='/viewstudent' element={<ViewStudent />} />
+                                    {/* {activeTitle === 'Home' && (
                                       <Route path='/' element={<GCDashboard />} />
-                                    )}
+                                    )} */}
                                   </>
                                 )
                               }

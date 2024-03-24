@@ -54,7 +54,7 @@ const uploadFile = (req, res, next) => {
       const expectedFileName = rollNumber + '.pdf'; // Generate the expected file name
       if (fileName !== expectedFileName) {
         // File name does not match roll number
-        return res.status(400).json({ error: 'File name should be the same as your roll number' });
+        return res.json({ message: 'File name should be the same as your roll number' });
       }
     }
     next(); // Move to the next middleware

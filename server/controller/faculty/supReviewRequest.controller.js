@@ -99,7 +99,7 @@ const approveSynopsis = async (req, res) => {
         });
 
         if (existingApprovedSynopsis) {
-            return res.status(400).json({ error: 'A request with the same synopsis ID already exists' }); // error
+            return res.json({ message: 'A request with the same synopsis ID already exists' }); // error
         }
 
         const selectedSynopsis = await synopsis.findOne({
@@ -110,7 +110,7 @@ const approveSynopsis = async (req, res) => {
         });
 
         if (!selectedSynopsis) {
-            return res.status(404).json({ error: 'Synopsis not found or not authorized' });
+            return res.json({ message: 'Synopsis not found or not authorized' });
         }
 
 
@@ -121,7 +121,7 @@ const approveSynopsis = async (req, res) => {
         });
 
         if (!student) {
-            return res.status(404).json({ error: 'Student not found for the given synopsis' });
+            return res.json({ message: 'Student not found for the given synopsis' });
         }
 
         // Validating student email
@@ -144,14 +144,13 @@ const approveSynopsis = async (req, res) => {
         const internal2id = facultyList.find(faculty => faculty.name === internal2)?.facultyid;
 
         if (!internal1id || !internal2id) {
-            return res.status(400).json({ error: 'Invalid internal faculty names' });
+            return res.json({ message: 'Invalid Internal names' });
         }
 
         // Validating that supervisor and internal members are not the same
         if (facultyId === internal1id || facultyId === internal2id || internal1id === internal2id) {
-            return res.status(400).json({ error: 'Supervisor and Internals must be different for a thesis' });
+            return res.json({ message: 'Internals must be different for a thesis' });
         }
-
 
         const [rowsAffected, [updatedSynopsis]] = await synopsis.update( // update synopsis status from pending to approved 
             {
@@ -167,7 +166,7 @@ const approveSynopsis = async (req, res) => {
         );
 
         if (rowsAffected === 0) {
-            return res.status(404).json({ error: 'Synopsis not found or not authorized for approval' });
+            return res.json({ message: 'Synopsis not found or not authorized for approval' });
         }
 
 
@@ -203,7 +202,7 @@ const approveSynopsis = async (req, res) => {
 
         sendMail(toEmail, subject, text);
 
-        res.json({ message: 'Internal members selected successfully and Synopsis approved', thesis: newThesis });
+        res.json({ message: 'Internal members selected successfully and Synopsis approved. Email already sent to respective members.', thesis: newThesis });
 
     } catch (error) {
         console.error('Error approving synopsis or selecting internal members:', error);
@@ -225,7 +224,7 @@ const declineSynopsis = async (req, res) => {
         });
 
         if (!selectedSynopsis) {
-            return res.status(404).json({ error: 'Synopsis not found for the given synopsisID' });
+            return res.json({ message: 'Synopsis not found for the given synopsisID' });
         }
         const student = await students.findOne({ // get student details for mail from rollno in synopsis table
             where: {
@@ -234,7 +233,7 @@ const declineSynopsis = async (req, res) => {
         });
 
         if (!student) {
-            return res.status(404).json({ error: 'Student not found for the given synopsis' });
+            return res.json({ message: 'Student not found for the given synopsis' });
         }
 
         /* Validations */
@@ -252,7 +251,7 @@ const declineSynopsis = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(404).json({ error: 'Faculty not found for the given ID' });
+            return res.json({ message: 'Faculty not found for the given ID' });
         }
 
         // Send mail of Rejection to student
@@ -275,7 +274,7 @@ const declineSynopsis = async (req, res) => {
         });
 
         if (deletedSynopsis === 0) {
-            return res.status(404).json({ error: 'Synopsis not found or not authorized for rejection' });
+            return res.json({ message: 'Synopsis not found or not authorized for rejection' });
         }
 
         res.json({ message: 'Synopsis rejected successfully and deleted from the synopsis table' });
@@ -285,6 +284,7 @@ const declineSynopsis = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 
 

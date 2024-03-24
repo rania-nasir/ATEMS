@@ -1,12 +1,14 @@
-import { useNavigate } from 'react-router-dom'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Dropdown } from 'primereact/dropdown';
 import { RadioButton } from "primereact/radiobutton";
 import SynopsisForm, { Fdata } from './SynopsisForm'
 import Cookies from 'js-cookie';
+import { Toast } from 'primereact/toast';
 
 const FillSynopsis = () => {
     const userId = Cookies.get('userId');
+
+    const toastTopCenter = useRef(null);
 
     const [rollno, setrollno] = useState([]);
     const categories = [
@@ -46,8 +48,6 @@ const FillSynopsis = () => {
         fetchrollno();
     }, [userId]);
 
-    const navigate = useNavigate();
-
     console.log('Fdata-:', Fdata);
 
     const [selectedfacultyname, setSelectedfacultyname] = useState(null);
@@ -68,14 +68,29 @@ const FillSynopsis = () => {
 
     console.log('PA ', selectedCategory)
 
+
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
+
     const PostData = async (e) => {
         e.preventDefault();
+
+        // Check if any required field is empty
+        if (!user.synopsistitle || !selectedCategory) {
+            showMessage('error', 'Please fill in thesis all required fields');
+            return;
+        }
+        if (!selectedfacultyname) {
+            showMessage('error', 'Please select a Supervisor');
+            return;
+        }
 
         const fileInput = document.getElementById('file_input');
         const proposalFile = fileInput.files[0];
 
         if (!proposalFile) {
-            alert('Please select a file');
+            showMessage('error', 'Kindly upload the proposal file');
             return;
         }
 
@@ -85,7 +100,7 @@ const FillSynopsis = () => {
         synopsisData.append('stdname', rollno.name);
         synopsisData.append('synopsistitle', user.synopsistitle);
         synopsisData.append('facultyname', selectedfacultyname); // Use the selected faculty name
-        synopsisData.append('potentialareas', selectedCategory);
+        synopsisData.append('potentialareas', selectedCategory.key);
         synopsisData.append('proposalFile', proposalFile);
 
         console.log("Synopsis data:", synopsisData);
@@ -103,34 +118,31 @@ const FillSynopsis = () => {
         console.log("Response data:", data);
 
         if (res.status === 200) {
-            if (data.message === "Invalid Credentials") {
-                window.alert("Invalid Credentials");
-                console.log("Invalid Credentials");
-                window.alert("Invalid Credentials", data);
+            if (data.message === "Synopsis created successfully. Email has been send to your supervisor") {
+                showMessage('success', data.message);
+                console.log(data.message);
             } else {
-                window.alert("Submitted Synopsis Successfully");
-                console.log("Submitted Synopsis Successfully");
-                window.alert("Submitted Synopsis Successfully", data);
-                navigate('/');
+                showMessage('error', data.message);
+                console.log(data.message);
             }
         } else {
-            window.alert("Something went wrong", data);
-            console.log("Something went wrong", data);
+            showMessage('error', "System Error. Please try later!");
+            console.log("Invalid Input", data);
         }
     };
 
     return (
         <>
-        <SynopsisForm/>
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="w-full my-4">
-                    <h2 className="text-center text-2xl tracking-tight text-gray-950 font-bold">
-                        {/* Proposal Synopsis Form */}
+            <Toast ref={toastTopCenter} position="top-center" />
+            <SynopsisForm />
+            <div className="flex min-h-full flex-1 flex-col justify-center px-2 lg:px-8">
+                <div className="w-full">
+                    <h3 className="pb-2 text-center text-2xl tracking-tight text-gray-950 font-semibold">
                         MS Thesis/ Project 1 Supervisor Consent Form
-                    </h2>
+                    </h3>
                 </div>
 
-                <div className="mt-6 sm:mx-auto">
+                <div className="my-6 sm:mx-auto">
                     <form className="sm:mx-auto" enctype="multipart/form-data">
                         <div className='grid grid-cols-3'>
                             <div className='col-span-1 p-2'>
@@ -190,7 +202,7 @@ const FillSynopsis = () => {
                             </div>
                         </div>
 
-                        <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+                        <hr className="h-px my-6 bg-gray-200 border-0 dark:bg-gray-700"></hr>
 
                         <div className='grid grid-cols-2'>
                             <div className='p-2 col-span-2'>
@@ -204,7 +216,7 @@ const FillSynopsis = () => {
                                         required
                                         type="synopsistitle"
                                         name="synopsistitle"
-                                        placeholder="Thesis Title Here.." />
+                                        placeholder="Your Thesis Title Here.." />
                                 </div>
                             </div>
                             <div className='p-2 col-span-2'>
@@ -216,7 +228,7 @@ const FillSynopsis = () => {
                                         <div className="appearance-none w-full block bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-50">
                                             {categories.map((category) => {
                                                 return (
-                                                    <div key={category.key} className="flex align-items-center my-2">
+                                                    <div key={category.key} className="flex align-items-center my-3">
                                                         <RadioButton inputId={category.key} name="category" value={category} onChange={(e) => setSelectedCategory(e.value)} checked={selectedCategory.key === category.key} />
                                                         <label htmlFor={category.key} className="ml-2">{category.name}</label>
                                                     </div>
@@ -253,7 +265,6 @@ const FillSynopsis = () => {
                                         type="file"
                                         name='proposalFile'
                                         accept=".pdf" // Change this to accept only PDF files
-                                    // onChange={handleFileChange}
                                     />
                                     <p className="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">
                                         Pdf files only.

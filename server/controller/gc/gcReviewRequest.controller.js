@@ -104,7 +104,7 @@ const approveThesis = async (req, res) => {
         });
 
         if (!selectedThesis) {
-            return res.status(404).json({ error: 'thesis not found' });
+            return res.json({ message: 'thesis not found' });
         }
 
         const facultyList = await faculties.findAll({
@@ -117,17 +117,17 @@ const approveThesis = async (req, res) => {
         const final_internal2id = facultyList.find(faculty => faculty.name === final_internal2)?.facultyid;
 
         if (!final_internal1id || !final_internal2id) {
-            return res.status(400).json({ error: 'Invalid internal faculty names' });
+            return res.json({ message: 'Invalid internal Internal names' });
         }
 
         // Validating that supervisor and internal members are not the same
         if (supervisorid === final_internal1id || supervisorid === final_internal2id || final_internal1id === final_internal2id) {
-            return res.status(400).json({ error: 'Supervisor and Internals must be different for a thesis' });
+            return res.json({ message: 'Internals must be different for a thesis' });
         }
 
         // New check to ensure supervisor is not selected as an internal
         if (supervisorid === final_internal1id || supervisorid === final_internal2id) {
-            return res.status(400).json({ error: 'Supervisor cannot be selected as an internal for the same thesis' });
+            return res.json({ message: 'Supervisor cannot be selected as an internal for the same thesis' });
         }
 
         const [rowsAffected, [updatedThesis]] = await thesis.update( // Update the thesis internals
@@ -146,7 +146,7 @@ const approveThesis = async (req, res) => {
         );
 
         if (rowsAffected === 0) {
-            return res.status(404).json({ error: 'Thesis not found' });
+            return res.json({ message: 'Thesis not found' });
         }
 
         // Send email to selected internal examiners
@@ -169,7 +169,7 @@ const approveThesis = async (req, res) => {
         sendMail(internalsEmails, subject, text, html);
 
 
-        res.json({ updatedThesis });
+        res.json({ message: 'Thesis approved successfully. Email has been send to all respective members', updatedThesis });
 
 
 
@@ -178,6 +178,8 @@ const approveThesis = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+
 
 
 

@@ -6,7 +6,6 @@ import BackButton from '../BackButton';
 
 // student 
 import Registration from '../Student/Registration';
-import T2ViewFeedback from '../Student/T2ViewFeedback';
 import T2ReportSubmission from '../Student/T2ReportSubmission'
 
 // GC 
@@ -47,7 +46,6 @@ export default function T2MainSection() {
     return (
         <>
             <div
-                style={{ border: "1px solid purple" }}
             >
 
                 {/* Define routes for each user type and active title */}
@@ -56,7 +54,6 @@ export default function T2MainSection() {
                         <Routes>
                             <Route path="/reportSubmission" element={<T2ReportSubmission />} />
                             <Route path="/fillSynopsis" element={<Registration />} />
-                            <Route path="/viewFeedback" element={<T2ViewFeedback />} />
                         </Routes>
                     </>
                 )}

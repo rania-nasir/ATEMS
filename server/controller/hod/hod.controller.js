@@ -99,7 +99,7 @@ const hodapproveThesis = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(404).json({ error: 'Faculty not found' });
+            return res.json({ message: 'Faculty not found' });
         }
 
         const facultyRole = faculty.role;
@@ -117,7 +117,7 @@ const hodapproveThesis = async (req, res) => {
             }
 
             if (selectedThesis.gcapproval !== 'Approved') {
-                return res.status(403).json({ message: 'GC approval is required before HOD approval' });
+                return res.json({ message: 'GC approval is required before HOD approval' });
             }
 
             const [rowsAffected, [updatedThesis]] = await thesis.update(
@@ -133,7 +133,7 @@ const hodapproveThesis = async (req, res) => {
             );
 
             if (rowsAffected === 0) {
-                return res.status(404).json({ error: 'Thesis not found' });
+                return res.json({ message: 'Thesis not found' });
             }
 
             const student = await students.findOne({
@@ -143,7 +143,7 @@ const hodapproveThesis = async (req, res) => {
             });
 
             if (!student) {
-                return res.status(404).json({ error: 'Student not found for the given synopsis' });
+                return res.json({ message: 'Student not found for the given synopsis' });
             }
 
             const facultyName = faculty.name;
@@ -195,7 +195,7 @@ const hodapproveThesis = async (req, res) => {
 
             res.json({ message: 'Thesis approved and emails sent', updatedThesis });
         } else {
-            return res.status(403).json({ error: 'Access forbidden. Only HOD can approve the thesis' });
+            return res.json({ message: 'Access forbidden. Only HOD can approve the thesis' });
         }
     } catch (error) {
         console.error('Error approving thesis:', error);

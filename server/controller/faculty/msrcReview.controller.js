@@ -115,7 +115,7 @@ const setThesisFeedback = async (req, res) => {
         });
 
         if (!selectedThesis) {
-            return res.status(404).json({ error: 'Thesis not found' });
+            return res.json({ message: 'Thesis not found' });
         }
 
         const { comment } = req.body;
@@ -131,7 +131,7 @@ const setThesisFeedback = async (req, res) => {
 
         if (existingFeedback) {
             console.log('This MSRC member has already given feedback for this student', comment);
-            return res.status(409).json({ error: 'This MSRC member has already given feedback for this student' });
+            return res.json({ message: 'This MSRC member has already given feedback for this student' });
         }
 
         // Create a new feedback entry
@@ -143,7 +143,7 @@ const setThesisFeedback = async (req, res) => {
             feedbackContent: comment,
         });
 
-        res.json({ newFeedback });
+        res.json({ message: 'Feedback submitted successfully', newFeedback });
 
 
 
