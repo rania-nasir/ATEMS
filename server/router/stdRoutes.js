@@ -20,6 +20,8 @@ stdRouter.get("/viewAnnouncement", stdFunctions.viewStudentAnnouncements); // St
 stdRouter.get("/viewFeedback", stdFunctions.viewFeedback); // Student views Feedback
 stdRouter.get("/viewTitleChangeForm", stdFunctions.viewTitleChangeFrom); // Student views title change form
 stdRouter.post("/requestTitleChange", stdFunctions.requestTitleChange); // Student request title change
+stdRouter.get("/viewSupervisorChangeForm", stdFunctions.viewSupervisorChangeForm); // Student views supervisor change form
+stdRouter.post("/requestSupervisorChange", stdFunctions.requestSupervisorChange); // Student request supervisor change
 
 
 stdRouter.post("/thesisTwoRegistration", thesistwoController.thesisTwoRegistration);
