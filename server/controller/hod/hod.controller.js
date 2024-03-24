@@ -316,7 +316,7 @@ const approveSupervisorChangeHOD = async (req, res) => {
             if (updatedRows > 0) {
                 const [updatedRowsRows] = await thesis.update(
                     {
-                        facultyId: SupervisorRequestDetails.newsupervisorid,
+                        facultyid: SupervisorRequestDetails.newsupervisorid,
                         supervisorname: SupervisorRequestDetails.newsupervisorname,
                     },
                     { where: { rollno: rollno } }

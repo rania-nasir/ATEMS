@@ -909,6 +909,176 @@ const rejectSupervisorChangeSup = async (req, res) => {
     }
 }
 
+const viewAllThesisRegistered = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+
+        const faculty = await faculties.findOne({
+            attributes: ['facultyid', 'name'],
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["Supervisor"] // Supervisor Check
+                },
+            }
+        });
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        };
+
+        const thesisData = await thesis.findAll({
+            where: {
+                facultyid: facultyId
+            },
+        });
+
+        if (!thesisData) {
+            return res.status(403).json({ error: 'You are not supervising any thesis' });
+        };
+
+        res.json({ thesisData });
+
+    } catch (error) {
+        console.error('Error viewing supervisor change request : ', error);
+        return res.status(500).json({ message: 'An error occurred while viewing form for supervisor change' });
+    }
+}
+
+const selectThesisToRequestChange = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const { thesisId } = req.params;
+
+        const faculty = await faculties.findOne({
+            attributes: ['facultyid', 'name'],
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["Supervisor"] // Supervisor Check
+                },
+            }
+        });
+        if (!faculty) {
+            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+        };
+
+        const selectedThesis = await thesis.findOne({
+            where: {
+                facultyid: facultyId,
+                thesisid: thesisId,
+            },
+        });
+
+        if (!selectedThesis) {
+            return res.status(403).json({ error: 'You are not supervising any thesis' });
+        };
+
+        let SupervisorList;
+        // Fetch the list of all faculties in the table to select for supervisor,
+
+        SupervisorList = await faculties.findAll({
+            attributes: ['facultyid', 'name', 'role'],
+            where: {
+                role: { [Op.contains]: ['Supervisor'] }
+            },
+        });
+
+        res.json({ SupervisorList, selectedThesis });
+
+    } catch (error) {
+        console.error('Error viewing supervisor change request : ', error);
+        return res.status(500).json({ message: 'An error occurred while viewing form for supervisor change' });
+    }
+}
+
+const submitSupervisorChangeForm = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const thesisId = req.params.thesisId;
+
+        const ideaProposalBy = req.body.ideaProposalBy;
+        const allowSameTopic = req.body.allowSameTopic;
+        const newSupervisorName = req.body.newSupervisorName;
+        const comments = req.body.comments;
+
+        const selectedThesis = await thesis.findOne({
+            where: {
+                facultyid: facultyId,
+                thesisid: thesisId,
+            }
+        })
+
+        if (!selectedThesis) {
+            return res.status(403).json({ error: 'You are not supervising any thesis' });
+        }
+
+        const studentData = await students.findOne({
+            where: {
+                rollno: selectedThesis.rollno
+            },
+            // attributes: { exclude: ['password'] } 
+        });
+
+        if (!studentData) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        const supervisorData = await faculties.findOne({
+            where: {
+                facultyid: selectedThesis.facultyid.toString()
+            }
+        })
+
+        if (!supervisorData) {
+            return res.status(404).json({ message: 'Supervisor not found' });
+        }
+
+        const facultyList = await faculties.findAll({
+            attributes: ['facultyid', 'name'],
+        });
+
+        const newSupervisorid = facultyList.find(faculty => faculty.name === newSupervisorName)?.facultyid;
+
+        if (!newSupervisorid) {
+            return res.status(400).json({ error: 'Invalid supervisor name' });
+        }
+
+        // Validating that current supervisor and new supervisor are not the same
+        if (selectedThesis.facultyId === newSupervisorid) {
+            return res.status(400).json({ error: 'Current Supervisor and New Supervisor must be different' });
+        }
+
+        await supchangerequests.create({
+            thesisid: selectedThesis.thesisid,
+            rollno: studentData.rollno,
+            stdname: studentData.name,
+            thesisstatus: studentData.thesisstatus,
+            ideaproposedby: ideaProposalBy,
+            allowsametopic: allowSameTopic,
+            currsupervisorname: supervisorData.name,
+            currsupervisorid: supervisorData.facultyid,
+            newsupervisorname: newSupervisorName,
+            newsupervisorid: newSupervisorid,
+            initiatorComments: comments,
+            currSupReview: 'Approved',
+            gcReview: 'Pending',
+            hodReview: 'Pending',
+        });
+
+        const newSupervisorChangeRequest = await supchangerequests.findOne({ where: { rollno: studentData.rollno } });
+        if (newSupervisorChangeRequest) {
+            res.json({ message: 'Request for Supervisor change successfully submitted', request: newSupervisorChangeRequest });
+        }
+        else {
+            res.status(500).json({ message: 'An error occurred while submitting request for supervisor change' });
+        }
+
+    } catch (error) {
+        console.error('Error submitting supervisor change request : ', error);
+        res.status(500).json({ message: 'An error occurred while submitting request for supervisor change' });
+    }
+}
+
 
 
 module.exports =
@@ -928,6 +1098,9 @@ module.exports =
     getSupervisorChangeRequests,
     getSupervisorChangeDetails,
     approveSupervisorChangeSup,
-    rejectSupervisorChangeSup
+    rejectSupervisorChangeSup,
+    viewAllThesisRegistered,
+    selectThesisToRequestChange,
+    submitSupervisorChangeForm
 };
 

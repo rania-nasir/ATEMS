@@ -34,7 +34,9 @@ facRouter.get('/supViewPendingSupChangeRequests', facReview.getSupervisorChangeR
 facRouter.get('/supViewPendingSupChangeDetails/:rollno', facReview.getSupervisorChangeDetails);
 facRouter.post('/supApprovePendingSupChangeRequests/:rollno', facReview.approveSupervisorChangeSup);
 facRouter.post('/supRejectPendingSupChangeRequests/:rollno', facReview.rejectSupervisorChangeSup);
-
+facRouter.get('/supViewAllRegistedThesis', facReview.viewAllThesisRegistered);
+facRouter.get('/supSelectSupChangeThesis/:thesisId', facReview.selectThesisToRequestChange);
+facRouter.post('/supSubmitChangeRequest/:thesisId', facReview.submitSupervisorChangeForm);
 
 
 //Internals
