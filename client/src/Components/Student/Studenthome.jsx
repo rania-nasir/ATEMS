@@ -88,7 +88,7 @@ const Studenthome = () => {
                                             Mobile
                                         </dt>
                                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                            {rollno.mobile}
+                                          <span>+92 {rollno.mobile}</span>
                                         </dd>
                                     </div>
                                     <div className="sm:col-span-1">

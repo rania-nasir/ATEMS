@@ -127,7 +127,7 @@ export default function Evaluations({ setShowDetails }) {
                         </thead>
                         <tbody>
                             {allPendingProposals && allPendingProposals.length > 0 ? (
-                                allPendingProposals.map(proposal => (
+                                allPendingProposals?.map(proposal => (
                                     <tr key={proposal.rollno} className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {proposal.rollno}
@@ -182,7 +182,7 @@ export default function Evaluations({ setShowDetails }) {
                         </thead>
                         <tbody>
                             {allPendingMids && allPendingMids.length > 0 ? (
-                                allPendingMids.map(proposal => (
+                                allPendingMids?.map(proposal => (
                                     <tr key={proposal.rollno} className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {proposal.rollno}
@@ -236,7 +236,7 @@ export default function Evaluations({ setShowDetails }) {
                         </thead>
                         <tbody>
                             {allPendingFinals && allPendingFinals.length > 0 ? (
-                                allPendingFinals.map(proposal => (
+                                allPendingFinals?.map(proposal => (
                                     <tr key={proposal.rollno} className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {proposal.rollno}

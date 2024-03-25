@@ -53,7 +53,7 @@ const FillSynopsis = () => {
     const [selectedfacultyname, setSelectedfacultyname] = useState(null);
 
     // Here, Fdata contains the list of faculty names
-    const facultyname = Fdata.map(name => ({ label: name, value: name }));
+    const facultyname = Fdata?.map(name => ({ label: name, value: name }));
 
 
     const [user, setUser] = useState({
@@ -226,7 +226,7 @@ const FillSynopsis = () => {
                                     </label>
                                     <div className="card flex justify-content-center py-2">
                                         <div className="appearance-none w-full block bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-50">
-                                            {categories.map((category) => {
+                                            {categories?.map((category) => {
                                                 return (
                                                     <div key={category.key} className="flex align-items-center my-3">
                                                         <RadioButton inputId={category.key} name="category" value={category} onChange={(e) => setSelectedCategory(e.value)} checked={selectedCategory.key === category.key} />

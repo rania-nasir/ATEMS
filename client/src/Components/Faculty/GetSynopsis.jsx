@@ -18,7 +18,7 @@ export default function GetSynopsis({ setShowDetails }) {
                     const data = await response.json();
                     setSynopsisData(data);
 
-                    // const rowData = data.map(item => item.synopsisid);
+                    // const rowData = data?.map(item => item.synopsisid);
 
                     console.log('Synopsis Data -> ', data)
 
@@ -65,7 +65,7 @@ export default function GetSynopsis({ setShowDetails }) {
             </thead>
             <tbody>
                 {synopsisData && synopsisData.allSynopsis.length > 0 ? (
-                    synopsisData.allSynopsis.map(rowData => (
+                    synopsisData.allSynopsis?.map(rowData => (
                         <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={rowData.synopsisid}>
                             <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                 {rowData.rollno}

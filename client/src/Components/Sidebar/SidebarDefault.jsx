@@ -262,7 +262,7 @@ const SidebarDefault = () => {
         <>
             <div className="flex min-w-max">
                 <div className="text-gray-900 px-2 pt-4 flex flex-col border-r border-gray-350">
-                    {menuItems.map((menuItem) => {
+                    {menuItems?.map((menuItem) => {
 
                         return (
                             <div className="w-full" key={menuItem.id}>

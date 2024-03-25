@@ -69,7 +69,7 @@ export default function AllMid2Evaluations({ setShowDetails }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {thesisData.map((student) => (
+                            {thesisData?.map((student) => (
                                 <tr
                                     className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600"
                                     key={student?.rollno}

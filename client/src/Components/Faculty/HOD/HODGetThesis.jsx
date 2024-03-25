@@ -18,7 +18,7 @@ export default function HODGetThesis({ setShowDetails }) {
                     const data = await response.json();
                     setthesisData(data);
 
-                    // const rowData = data.map(item => item.thesisid);
+                    // const rowData = data?.map(item => item.thesisid);
 
                     console.log('thesis Data -> ', data)
 
@@ -51,9 +51,6 @@ export default function HODGetThesis({ setShowDetails }) {
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3">
-                                    Thesis ID
-                                </th>
-                                <th scope="col" class="px-6 py-3">
                                     Student Roll No.
                                 </th>
                                 <th scope="col" class="px-6 py-3">
@@ -74,18 +71,15 @@ export default function HODGetThesis({ setShowDetails }) {
                             <p className="px-6 py-4">No thesis found</p>
                         ) : (
                             <tbody>
-                                {thesisData.allThesis.map(rowData => (
+                                {thesisData.allThesis?.map(rowData => (
                                     <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={rowData.thesisid}>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            {rowData.thesisid}
-                                        </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.rollno}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.facultyid}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.thesistitle}
                                         </td>
                                         <td className="px-6 py-4">

@@ -76,7 +76,7 @@ const RoleTabs = () => {
             <div className="card mt-1">
                 <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
                     {userTabs &&
-                        userTabs.panels.map((panel, index) => (
+                        userTabs.panels?.map((panel, index) => (
                             (thesisStatus !== 2 || (thesisStatus === 2 && panel !== 'Proposal Defense' && panel !== 'Proposal Defense Evaluations')) && (
                                 <TabPanel key={index} header={panel}>
                                     {thesisStatus === 1 ? (
@@ -305,7 +305,6 @@ const RoleTabs = () => {
                                         </div>
                                     ) : (
                                         <div className="m-0">
-                                            <div>thesis 2 </div>
 
                                             {/* Your content for thesis status 1 when showDetails is false */}
                                             <div className="m-0">

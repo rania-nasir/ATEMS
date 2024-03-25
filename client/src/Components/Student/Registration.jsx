@@ -155,7 +155,7 @@ const Registration = () => {
                                             Internal ID
                                         </label>
                                         <ul className='w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500'>
-                                            {thesisData.internalsid.map((internal, index) => (
+                                            {thesisData.internalsid?.map((internal, index) => (
                                                 <li key={index}>{internal}</li>
                                             ))}
                                         </ul>
@@ -167,7 +167,7 @@ const Registration = () => {
                                             Internals Name
                                         </label>
                                         <ul className='w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500'>
-                                            {thesisData.internals.map((internal, index) => (
+                                            {thesisData.internals?.map((internal, index) => (
                                                 <li key={index}>{internal}</li>
                                             ))}
                                         </ul>
@@ -193,7 +193,7 @@ const Registration = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {taskTitles.map((_, index) => (
+                                    {taskTitles?.map((_, index) => (
                                         <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                             <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 <input

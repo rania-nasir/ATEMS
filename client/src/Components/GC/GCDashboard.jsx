@@ -91,7 +91,7 @@ const GCDashboard = () => {
                                             Mobile
                                         </dt>
                                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                            {gcData.mobile}
+                                            <span>+92 {gcData.mobile}</span>
                                         </dd>
                                     </div>
                                     <div className="sm:col-span-1">

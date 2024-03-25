@@ -69,7 +69,7 @@ export default function GetThesis({ setShowDetails }) {
                             <p className="px-6 py-4">No thesis found</p>
                         ) : (
                             <tbody>
-                                {thesisData.allThesis.map(rowData => (
+                                {thesisData.allThesis?.map(rowData => (
                                     <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={rowData.thesisid}>
                                         <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.rollno}

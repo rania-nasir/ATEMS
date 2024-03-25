@@ -114,7 +114,7 @@ export default function T2GetRegistrationDetails({ setShowDetails }) {
                                             Internals ID:
                                         </dt>
                                         <dd className="text-sm text-gray-900">
-                                            {registrationData.studentDetails.internalsid.map((internalid, index) => (
+                                            {registrationData.studentDetails.internalsid?.map((internalid, index) => (
                                                 <div className='my-1' key={index}>{internalid}</div>
                                             ))}
                                         </dd>
@@ -124,7 +124,7 @@ export default function T2GetRegistrationDetails({ setShowDetails }) {
                                             Internals Name:
                                         </dt>
                                         <dd className="text-sm text-gray-900">
-                                            {registrationData.studentDetails.internals.map((name, index) => (
+                                            {registrationData.studentDetails.internals?.map((name, index) => (
                                                 <div className='my-1' key={index}>{name}</div>
                                             ))}
                                         </dd>
@@ -146,7 +146,7 @@ export default function T2GetRegistrationDetails({ setShowDetails }) {
                                             Task Titles:
                                         </dt>
                                         <dd className="my-1 text-sm text-gray-900 sm:mt-0">
-                                            {registrationData.studentDetails.tasktitles.map((title, index) => (
+                                            {registrationData.studentDetails.tasktitles?.map((title, index) => (
                                                 <div className='my-1' key={index}>{title}</div>
                                             ))}
                                         </dd>
@@ -156,7 +156,7 @@ export default function T2GetRegistrationDetails({ setShowDetails }) {
                                             Objectives:
                                         </dt>
                                         <dd className="my-1 text-sm text-gray-900 sm:mt-0">
-                                            {registrationData.studentDetails.objectives.map((objective, index) => (
+                                            {registrationData.studentDetails.objectives?.map((objective, index) => (
                                                 <div className='my-1' key={index}>{objective}</div>
                                             ))}
                                         </dd>
@@ -166,7 +166,7 @@ export default function T2GetRegistrationDetails({ setShowDetails }) {
                                             Completion Dates:
                                         </dt>
                                         <dd className="my-1 text-sm text-gray-900 sm:mt-0">
-                                            {registrationData.studentDetails.completiondates.map((date, index) => (
+                                            {registrationData.studentDetails.completiondates?.map((date, index) => (
                                                 <div className='my-1' key={index}>{new Date(date).toLocaleDateString()}</div>
                                             ))}
                                         </dd>
