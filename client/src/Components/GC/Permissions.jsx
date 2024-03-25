@@ -85,7 +85,7 @@ export default function Permissions() {
     };
 
     const showMessage = (severity, label) => {
-        toastTopCenter.current.show({ severity, summary: label, detail: label, life: 3000 });
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
     };
 
     const handleProposalTogglePermission = () => {
@@ -130,8 +130,11 @@ export default function Permissions() {
             if (data.message === 'GC permission granted for all proposal evaluations' ||
                 data.message === 'GC permission revoked for all proposal evaluations') {
                 setProposalPermissionStatus(newStatus);
+                showMessage('success', data.message);
             }
-            showMessage('success', message);
+            else{
+                showMessage('info', data.message);
+            }
 
             // Close the dialog after performing the action
             setProposalVisible(false);
@@ -170,9 +173,11 @@ export default function Permissions() {
             if (data.message === 'Mid-evaluation permissions successfully granted.' ||
                 data.message === 'Mid-evaluation permissions revoked for all record.') {
                 setMid1PermissionStatus(newStatus);
+                showMessage('success', data.message);
             }
-
-            showMessage('success', message);
+            else{
+                showMessage('info', data.message);
+            }
 
             // Close the dialog after performing the action
             setMid1Visible(false);
@@ -212,9 +217,11 @@ export default function Permissions() {
             if (data.message === 'Final-evaluation permissions successfully granted.' ||
                 data.message === 'Final-evaluation permissions revoked for all record.') {
                 setFinal1PermissionStatus(newStatus);
+                showMessage('success', data.message);
             }
-
-            showMessage('success', message);
+            else{
+                showMessage('info', data.message);
+            }
 
             // Close the dialog after performing the action
             setFinal1Visible(false);

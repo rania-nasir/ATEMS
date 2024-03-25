@@ -229,8 +229,6 @@ export default function PanelTime() {
         }
     };
 
-
-
     return (
         <div className="m-2 p-2 grid grid-cols-1">
             <div className="flex justify-center">
@@ -250,51 +248,52 @@ export default function PanelTime() {
                 <table className="border-collapse w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" className="px-3 py-4 w-1/3">
+                            <th scope="col" className="px-2 py-4">
                                 Supervisor
                             </th>
-                            <th scope="col" className="px-3 py-4 w-1/3">
+                            <th scope="col" className="px-2 py-4">
                                 Thesis Title
                             </th>
-                            <th scope="col" className="px-3 py-4 w-1/3">
+                            <th scope="col" className="px-2 py-4">
                                 Timeslot
                             </th>
-                            <th scope="col" className="px-3 py-4 w-1/3">
+                            <th scope="col" className="px-2 py-4">
                                 Evaluation
                             </th>
-                            <th scope="col" className="px-3 py-4 w-1/3">
+                            <th scope="col" className="px-2 py-4">
                                 Actions
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         {rows.map((row, index) => (
-                            <tr key={index} className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                <td className="w-1/3 px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
-                                    <Dropdown
+                            <tr key={index} 
+                            className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <td className="w-48 px-2 py-4 font-medium text-gray-900 dark:text-white">
+                                    <Dropdown 
                                         placeholder="Supervisor"
                                         value={row.supervisor ? (typeof row.supervisor === 'object' ? row.supervisor : supervisors.find(s => s.name === row.supervisor)) : null}
                                         options={supervisors}
                                         optionLabel="name"
                                         onChange={(e) => handleSupervisorChange(e.value, index)}
-                                        className="max-w-full w-48 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        className="w-56 max-w-full text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     />
                                 </td>
-                                <td className="w-1/3 px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
+                                <td className="w-48 px-2 py-4 font-medium text-gray-900 dark:text-white">
                                     <Dropdown
                                         placeholder="Title"
                                         value={row.thesistitle ? (typeof row.thesistitle === 'object' ? row.thesistitle : { thesistitle: row.thesistitle }) : null}
                                         options={row.thesisTitles || []}
                                         optionLabel="thesistitle"
                                         onChange={(e) => handleThesisTitleChange(e.value, index)}
-                                        className="max-w-full w-48 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        className="max-w-full w-56 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     />
                                 </td>
-                                <td className="w-1/3 px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
+                                <td className="px-2 py-4 font-medium text-gray-900 dark:text-white">
                                     <DateTimePicker
                                         onChange={(value) => handleTimeslotChange(value, index)}
                                         value={row.timeslot}
-                                        className="max-w-full w-48 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        className="max-w-full text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     />
                                     {/* <div className='App'>
                                         <button onClick={() => setVisible(true)}>Show Popup</button>
@@ -303,16 +302,16 @@ export default function PanelTime() {
                                         </Popup>
                                     </div> */}
                                 </td>
-                                <td className="w-1/3 px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
+                                <td className="px-2 py-4 font-medium text-gray-900 dark:text-white">
                                     <Dropdown
                                         placeholder="Evaluation"
                                         value={row.evaluation}
                                         options={evaluations}
                                         onChange={(e) => handleEvaluationChange(e.value, index)}
-                                        className="max-w-full w-48 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        className="max-w-full w-42 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     />
                                 </td>
-                                <td className="w-1/3 px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-1/4">
+                                <td className="px-2 py-4 font-medium text-gray-900 dark:text-white">
                                     {rows.length > 1 && (
                                         <button
                                             onClick={() => removeRow(index)}
