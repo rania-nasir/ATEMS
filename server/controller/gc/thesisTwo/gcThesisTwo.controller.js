@@ -547,6 +547,7 @@ const assignExternalToThesis = async (req, res) => {
             supervisorname: selectedThesis.supervisorname,
             supervisorid: selectedThesis.facultyid,
             assignedexternalid: nextFacultyId,
+            finalDefenseEvaluationPermission: false,
         });
 
         const createdPreDef = await predefevaluations.findOne({
