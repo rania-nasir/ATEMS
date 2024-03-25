@@ -23,7 +23,7 @@ const getAcceptedThesis = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' }); // if MSRC role not found, display forbidden message
+            return res.json({ message: 'Forbidden - Insufficient permissions' }); // if MSRC role not found, display forbidden message
         }
         const acceptedThesis = await thesis.findAll({
             where: {
@@ -35,7 +35,7 @@ const getAcceptedThesis = async (req, res) => {
 
 
         if (acceptedThesis.length === 0) {
-            return res.status(200).json({ message: 'No thesis found with both approvals' }); // if no theses found with both approvals
+            return res.json({ message: 'No thesis found with both approvals' }); // if no theses found with both approvals
         }
 
         res.json({ acceptedThesis });
@@ -62,7 +62,7 @@ const getThesisDetails = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const selectedThesis = await thesis.findOne({
@@ -72,7 +72,7 @@ const getThesisDetails = async (req, res) => {
         });
 
         if (!selectedThesis) {
-            return res.status(404).json({ error: 'Thesis not found' });
+            return res.json({ message: 'Thesis not found' });
         }
 
         const fileURL = `/uploads/${selectedThesis.proposalfilename}`; // Construct the file URL

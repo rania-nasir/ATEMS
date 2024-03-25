@@ -31,7 +31,7 @@ const facultySignIn = async (req, res) => {
         expiresIn: 3 * 24 * 60 * 60,
         httpOnly: true
       })
-      res.status(200).json({ message: 'Sign In successfully from Server side', token, userId, userType });
+      res.json({ message: 'Sign In successfully from Server side', token, userId, userType });
     } else {
       res.json({ message: 'Invalid Credentials' });
     }
@@ -85,7 +85,7 @@ const showFacData = async (req, res) => {
     if (facultyData) {
       res.status(200).json(facultyData);
     } else {
-      res.status(404).json({ message: 'Faculty member not found' });
+      res.json({ message: 'Faculty member not found' });
     }
   } catch (error) {
 

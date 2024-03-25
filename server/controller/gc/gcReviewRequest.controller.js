@@ -6,6 +6,7 @@ const { faculties } = require("../../model/faculty.model");
 const { feedbacks } = require("../../model/feedback.model");
 const { proposalevaluations } = require("../../model/proposalEvaluaton.model");
 const { sendMail } = require("../../config/mailer");
+const { Sequelize } = require("sequelize");
 const { Op, Model } = require('sequelize');
 const { midevaluations } = require("../../model/midEvaluation.model");
 const { finalevaluations } = require("../../model/finalEvaluation.model")
@@ -63,7 +64,7 @@ const getThesisDetails = async (req, res) => {
         });
 
         if (!selectedThesis) {
-            return res.status(404).json({ error: 'thesis not found' });
+            return res.json({ message: 'Thesis not found' });
         }
 
 
@@ -180,8 +181,22 @@ const approveThesis = async (req, res) => {
 };
 
 
+const countMSRCMembers = async () => {
+    try {
+        const msrcCount = await faculties.count({
+            where: {
+                role: {
+                    [Sequelize.Op.contains]: ['MSRC']
+                }
+            }
+        });
+        return msrcCount;
 
-
+    } catch (error) {
+        console.error('Error counting MSRC members:', error);
+        throw error; // Propagate the error for handling at a higher level
+    }
+};
 
 
 const grantPropEvalPermission = async (req, res) => {
@@ -227,10 +242,10 @@ const grantPropEvalPermission = async (req, res) => {
                     return feedbackCount;
                 })
             );
-
+            
+            const msrcCount = await countMSRCMembers();
             // Check if each thesis has feedback comments from each MSRC member
-            const hasFeedbackFromMSRC = msrcFeedbackCounts.every(count => count === 5); // Assuming totalMSRCMembers holds the total number of MSRC members
-
+            const hasFeedbackFromMSRC = msrcFeedbackCounts.every(count => count === msrcCount); // Assuming totalMSRCMembers holds the total number of MSRC members
             if (hasFeedbackFromMSRC) {
                 // Update GC permission to 'Granted' for all theses
                 const updateResult = await thesis.update(
@@ -302,10 +317,10 @@ const getGCProposalPermissionStatus = async (req, res) => {
             } else if (permissionValue === 'Revoke') {
                 res.json({ gcproposalpermission: false });
             } else {
-                res.status(404).json({ message: "No thesis record found" });
+                res.json({ message: "No thesis record found" });
             }
         } else {
-            res.status(404).json({ message: "No thesis record found" });
+            res.json({ message: "No thesis record found" });
         }
     } catch (error) {
         console.error('Error retrieving GC proposal permission:', error);
@@ -386,7 +401,7 @@ const gcAllPendingProposals = async (req, res) => {
                 res.json({ message: "Prposal are in th phase of Evaluation. Revoke the proposals permssion to complete the action" });
             }
         } else {
-            res.status(404).json({ message: "No thesis record found" });
+            res.json({ message: "No thesis record found" });
         }
     } catch (error) {
         console.error('Error fetching pending proposals:', error);
@@ -410,7 +425,7 @@ const gcSelectedProposalDetails = async (req, res) => {
         if (selectedProposal) {
             res.json({ selectedProposal });
         } else {
-            res.status(404).json({ error: 'Proposal not found' });
+            res.json({ message: 'Proposal not found' });
         }
     } catch (error) {
         console.error('Error fetching proposal details:', error);
@@ -479,16 +494,16 @@ const gcApproveProposal = async (req, res) => {
 
                         res.json({ message: 'Proposal approved, comingevaluation status updated, and email sent to student' });
                     } else {
-                        res.status(404).json({ error: 'Student not found' });
+                        res.json({ message: 'Student not found' });
                     }
                 } else {
-                    res.status(404).json({ error: 'Proposal not approved or student not found' });
+                    res.json({ message: 'Proposal not approved or student not found' });
                 }
             } else {
-                res.status(404).json({ error: 'No proposal found or not approved' });
+                res.json({ message: 'No proposal found or not approved' });
             }
         } else {
-            res.status(404).json({ error: 'No approved proposal found for the student' });
+            res.json({ message: 'No approved proposal found for the student' });
         }
     } catch (error) {
         console.error('Error approving proposal:', error);
@@ -532,13 +547,13 @@ const gcRejectProposal = async (req, res) => {
 
                     res.json({ message: 'Proposal rejected, comingevaluation status updated, and email sent to student' });
                 } else {
-                    res.status(404).json({ error: 'Student not found' });
+                    res.json({ message: 'Student not found' });
                 }
             } else {
-                res.status(404).json({ error: 'Proposal not rejected or student not found' });
+                res.json({ message: 'Proposal not rejected or student not found' });
             }
         } else {
-            res.status(404).json({ error: 'No proposal found or not rejected' });
+            res.json({ message: 'No proposal found or not rejected' });
         }
     } catch (error) {
         console.error('Error rejecting proposal:', error);
@@ -553,7 +568,7 @@ const grantMidEvalPermission = async (req, res) => {
     try {
 
         if (isProposalEvaluationApproved) {
-            return res.status(400).json({ error: 'Proposal Evaluations are open. Mid Evaluations cannot be approved at this time.' });
+            return res.json({ message: 'Proposal Evaluations are open. Mid Evaluations cannot be approved at this time.' });
         }
 
         const facultyId = req.userId;
@@ -568,7 +583,7 @@ const grantMidEvalPermission = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         // Check if gcproposalpermission is 'Revoke'
@@ -578,7 +593,7 @@ const grantMidEvalPermission = async (req, res) => {
         });
 
         if (!gcPermission || gcPermission.gcproposalpermission !== 'Revoke') {
-            return res.status(403).json({ error: 'Proposal Evaluations permission is not revoked' });
+            return res.json({ message: 'Proposal Evaluations permission is not revoked' });
         }
 
         // Check if all gcProposalCommentsReview in proposalEvaluations table are 'Approved'
@@ -591,7 +606,7 @@ const grantMidEvalPermission = async (req, res) => {
         });
 
         if (allApproved.length > 0) {
-            return res.status(400).json({ error: 'All proposals are not completely evalautaed yet.' });
+            return res.json({ message: 'All proposals are not completely evalautaed yet.' });
         }
 
         // Update midEvaluationPermission for all records
@@ -626,7 +641,7 @@ const revokeMidEvalPermission = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         // Update all records in proposalevaluations to set midEvaluationPermission to true
@@ -658,7 +673,7 @@ const gcMidPermissionStatus = async (req, res) => {
             const midEvaluationValue = midEvaluation.midEvaluationPermission;
             res.json({ midEvaluationPermission: midEvaluationValue });
         } else {
-            res.status(404).json({ message: "No Mid Evaluation record found" });
+            res.json({ message: "No Mid Evaluation record found" });
         }
     } catch (error) {
         console.error('Error retrieving Mid Evaluation permission:', error);
@@ -764,7 +779,7 @@ const gcAllPendingMidEvaluations = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         // Fetch midEvaluationPermission
@@ -775,12 +790,12 @@ const gcAllPendingMidEvaluations = async (req, res) => {
 
         // Check if a record was found
         if (!midEvaluation) {
-            return res.status(403).json({ error: 'Mid evaluation permission record not found' });
+            return res.json({ message: 'Mid evaluation permission record not found' });
         }
 
         // Check if midEvaluationPermission is true (indicating it's not closed yet)
         if (midEvaluation.midEvaluationPermission === true) {
-            return res.status(403).json({ error: 'Mid evaluations are not closed yet' });
+            return res.json({ message: 'Mid evaluations are not closed yet' });
         }
 
         // Find all pending mid evaluations
@@ -835,7 +850,7 @@ const gcSelectedMidEvaluationDetails = async (req, res) => {
         if (selectedMidEvaluation) {
             res.json({ selectedMidEvaluation });
         } else {
-            res.status(404).json({ error: 'Mid Evaluation not found' });
+            res.json({ error: 'Mid Evaluation not found' });
         }
     } catch (error) {
         console.error('Error fetching mid evaluation details:', error);
@@ -858,7 +873,7 @@ const gcApproveMidEvaluation = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const { rollno } = req.params;
@@ -918,16 +933,16 @@ const gcApproveMidEvaluation = async (req, res) => {
 
                         res.json({ message: 'Mid Evaluation approved, comingevaluation status updated, and email sent to student' });
                     } else {
-                        res.status(404).json({ error: 'Student not found' });
+                        res.json({ message: 'Student not found' });
                     }
                 } else {
-                    res.status(404).json({ error: 'mid evaluation not approved or student not found' });
+                    res.json({ message: 'mid evaluation not approved or student not found' });
                 }
             } else {
-                res.status(404).json({ error: 'No mid evaluation found or not approved' });
+                res.json({ message: 'No mid evaluation found or not approved' });
             }
         } else {
-            res.status(404).json({ error: 'No mid evaluation found for the student' });
+            res.json({ message: 'No mid evaluation found for the student' });
         }
     } catch (error) {
         console.error('Error approving mid evaluation:', error);
@@ -941,11 +956,11 @@ const grantFinalEvalPermission = async (req, res) => {
     try {
 
         if (isProposalEvaluationApproved) {
-            return res.status(400).json({ error: 'Proposal Evaluations are open. Final Evaluations cannot be approved at this time.' });
+            return res.json({ message: 'Proposal Evaluations are open. Final Evaluations cannot be approved at this time.' });
         }
 
         if (isMidEvaluationApproved) {
-            return res.status(400).json({ error: 'Mid Evaluations are open. Final Evaluations cannot be approved at this time.' });
+            return res.json({ message: 'Mid Evaluations are open. Final Evaluations cannot be approved at this time.' });
         }
 
         const facultyId = req.userId;
@@ -960,7 +975,7 @@ const grantFinalEvalPermission = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         // Check if gcproposalpermission is 'Revoke'
@@ -970,7 +985,7 @@ const grantFinalEvalPermission = async (req, res) => {
         });
 
         if (!gcProposalPermission || gcProposalPermission.gcproposalpermission !== 'Revoke') {
-            return res.status(403).json({ error: 'Proposal Evaluations permission is not revoked' });
+            return res.json({ message: 'Proposal Evaluations permission is not revoked' });
         }
 
         // Check if midPermission is false
@@ -980,7 +995,7 @@ const grantFinalEvalPermission = async (req, res) => {
         });
 
         if (!gcMidPermission || gcMidPermission.midEvaluationPermission !== false) {
-            return res.status(403).json({ error: 'Mid Evaluations permission is not revoked' });
+            return res.json({ message: 'Mid Evaluations permission is not revoked' });
         }
 
         // Check if all gcProposalCommentsReview in proposalEvaluations table are 'Approved'
@@ -993,7 +1008,7 @@ const grantFinalEvalPermission = async (req, res) => {
         });
 
         if (allApproved.length > 0) {
-            return res.status(400).json({ error: 'All mid evaluations are not completely evaluated yet.' });
+            return res.json({ message: 'All mid evaluations are not completely evaluated yet.' });
         }
 
         // Update midEvaluationPermission for all records
@@ -1027,7 +1042,7 @@ const revokeFinalEvalPermission = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         // Update all records in midevaluations to set finalEvaluationPermission to false
@@ -1058,7 +1073,7 @@ const gcFinalPermissionStatus = async (req, res) => {
             const finalEvaluationValue = finalEvaluation.finalEvaluationPermission;
             res.json({ finalEvaluationPermission: finalEvaluationValue });
         } else {
-            res.status(404).json({ message: "No Final Evaluation record found" });
+            res.json({ message: "No Final Evaluation record found" });
         }
     } catch (error) {
         console.error('Error retrieving Final Evaluation permission:', error);
@@ -1079,7 +1094,7 @@ const gcAllPendingFinalEvaluations = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         // Fetch finalEvaluationPermission
@@ -1090,12 +1105,12 @@ const gcAllPendingFinalEvaluations = async (req, res) => {
 
         // Check if a record was found
         if (!finalEvaluation) {
-            return res.status(403).json({ error: 'Final evaluation permission record not found' });
+            return res.json({ message: 'Final evaluation permission record not found' });
         }
 
         // Check if finalEvaluationPermission is true (indicating it's not closed yet)
         if (finalEvaluation.finalEvaluationPermission === true) {
-            return res.status(403).json({ error: 'Final evaluations are not closed yet' });
+            return res.json({ message: 'Final evaluations are not closed yet' });
         }
 
         // Find all pending final evaluations
@@ -1134,7 +1149,7 @@ const gcSelectedFinalEvaluationDetails = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
         const { rollno } = req.params;
 
@@ -1267,7 +1282,7 @@ const gcApproveFinalEvaluation = async (req, res) => {
 
                         res.json({ message: 'Final Evaluation updated, comingevaluation status updated, and email sent to student' });
                     } else {
-                        res.status(404).json({ error: 'Student not found' });
+                        res.json({ message: 'Student not found' });
                     }
                 } else {
                     res.json({ message: 'Final evaluation not approved or student not found' });
@@ -1297,7 +1312,7 @@ const getTitleChangeRequests = async (req, res) => {
             }
         });
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const pendingTitleChangeRequests = await titlerequests.findAll({
@@ -1308,7 +1323,7 @@ const getTitleChangeRequests = async (req, res) => {
         });
 
         if (!pendingTitleChangeRequests) {
-            return res.status(404).json({ error: 'No pending title change requests found' });
+            return res.json({ message: 'No pending title change requests found' });
         }
 
         res.json(pendingTitleChangeRequests)
@@ -1336,7 +1351,7 @@ const getTitleChangeDetails = async (req, res) => {
 
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const TitleRequestDetails = await titlerequests.findOne({
@@ -1348,7 +1363,7 @@ const getTitleChangeDetails = async (req, res) => {
         });
 
         if (!TitleRequestDetails) {
-            return res.status(404).json({ error: 'No pending title change requests found' });
+            return res.json({ message: 'No pending title change requests found' });
         }
 
         res.json(TitleRequestDetails);
@@ -1375,7 +1390,7 @@ const ApproveTitleChangeGC = async (req, res) => {
             }
         });
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const TitleRequestDetails = await titlerequests.findOne({
@@ -1401,18 +1416,18 @@ const ApproveTitleChangeGC = async (req, res) => {
                 }, { where: { rollno: rollno } });
 
                 if (updatedRowsForThesis > 0) {
-                    res.json('Title Change Request Approved');
+                    res.json({ message: 'Title Change Request Approved'});
                 }
                 else {
-                    res.status(500).json({ error: 'Error approving pending title request' });
+                    res.json({ message: 'Error approving pending title request' });
                 }
             }
             else {
-                res.status(500).json({ error: 'Error approving pending title request' });
+                res.json({ message: 'Error approving pending title request' });
             }
         }
         else {
-            res.status(404).json({ error: 'No pending title change requests found' });
+            res.json({ message: 'No pending title change requests found' });
         }
 
 
@@ -1438,7 +1453,7 @@ const RejectTitleChangeGC = async (req, res) => {
             }
         });
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const TitleRequestDetails = await titlerequests.findOne({
@@ -1459,14 +1474,14 @@ const RejectTitleChangeGC = async (req, res) => {
                 { where: { rollno: rollno } }
             );
             if (updatedRows > 0) {
-                res.json('Title Change Request Rejected');
+                res.json({ message: 'Title Change Request Rejected'});
             }
             else {
-                res.status(500).json({ error: 'Error rejecting pending title request' });
+                res.json({ message: 'Error rejecting pending title request' });
             }
         }
         else {
-            res.status(404).json({ error: 'No pending title change requests found' });
+            res.json({ message: 'No pending title change requests found' });
         }
 
 
@@ -1489,7 +1504,7 @@ const getSupervisorChangeRequests = async (req, res) => {
             }
         });
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const pendingSupervisorChangeRequests = await supchangerequests.findAll({
@@ -1500,7 +1515,7 @@ const getSupervisorChangeRequests = async (req, res) => {
         });
 
         if (!pendingSupervisorChangeRequests) {
-            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+            return res.json({ message: 'No pending supervisor change requests found' });
         }
 
         res.json(pendingSupervisorChangeRequests);
@@ -1526,7 +1541,7 @@ const getSupervisorChangeDetails = async (req, res) => {
             }
         });
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const supervisorRequestDetails = await supchangerequests.findOne({
@@ -1538,7 +1553,7 @@ const getSupervisorChangeDetails = async (req, res) => {
         });
 
         if (!supervisorRequestDetails) {
-            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+            return res.json({ message: 'No pending supervisor change requests found' });
         }
 
         res.json(supervisorRequestDetails);
@@ -1587,14 +1602,14 @@ const approveSupervisorChangeGC = async (req, res) => {
             );
             if (updatedRows > 0) {
 
-                return res.json('Supervisor Change Request Approved and forwarded to HOD');
+                return res.json({ message: 'Supervisor Change Request Approved and forwarded to HOD'});
             }
             else {
-                return res.status(500).json({ error: 'Error approving pending supervisor change request' });
+                return res.json({ message: 'Error approving pending supervisor change request' });
             }
         }
         else {
-            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+            return res.json({ message: 'No pending supervisor change requests found' });
         }
     } catch (error) {
         console.error('Error approving pending title request:', error);
@@ -1618,7 +1633,7 @@ const rejectSupervisorChangeGC = async (req, res) => {
             }
         });
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const SupervisorRequestDetails = await supchangerequests.findOne({
@@ -1640,14 +1655,14 @@ const rejectSupervisorChangeGC = async (req, res) => {
             );
             if (updatedRows > 0) {
 
-                return res.json('Supervisor Change Request Rejected');
+                return res.json({message : 'Supervisor Change Request Rejected'});
             }
             else {
-                return res.status(500).json({ error: 'Error rejecting pending supervisor change request' });
+                return res.json({ message: 'Error rejecting pending supervisor change request' });
             }
         }
         else {
-            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+            return res.json({ message: 'No pending supervisor change requests found' });
         }
     } catch (error) {
         console.error('Error approving pending title request:', error);
@@ -1691,5 +1706,6 @@ module.exports =
     getSupervisorChangeRequests,
     getSupervisorChangeDetails,
     approveSupervisorChangeGC,
-    rejectSupervisorChangeGC
+    rejectSupervisorChangeGC,
+    countMSRCMembers
 };

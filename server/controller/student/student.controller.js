@@ -40,7 +40,7 @@ const stdSignIn = async (req, res) => {
         expiresIn: 3 * 24 * 60 * 60,
         httpOnly: true
       })
-      res.status(200).json({ message: 'Student Sign In successfully from Server side', token, userId, userType });
+      res.json({ message: 'Student Sign In successfully from Server side', token, userId, userType });
     } else {
       res.json({ message: 'Invalid Credentials' });
     }
@@ -174,7 +174,7 @@ const viewTitleChangeFrom = async (req, res) => {
 
   } catch (error) {
     console.error('Error submitting title change request : ', error);
-    return res.status(500).json({ message: 'An error occurred while submitting request for title change' });
+    return res.json({ message: 'An error occurred while submitting request for title change' });
   }
 }
 
@@ -192,7 +192,7 @@ const requestTitleChange = async (req, res) => {
     });
 
     if (!studentData) {
-      return res.status(404).json({ message: 'Student not found' });
+      return res.json({ message: 'Student not found' });
     }
 
     const thesisData = await thesis.findOne({
@@ -202,7 +202,7 @@ const requestTitleChange = async (req, res) => {
     });
 
     if (!thesisData) {
-      return res.status(404).json({ message: 'Thesis not found' });
+      return res.json({ message: 'Thesis not found' });
     }
 
     if (thesisData) {
@@ -225,15 +225,15 @@ const requestTitleChange = async (req, res) => {
         return res.json({ message: 'Request for Title change successfully submitted', request: newtitleChangeRequest });
       }
       else {
-        return res.status(500).json({ message: 'An error occurred while submitting request for title change' });
+        return res.json({ message: 'An error occurred while submitting request for title change' });
       }
     } else {
-      return res.status(404).json({ message: 'Thesis not found' });
+      return res.json({ message: 'Thesis not found' });
     }
 
   } catch (error) {
     console.error('Error submitting title change request : ', error);
-    res.status(500).json({ message: 'An error occurred while submitting request for title change' });
+    res.json({ message: 'An error occurred while submitting request for title change' });
   }
 }
 
@@ -248,7 +248,7 @@ const viewSupervisorChangeForm = async (req, res) => {
     });
 
     if (!studentData) {
-      return res.status(404).json({ message: 'Student not found' });
+      return res.json({ message: 'Student not found' });
     }
 
     const thesisData = await thesis.findOne({
@@ -260,7 +260,7 @@ const viewSupervisorChangeForm = async (req, res) => {
 
 
     if (!thesisData) {
-      return res.status(404).json({ message: 'Thesis not found' });
+      return res.json({ message: 'Thesis not found' });
     }
 
     const supervisorData = await faculties.findOne({
@@ -270,7 +270,7 @@ const viewSupervisorChangeForm = async (req, res) => {
     })
 
     if (!supervisorData) {
-      return res.status(404).json({ message: 'Supervisor not found' });
+      return res.json({ message: 'Supervisor not found' });
     }
 
 
@@ -289,7 +289,7 @@ const viewSupervisorChangeForm = async (req, res) => {
 
   } catch (error) {
     console.error('Error viewing supervisor change request : ', error);
-    return res.status(500).json({ message: 'An error occurred while viewing form for supervisor change' });
+    return res.json({ message: 'An error occurred while viewing form for supervisor change' });
   }
 }
 
@@ -320,7 +320,7 @@ const requestSupervisorChange = async (req, res) => {
     });
 
     if (!thesisData) {
-      return res.status(404).json({ message: 'Thesis not found' });
+      return res.json({ message: 'Thesis not found' });
     }
 
     const supervisorData = await faculties.findOne({
@@ -330,7 +330,7 @@ const requestSupervisorChange = async (req, res) => {
     })
 
     if (!supervisorData) {
-      return res.status(404).json({ message: 'Supervisor not found' });
+      return res.json({ message: 'Supervisor not found' });
     }
 
     const facultyList = await faculties.findAll({
@@ -340,12 +340,12 @@ const requestSupervisorChange = async (req, res) => {
     const newSupervisorid = facultyList.find(faculty => faculty.name === newSupervisorName)?.facultyid;
 
     if (!newSupervisorid) {
-      return res.status(400).json({ error: 'Invalid supervisor name' });
+      return res.json({ message: 'Invalid supervisor name' });
     }
 
     // Validating that current supervisor and new supervisor are not the same
     if (thesisData.facultyId === newSupervisorid) {
-      return res.status(400).json({ error: 'Current Supervisor and New Supervisor must be different' });
+      return res.json({ message: 'Current Supervisor and New Supervisor must be different' });
     }
 
     await supchangerequests.create({
@@ -370,12 +370,12 @@ const requestSupervisorChange = async (req, res) => {
       res.json({ message: 'Request for Supervisor change successfully submitted', request: newSupervisorChangeRequest });
     }
     else {
-      res.status(500).json({ message: 'An error occurred while submitting request for supervisor change' });
+      res.json({ message: 'An error occurred while submitting request for supervisor change' });
     }
 
   } catch (error) {
     console.error('Error submitting supervisor change request : ', error);
-    res.status(500).json({ message: 'An error occurred while submitting request for supervisor change' });
+    res.json({ message: 'An error occurred while submitting request for supervisor change' });
   }
 }
 

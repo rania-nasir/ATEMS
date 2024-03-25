@@ -59,7 +59,7 @@ const getHodThesis2StudentDetails = async (req, res) => {
         });
 
         if (!studentDetails) {
-            return res.status(404).json({ message: 'No pending request found for this student' });
+            return res.json({ message: 'No pending request found for this student' });
         }
 
         res.json({ studentDetails });
@@ -93,7 +93,7 @@ const approveHodThesis2Request = async (req, res) => {
 
 
         if (!studentRegistration) {
-            return res.status(404).json({ message: 'No pending request found for this student' });
+            return res.json({ message: 'No pending request found for this student' });
         }
 
         await studentRegistration.update({

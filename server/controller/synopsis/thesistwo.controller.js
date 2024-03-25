@@ -54,7 +54,7 @@ const thesisTwoRegistration = async (req, res) => {
 
         
 
-        res.status(200).json({ message: 'Registration created successfully', registration: newRegistration });
+        res.json({ message: 'Registration created successfully', registration: newRegistration });
 
 
 

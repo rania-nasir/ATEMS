@@ -21,16 +21,16 @@ const uploadThesisTwoReport = async (req, res) => {
                 const expectedFileName = rollNumber + '.pdf'; // Generate the expected file name
                 if (fileName !== expectedFileName) {
                     // File name does not match roll number
-                    return res.status(400).json({ error: 'File name should be the same as your roll number' });
+                    return res.json({ message: 'File name should be the same as your roll number' });
                 }
                 // Update the registration record with the uploaded file name
                 await registrations.update(
                     { thesistwofilename: fileName },
                     { where: { rollno: rollNumber } }
                 );
-                res.status(200).json({ message: 'Thesis two report uploaded successfully' });
+                res.json({ message: 'Thesis two report uploaded successfully' });
             } else {
-                return res.status(400).json({ error: 'Roll number is required or file is missing' });
+                return res.json({ message: 'Roll number is required or file is missing' });
             }
         });
     } catch (error) {

@@ -24,7 +24,7 @@ const supViewExaminableThesis = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const examinableThesis = await thesis.findAll({
@@ -57,7 +57,7 @@ const supViewExaminableThesis = async (req, res) => {
 
         // Check if midEvaluationPermission is true (indicating it's not closed yet)
         if (!midEvaluation || midEvaluation.midEvaluationPermission !== true) {
-            return res.status(403).json({ error: 'Mid evaluations are not open yet.' });
+            return res.json({ message: 'Mid evaluations are not open yet.' });
         }
 
         // Respond with the filtered list of examinable thesis papers
@@ -87,7 +87,7 @@ const internalViewExaminableThesis = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const examinableThesis = await thesis.findAll({
@@ -119,7 +119,7 @@ const internalViewExaminableThesis = async (req, res) => {
 
         // Check if midEvaluationPermission is true (indicating it's not closed yet)
         if (!midEvaluation || midEvaluation.midEvaluationPermission !== true) {
-            return res.status(403).json({ error: 'Mid evaluations are not open yet.' });
+            return res.json({ message: 'Mid evaluations are not open yet.' });
         }
 
         // Respond with the filtered list of examinable thesis papers
@@ -149,7 +149,7 @@ const getExaminableThesisDetails = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         // Find the thesis with the given ID
@@ -161,7 +161,7 @@ const getExaminableThesisDetails = async (req, res) => {
         });
 
         if (!thesisDetails) {
-            return res.status(404).json({ error: 'Thesis not found' });
+            return res.json({ message: 'Thesis not found' });
         }
 
         // Find the student associated with the thesis
@@ -173,7 +173,7 @@ const getExaminableThesisDetails = async (req, res) => {
         });
 
         if (!studentDetails) {
-            return res.status(404).json({ error: 'Student not found' });
+            return res.json({ message: 'Student not found' });
         }
 
         const midEvaluationPermission = await proposalevaluations.findOne({
@@ -184,12 +184,12 @@ const getExaminableThesisDetails = async (req, res) => {
         });
 
         if (!midEvaluationPermission) {
-            return res.status(403).json({ error: 'Mid evaluation permission not granted' });
+            return res.json({ message: 'Mid evaluation permission not granted' });
         }
 
         // Check if the comingevaluation is set to Mid1
         if (studentDetails.comingevaluation != 'Mid1') {
-            return res.status(400).json({ error: 'Thesis evaluation is not set for Mid1' });
+            return res.json({ message: 'Thesis evaluation is not set for Mid1' });
         }
 
         return res.json({
@@ -241,16 +241,16 @@ const evaluateMid = async (req, res) => {
         });
 
         if (!midEvaluationPermission) {
-            return res.status(403).json({ error: 'Mid evaluation permission not granted' });
+            return res.json({ message: 'Mid evaluation permission not granted' });
         }
 
         if (!studentDetails && studentDetails.comingevaluation != "Mid1") {
-            return res.status(404).json({ error: 'Student not found' });
+            return res.json({ message: 'Student not found' });
         }
 
         const existingMidEvaluation = await midevaluations.findOne({ where: { facultyid, rollno } });
         if (existingMidEvaluation) {
-            res.status(400).json({ error: 'You have already evaluated this thesis proposal' });
+            res.json({ message: 'You have already evaluated this thesis proposal' });
             return;
         }
 
@@ -302,7 +302,7 @@ const supViewFinalExaminableThesis = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const examinableThesis = await thesis.findAll({
@@ -334,7 +334,7 @@ const supViewFinalExaminableThesis = async (req, res) => {
 
         // Check if midEvaluationPermission is true (indicating it's not closed yet)
         if (!finalEvaluation || finalEvaluation.finalEvaluationPermission !== true) {
-            return res.status(403).json({ error: 'Final evaluations are not open yet.' });
+            return res.json({ message: 'Final evaluations are not open yet.' });
         }
 
         // Respond with the filtered list of examinable thesis papers
@@ -362,7 +362,7 @@ const internalViewFinalExaminableThesis = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const examinableThesis = await thesis.findAll({
@@ -394,7 +394,7 @@ const internalViewFinalExaminableThesis = async (req, res) => {
 
         // Check if midEvaluationPermission is true (indicating it's not closed yet)
         if (!finalEvaluation || finalEvaluation.finalEvaluationPermission !== true) {
-            return res.status(403).json({ error: 'Final evaluations are not open yet.' });
+            return res.json({ message: 'Final evaluations are not open yet.' });
         }
 
         // Respond with the filtered list of examinable thesis papers
@@ -422,7 +422,7 @@ const getFinalExaminableThesisDetails = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         // Find the thesis with the given ID
@@ -434,7 +434,7 @@ const getFinalExaminableThesisDetails = async (req, res) => {
         });
 
         if (!thesisDetails) {
-            return res.status(404).json({ error: 'Thesis not found' });
+            return res.json({ message: 'Thesis not found' });
         }
 
         // Find the student associated with the thesis
@@ -446,7 +446,7 @@ const getFinalExaminableThesisDetails = async (req, res) => {
         });
 
         if (!studentDetails) {
-            return res.status(404).json({ error: 'Student not found' });
+            return res.json({ message: 'Student not found' });
         }
 
         const finalEvaluationPermission = await midevaluations.findOne({
@@ -457,12 +457,12 @@ const getFinalExaminableThesisDetails = async (req, res) => {
         });
 
         if (!finalEvaluationPermission) {
-            return res.status(403).json({ error: 'Final evaluation permission not granted' });
+            return res.json({ message: 'Final evaluation permission not granted' });
         }
 
         // Check if the comingevaluation is set to Final1
         if (studentDetails.comingevaluation != 'Final1') {
-            return res.status(400).json({ error: 'Thesis evaluation is not set for Final1' });
+            return res.json({ message: 'Thesis evaluation is not set for Final1' });
         }
 
         return res.json({
@@ -519,16 +519,16 @@ const evaluateFinal = async (req, res) => {
         });
 
         if (!finalEvaluationPermission) {
-            return res.status(403).json({ error: 'Final evaluation permission not granted' });
+            return res.json({ message: 'Final evaluation permission not granted' });
         }
 
         if (!studentDetails && studentDetails.comingevaluation != "Final1") {
-            return res.status(404).json({ error: 'Student not found' });
+            return res.json({ message: 'Student not found' });
         }
 
         const existingFinalEvaluation = await finalevaluations.findOne({ where: { facultyid, rollno } });
         if (existingFinalEvaluation) {
-            res.status(400).json({ error: 'You have already evaluated this thesis proposal' });
+            res.json({ message: 'You have already evaluated this thesis proposal' });
             return;
         }
 

@@ -45,7 +45,7 @@ const onethesisDetails = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(404).json({ error: 'Faculty not found' });
+            return res.json({ error: 'Faculty not found' });
         }
 
         const facultyRole = faculty.role;
@@ -162,7 +162,7 @@ const hodapproveThesis = async (req, res) => {
                 //res.json({ message: 'Thesis approved and email sent to student', updatedThesis });
             } catch (error) {
                 console.error('Error sending email to student:', error);
-                return res.status(500).json({ error: 'Error sending approval email to student' });
+                return res.json({ message: 'Error sending approval email to student' });
             }
             // Fetch all faculty members with the MSRC role
             const msrcFaculty = await faculties.findAll({
@@ -190,7 +190,7 @@ const hodapproveThesis = async (req, res) => {
                 await sendMail(msrcEmails, msrcSubject, msrcText);
             } catch (error) {
                 console.error('Error sending email to MSRC members:', error);
-                return res.status(500).json({ error: 'Error sending approval email to MSRC members' });
+                return res.json({ message: 'Error sending approval email to MSRC members' });
             }
 
             res.json({ message: 'Thesis approved and emails sent', updatedThesis });
@@ -228,7 +228,7 @@ const getSupervisorChangeRequests = async (req, res) => {
         });
 
         if (!pendingSupervisorChangeRequests) {
-            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+            return res.json({ message: 'No pending supervisor change requests found' });
         }
 
         res.json(pendingSupervisorChangeRequests);
@@ -254,7 +254,7 @@ const getSupervisorChangeDetails = async (req, res) => {
             }
         });
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const supervisorRequestDetails = await supchangerequests.findOne({
@@ -267,7 +267,7 @@ const getSupervisorChangeDetails = async (req, res) => {
         });
 
         if (!supervisorRequestDetails) {
-            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+            return res.json({ message: 'No pending supervisor change requests found' });
         }
 
         res.json(supervisorRequestDetails);
@@ -293,7 +293,7 @@ const approveSupervisorChangeHOD = async (req, res) => {
             }
         });
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const SupervisorRequestDetails = await supchangerequests.findOne({
@@ -323,14 +323,14 @@ const approveSupervisorChangeHOD = async (req, res) => {
                 );
 
                 if (updatedRowsRows > 0) {
-                    return res.json('Supervisor Change Request Approved');
+                    return res.json({ message: 'Supervisor Change Request Approved'});
                 }
                 else {
-                    return res.json(500).json({ error: 'Error approving pending supervisor change request' });
+                    return res.json({ message: 'Error approving pending supervisor change request' });
                 }
             }
             else {
-                return res.status(500).json({ error: 'Error approving pending supervisor change request' });
+                return res.json({ message: 'Error approving pending supervisor change request' });
             }
         }
         else {
@@ -357,7 +357,7 @@ const rejectSupervisorChangeHOD = async (req, res) => {
             }
         });
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const SupervisorRequestDetails = await supchangerequests.findOne({
@@ -379,14 +379,14 @@ const rejectSupervisorChangeHOD = async (req, res) => {
             );
             if (updatedRows > 0) {
 
-                return res.json('Supervisor Change Request Rejected');
+                return res.json({ message: 'Supervisor Change Request Rejected'});
             }
             else {
-                return res.status(500).json({ error: 'Error rejecting pending supervisor change request' });
+                return res.json({ message: 'Error rejecting pending supervisor change request' });
             }
         }
         else {
-            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+            return res.json({ message: 'No pending supervisor change requests found' });
         }
     } catch (error) {
         console.error('Error approving pending title request:', error);
