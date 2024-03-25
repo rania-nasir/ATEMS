@@ -537,7 +537,7 @@ const evaluateProposal = async (req, res) => {
 
             const existingEvaluation = await proposalevaluations.findOne({ where: { facultyid, rollno } });
             if (existingEvaluation) {
-                res.status(400).json({ error: 'You have already evaluated this thesis proposal' });
+                res.status(400).json({ message: 'You have already evaluated this thesis proposal' });
                 return;
             }
 

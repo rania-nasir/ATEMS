@@ -38,8 +38,8 @@ export default function AllProposalEvaluations({ setShowDetails }) {
 
     return (
         <>
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="w-full my-4">
+            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 lg:px-8">
+                <div className="w-full my-2">
                     <h2 className="text-center text-2xl tracking-tight text-gray-950 font-bold">
                         All Defense Proposal Evaluations
                     </h2>
@@ -74,7 +74,7 @@ export default function AllProposalEvaluations({ setShowDetails }) {
                                 thesisData?.map(student => (
                                     <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={student?.rollno}>
                                         <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{student?.rollno}</td>
-                                        <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{student?.program}</td>
+                                        <td className="px-4 py-4 font-medium text-gray-900 dark:text-white">{student?.program}</td>
                                         <td className="px-4 py-4">{student?.thesis?.thesistitle}</td>
                                         <td className="px-4 py-4">{student?.thesis?.supervisorname}</td>
                                         <td className="px-4 py-4">{student?.thesis?.internals.join(', ')}</td>
@@ -89,7 +89,7 @@ export default function AllProposalEvaluations({ setShowDetails }) {
                                 ))
                             ) : (
                                 <tr>
-                                    <td className='px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white' colSpan="6">No proposal found</td>
+                                    <td className='px-6 py-4 font-medium text-gray-900 dark:text-white' colSpan="6">No proposal found</td>
                                 </tr>
                             )}
 

@@ -32,6 +32,10 @@ export default function Permissions() {
                 }
             });
             const data = await response.json();
+            if (data.message === "No Proposal Evaluation record found") {
+                // showMessage('info', data.message);
+                return;
+            }
             const status = Boolean(data.gcproposalpermission);
             setProposalPermissionStatus(status);
         } catch (error) {
@@ -54,6 +58,10 @@ export default function Permissions() {
                 }
             });
             const data = await response.json();
+            if (data.message === "No Mid Evaluation record found") {
+                // showMessage('info', data.message);
+                return;
+            }
             const status = Boolean(data.midEvaluationPermission);
             setMid1PermissionStatus(status);
         } catch (error) {
@@ -76,6 +84,10 @@ export default function Permissions() {
                 }
             });
             const data = await response.json();
+            if (data.message === "No Final Evaluation record found") {
+                // showMessage('info', data.message);
+                return;
+            }
             const status = Boolean(data.finalEvaluationPermission);
             setFinal1PermissionStatus(status);
         } catch (error) {
@@ -132,7 +144,7 @@ export default function Permissions() {
                 setProposalPermissionStatus(newStatus);
                 showMessage('success', data.message);
             }
-            else{
+            else {
                 showMessage('info', data.message);
             }
 
@@ -175,7 +187,7 @@ export default function Permissions() {
                 setMid1PermissionStatus(newStatus);
                 showMessage('success', data.message);
             }
-            else{
+            else {
                 showMessage('info', data.message);
             }
 
@@ -219,7 +231,7 @@ export default function Permissions() {
                 setFinal1PermissionStatus(newStatus);
                 showMessage('success', data.message);
             }
-            else{
+            else {
                 showMessage('info', data.message);
             }
 

@@ -14,7 +14,6 @@ import T2ThesisRecord from '../GC/T2ThesisRecord';
 import T2GetThesis from '../GC/T2GetThesis';
 import T2GetThesisDetails from '../GC/T2GetThesisDetails';
 
-import T2PanelTime from '../GC/T2PanelTime';
 import T2Permissions from '../GC/T2Permissions';
 
 import T2Evaluations from '../GC/T2Evaluations';
@@ -108,7 +107,6 @@ export default function T2MainSection() {
                             <Routes>
                                 <Route path="/viewAllThesis" element={<T2ThesisRecord />} />
                                 <Route path="/ReviewRequest" element={<T2GetThesis setShowDetails={setShowDetails} />} />
-                                <Route path="/PanelTimelines" element={<T2PanelTime />} />
                                 <Route path="/Permissions" element={<T2Permissions />} />
                                 <Route path="/Evaluations" element={<T2Evaluations setShowDetails={setShowDetails} />} />
                             </Routes>

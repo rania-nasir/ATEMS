@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Dropdown } from 'primereact/dropdown';
 import Cookie from 'js-cookie';
 import DateTimePicker from 'react-datetime-picker';
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
-// import { Popup, DatePicker } from 'react-date-time-picker-popup'
-// import 'react-date-time-picker-popup/dist/index.css'
+import { Toast } from 'primereact/toast';
 
 export default function PanelTime() {
+    const toastTopCenter = useRef(null);
+
     const [visible, setVisible] = useState(false);
     const [day, setDay] = useState(new Date());
 
@@ -95,6 +96,10 @@ export default function PanelTime() {
     };
 
 
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
+
     const addRow = () => {
         setRows(prevRows => {
             const newRow = { supervisor: '', thesistitle: '', timeslot: new Date(), evaluation: '' };
@@ -140,9 +145,11 @@ export default function PanelTime() {
         const uniqueThesisTitles = new Set();
         updatedRows.forEach(row => {
             if (uniqueSupervisors.has(row.supervisor) && uniqueThesisTitles.has(row.thesistitle)) {
-                console.error('Duplicate supervisor and thesis title found, removing row:', row);
+                // Show error message
+                showMessage('error', 'You are already selected this Thesis title');
                 row.supervisor = ''; // Empty supervisor field
                 row.thesistitle = ''; // Empty thesis title field
+
             } else {
                 uniqueSupervisors.add(row.supervisor);
                 uniqueThesisTitles.add(row.thesistitle);
@@ -193,6 +200,15 @@ export default function PanelTime() {
     const handleSubmit = async () => {
         console.log('rows : ', rows);
 
+        // Check if any row has empty supervisor, thesis title, or timeslot
+        const hasEmptyFields = rows.some(row => !row.supervisor || !row.thesistitle || !row.timeslot || !row.evaluation);
+
+        if (hasEmptyFields) {
+            // Show error message
+            showMessage('error', 'Please fill all fields for each row');
+            return; // Abort submission
+        }
+
         // Prepare the data to send
         const dataToSend = rows.map(({ thesisDetails, timeslot, thesisTitles, supervisor, ...rest }) => ({
             ...rest,
@@ -220,154 +236,141 @@ export default function PanelTime() {
                 throw new Error('Failed to assign time slots');
             }
             const data = await response.json();
-            console.log(data, "Time slots assigned successfully"); // Log the response from the server
-            window.alert(data.message, "Time slots assigned successfully")
+
+            if (response.status === 200) {
+                if (data.message === "Time slots assigned successfully. Schedule mail has been sent to all the respective members.") {
+                    showMessage('success', data.message);
+                    console.log(data.message);
+                } else {
+                    showMessage('info', data.message);
+                    console.log(data.message);
+                }
+            } else {
+                showMessage('error', "System Error. Please try later!");
+                console.log("Invalid Input", data);
+            }
             // Handle the response as required
         } catch (error) {
-            console.error('Error assigning time slots:', error);
-            // Handle the error
+            showMessage('error', "System Error. Please try later!");
+            console.log("Invalid Input", error);
         }
     };
 
     return (
-        <div className="m-2 p-2 grid grid-cols-1">
-            <div className="flex justify-center">
-                <h2 className="text-center text-2xl font-bold tracking-tight text-gray-950">
-                    Schedule Panel Timelines
-                </h2>
-            </div>
-            <div className="flex justify-end px-6">
-                <button
-                    onClick={handleSubmit}
-                    className="block flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                >
-                    Assign Time Slots
-                </button>
-            </div>
-            <div className="my-6 shadow-md sm:rounded-lg col-span-1">
-                <table className="border-collapse w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" className="px-2 py-4">
-                                Supervisor
-                            </th>
-                            <th scope="col" className="px-2 py-4">
-                                Thesis Title
-                            </th>
-                            <th scope="col" className="px-2 py-4">
-                                Timeslot
-                            </th>
-                            <th scope="col" className="px-2 py-4">
-                                Evaluation
-                            </th>
-                            <th scope="col" className="px-2 py-4">
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows.map((row, index) => (
-                            <tr key={index} 
-                            className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                <td className="w-48 px-2 py-4 font-medium text-gray-900 dark:text-white">
-                                    <Dropdown 
-                                        placeholder="Supervisor"
-                                        value={row.supervisor ? (typeof row.supervisor === 'object' ? row.supervisor : supervisors.find(s => s.name === row.supervisor)) : null}
-                                        options={supervisors}
-                                        optionLabel="name"
-                                        onChange={(e) => handleSupervisorChange(e.value, index)}
-                                        className="w-56 max-w-full text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    />
-                                </td>
-                                <td className="w-48 px-2 py-4 font-medium text-gray-900 dark:text-white">
-                                    <Dropdown
-                                        placeholder="Title"
-                                        value={row.thesistitle ? (typeof row.thesistitle === 'object' ? row.thesistitle : { thesistitle: row.thesistitle }) : null}
-                                        options={row.thesisTitles || []}
-                                        optionLabel="thesistitle"
-                                        onChange={(e) => handleThesisTitleChange(e.value, index)}
-                                        className="max-w-full w-56 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    />
-                                </td>
-                                <td className="px-2 py-4 font-medium text-gray-900 dark:text-white">
-                                    <DateTimePicker
-                                        onChange={(value) => handleTimeslotChange(value, index)}
-                                        value={row.timeslot}
-                                        className="max-w-full text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    />
-                                    {/* <div className='App'>
+        <>
+            <Toast ref={toastTopCenter} position="top-center" />
+            <div className="m-2 p-2 grid grid-cols-1">
+                <div className="my-8">
+                    <h2 className="pb-2 text-center text-2xl tracking-tight text-gray-950 font-semibold">
+                        Schedule Panel Timelines
+                    </h2>
+                </div>
+                <div className="flex justify-end px-6">
+                    <button
+                        onClick={handleSubmit}
+                        className="block flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                    >
+                        Assign Time Slots
+                    </button>
+                </div>
+                <div className="my-6 shadow-md sm:rounded-lg col-span-1">
+                    <table className="border-collapse w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" className="px-2 py-4">
+                                    Supervisor
+                                </th>
+                                <th scope="col" className="px-2 py-4">
+                                    Thesis Title
+                                </th>
+                                <th scope="col" className="px-2 py-4">
+                                    Timeslot
+                                </th>
+                                <th scope="col" className="px-2 py-4">
+                                    Evaluation
+                                </th>
+                                <th scope="col" className="px-2 py-4">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows.map((row, index) => (
+                                <tr key={index}
+                                    className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <td className="w-48 px-2 py-4 font-medium text-gray-900 dark:text-white">
+                                        <Dropdown
+                                            placeholder="Supervisor"
+                                            value={row.supervisor ? (typeof row.supervisor === 'object' ? row.supervisor : supervisors.find(s => s.name === row.supervisor)) : null}
+                                            options={supervisors}
+                                            optionLabel="name"
+                                            onChange={(e) => handleSupervisorChange(e.value, index)}
+                                            className="w-56 max-w-full text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        />
+                                    </td>
+                                    <td className="w-48 px-2 py-4 font-medium text-gray-900 dark:text-white">
+                                        <Dropdown
+                                            placeholder="Title"
+                                            value={row.thesistitle ? (typeof row.thesistitle === 'object' ? row.thesistitle : { thesistitle: row.thesistitle }) : null}
+                                            options={row.thesisTitles || []}
+                                            optionLabel="thesistitle"
+                                            onChange={(e) => handleThesisTitleChange(e.value, index)}
+                                            className="max-w-full w-56 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        />
+                                    </td>
+                                    <td className="px-2 py-4 font-medium text-gray-900 dark:text-white">
+                                        <DateTimePicker
+                                            onChange={(value) => handleTimeslotChange(value, index)}
+                                            value={row.timeslot}
+                                            className="max-w-full text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        />
+                                        {/* <div className='App'>
                                         <button onClick={() => setVisible(true)}>Show Popup</button>
                                         <Popup visible={visible} setVisible={setVisible}>
                                             <DatePicker lang="tr" selectedDay={day} setSelectedDay={setDay} timeSelector={true} />
                                         </Popup>
                                     </div> */}
-                                </td>
-                                <td className="px-2 py-4 font-medium text-gray-900 dark:text-white">
-                                    <Dropdown
-                                        placeholder="Evaluation"
-                                        value={row.evaluation}
-                                        options={evaluations}
-                                        onChange={(e) => handleEvaluationChange(e.value, index)}
-                                        className="max-w-full w-42 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    />
-                                </td>
-                                <td className="px-2 py-4 font-medium text-gray-900 dark:text-white">
-                                    {rows.length > 1 && (
-                                        <button
-                                            onClick={() => removeRow(index)}
-                                            className="inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                                            type="button"
-                                        >
-                                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h16" />
-                                            </svg>
-                                        </button>
+                                    </td>
+                                    <td className="px-2 py-4 font-medium text-gray-900 dark:text-white">
+                                        <Dropdown
+                                            placeholder="Evaluation"
+                                            value={row.evaluation}
+                                            options={evaluations}
+                                            onChange={(e) => handleEvaluationChange(e.value, index)}
+                                            className="max-w-full w-42 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        />
+                                    </td>
+                                    <td className="px-2 py-4 font-medium text-gray-900 dark:text-white">
+                                        {rows.length > 1 && (
+                                            <button
+                                                onClick={() => removeRow(index)}
+                                                className="inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                                                type="button"
+                                            >
+                                                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h16" />
+                                                </svg>
+                                            </button>
 
-                                    )}
-                                    {index === rows.length - 1 && (
-                                        <button
-                                            onClick={addRow}
-                                            className="inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                                            type="button"
-                                        >
-                                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
-                                            </svg>
-                                        </button>
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                        )}
+                                        {index === rows.length - 1 && (
+                                            <button
+                                                onClick={addRow}
+                                                className="inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                                                type="button"
+                                            >
+                                                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 1v16M1 9h16" />
+                                                </svg>
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
-
-
-
-// {
-//     "panels": [
-//       {
-//         "thesisid": 1,
-//         "rollno": "20F-0245",
-//         "stdname": "Mustajab Ahmad",
-//         "thesistitle": "ATEMS",
-//         "supervisorname": "Dr. Muhammad Fayyaz",
-//         "internals": ["Dr. Rabia", "Dr. Hashim Yasin"],
-//         "timeslot": "2023-10-01T10:00:00",
-//         "evaluation": "Proposal"
-//       },
-//       {
-//         "thesisid": 2,
-//         "rollno": "20F-1004",
-//         "stdname": "Omar Ahsan",
-//         "thesistitle": "Udemy",
-//         "supervisorname": "Dr. Muhammad Fayyaz",
-//         "internals": ["Dr. Rabia", "Dr. Hashim Yasin"],
-//         "timeslot": "2023-10-01T14:00:00",
-//         "evaluation": "Proposal"
-//       }
-//     ]
-//   }

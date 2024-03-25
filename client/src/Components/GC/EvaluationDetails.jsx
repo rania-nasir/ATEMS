@@ -1,12 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { Toast } from 'primereact/toast';
 
-const EvaluationDetails = ({setShowDetails}) => {
+const EvaluationDetails = ({ setShowDetails }) => {
     const [selectedProposal, setSelectedProposal] = useState(null);
     const userId = useParams();
 
     const navigate = useNavigate();
+    const toastTopCenter = useRef(null);
+
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
 
     useEffect(() => {
         const fetchSelectedProposal = async () => {
@@ -47,9 +53,14 @@ const EvaluationDetails = ({setShowDetails}) => {
             if (response.ok) {
                 // Proposal approved successfully, update UI or show a success message
                 console.log('Proposal approved successfully');
-                window.alert(data.message)
-                setShowDetails(false);
-                navigate('/Evaluations')
+                // window.alert(data.message)
+                showMessage('success', data.message);
+                // Empty supervisor and thesis title fields after a 3-second delay
+                setTimeout(function () {
+                    setShowDetails(false);
+                    navigate('/Evaluations')
+                }, 3000); // 3000 milliseconds = 3 seconds
+
             } else {
                 // Handle error
                 console.error('Failed to approve proposal');
@@ -73,7 +84,13 @@ const EvaluationDetails = ({setShowDetails}) => {
             if (response.ok) {
                 // Proposal rejected successfully, update UI or show a success message
                 console.log('Proposal rejected successfully');
-                window.alert(data.message)
+                // window.alert(data.message)
+                showMessage('success', data.message);
+                // Empty supervisor and thesis title fields after a 3-second delay
+                setTimeout(function () {
+                    setShowDetails(false);
+                    navigate('/Evaluations')
+                }, 3000); // 3000 milliseconds = 3 seconds
             } else {
                 // Handle error
                 console.error('Failed to reject proposal');
@@ -85,9 +102,10 @@ const EvaluationDetails = ({setShowDetails}) => {
 
     return (
         <>
+            <Toast ref={toastTopCenter} position="top-center" />
             {selectedProposal ? (
-                <div className='flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
-                    <div className="mt-2 bg-teal-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
+                <div className='flex flex-1 flex-col justify-center items-center px-6 py-2 lg:px-8'>
+                    <div className="m-2 bg-teal-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
                         <div className="px-4 py-5 sm:px-6">
                             <p className="max-w-2xl text-md text-white">
                                 Proposal Evaluation Details
@@ -239,13 +257,13 @@ const EvaluationDetails = ({setShowDetails}) => {
                                             <div className="sm:col-span-1">
                                                 <dt className="text-sm font-medium text-gray-500">
                                                     Examiner Comments
-                                               </dt>
+                                                </dt>
                                                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
                                                     {selectedProposal[index].comments}
                                                 </dd>
                                             </div>
                                             {/* Add more fields as needed */}
-                                            <hr class="h-px my-8 bg-gray-400 border-0 dark:bg-gray-700" />
+                                            <hr class="h-px my-6 bg-gray-400 border-0 dark:bg-gray-700" />
 
                                         </div>
                                     </>
@@ -253,27 +271,29 @@ const EvaluationDetails = ({setShowDetails}) => {
                             </dl>
                         </div>
                     </div>
+                    <div className='flex justify-center align-center mx-12'>
+                        <div className='p-2 w-full'>
+                            <div className='w-full px-3'>
+                                <button onClick={handleApprove} className="my-8 mx-4 flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-8 py-3 text-center me-2 mb-2"
+                                    type="button"
+                                >
+                                    Approve
+                                </button>
+                                <button onClick={handleReject} className="my-8 mx-4 flex-shrink-0 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-md shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-8 py-3 text-center me-2 mb-2"
+                                    type="button"
+                                >
+                                    Reject
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
             ) : (
                 <div>Loading Examiner Evaluation......</div>
             )}
 
-            <div className='flex justify-center align-center mx-12'>
-                <div className='p-2 w-full'>
-                    <div className='w-full px-3'>
-                        <button onClick={handleApprove} className="m-4 flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-                            type="button"
-                        >
-                            Approve
-                        </button>
-                        <button onClick={handleReject} className="m-4 flex-shrink-0 text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-md shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-                            type="button"
-                        >
-                            Reject
-                        </button>
-                    </div>
-                </div>
-            </div>
+
         </>
     );
 };

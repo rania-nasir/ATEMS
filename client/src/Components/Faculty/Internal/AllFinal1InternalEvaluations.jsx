@@ -68,32 +68,33 @@ export default function AllFinal1InternalEvaluations({ setShowDetails }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {thesisData?.map((student) => (
-                                <tr
-                                    className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600"
-                                    key={student?.rollno}
-                                >
-                                    <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {student?.rollno}
-                                    </td>
-                                    <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {student?.stdname}
-                                    </td>
-                                    <td className="px-4 py-4">{student?.thesistitle}</td>
-                                    <td className="px-4 py-4">{student?.supervisorname}</td>
-                                    <td className="px-4 py-4">{student?.internals.join(', ')}</td>
-                                    <td className="px-6 py-4">
-                                        <NavLink
-                                            to={student?.rollno ? `/viewSelectedFinalExaminableThesis/${student.thesisid}` : '#'}
-                                            onClick={() => handleViewDetails()} // Call handleViewDetails
-                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                                        >
-                                            View Details
-                                        </NavLink>
-                                    </td>
-                                </tr>
-                            ))}
-                            {thesisData.length === 0 && (
+                            {Array.isArray(thesisData) && thesisData.length > 0 ? (
+                                thesisData.map((student) => (
+                                    <tr
+                                        className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600"
+                                        key={student?.rollno}
+                                    >
+                                        <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {student?.rollno}
+                                        </td>
+                                        <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {student?.stdname}
+                                        </td>
+                                        <td className="px-4 py-4">{student?.thesistitle}</td>
+                                        <td className="px-4 py-4">{student?.supervisorname}</td>
+                                        <td className="px-4 py-4">{student?.internals.join(', ')}</td>
+                                        <td className="px-6 py-4">
+                                            <NavLink
+                                                to={student?.rollno ? `/viewSelectedFinalExaminableThesis/${student.thesisid}` : '#'}
+                                                onClick={() => handleViewDetails()} // Call handleViewDetails
+                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                            >
+                                                View Details
+                                            </NavLink>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
                                 <tr>
                                     <td
                                         className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
