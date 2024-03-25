@@ -10,6 +10,10 @@ const predefevaluations = sequelize.define('predefevaluations', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    stdname: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     supervisorname: {
         type: DataTypes.STRING,
         allowNull: false
