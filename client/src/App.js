@@ -32,6 +32,7 @@ import ViewStudent from './Components/GC/ViewStudent';
 import ViewFaculty from './Components/GC/ViewFaculty';
 import UpdateFaculty from './Components/GC/UpdateFaculty';
 import UpdateStudent from './Components/GC/UpdateStudent'
+import PanelTime from './Components/GC/PanelTime';
 
 import StudentviewAnnouncement from './Components/Student/StudentviewAnnouncement';
 import ViewFeedback from './Components/Student/ViewFeedback';
@@ -156,7 +157,7 @@ function App() {
   }, [activeTitle]);
 
   // console.log('Active Title in app.js : ', activeTitle);
-  const sidebararray = ["Home", "Dashboard", "View Announcement", "View Feedback", "Make Announcement", "Faculty Records", "Student Records"];
+  const sidebararray = ["Home", "Dashboard", "View Announcement", "View Feedback", "Make Announcement", "Faculty Records", "Student Records", "Panel Timelines"];
 
   useEffect(() => {
     if (!activeTitle) {
@@ -256,6 +257,7 @@ function App() {
                                     <Route path='/viewstudent' element={<ViewStudent />} />
                                     <Route path='/updateFaculty/:facultyid' element={<UpdateFaculty />} />
                                     <Route path='/updateStudent/:rollno' element={<UpdateStudent />} />
+                                    <Route path='/PanelTimelines' element={<PanelTime />} />
                                     {/* {activeTitle === 'Home' && (
                                       <Route path='/' element={<GCDashboard />} />
                                     )} */}

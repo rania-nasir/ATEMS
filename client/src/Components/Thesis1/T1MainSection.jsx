@@ -14,7 +14,6 @@ import ThesisRecord from '../GC/ThesisRecord';
 import GetThesis from '../GC/GetThesis';
 import GetThesisDetails from '../GC/GetThesisDetails';
 
-import PanelTime from '../GC/PanelTime';
 import Permissions from '../GC/Permissions';
 
 import Evaluations from '../GC/Evaluations';
@@ -114,7 +113,6 @@ export default function T1MainSection() {
                             <Routes>
                                 <Route path="/viewAllThesis" element={<ThesisRecord />} />
                                 <Route path="/ReviewRequest" element={<GetThesis setShowDetails={setShowDetails} />} />
-                                <Route path="/PanelTimelines" element={<PanelTime />} />
                                 <Route path="/Permissions" element={<Permissions />} />
                                 <Route path="/Evaluations" element={<Evaluations setShowDetails={setShowDetails} />} />
                             </Routes>

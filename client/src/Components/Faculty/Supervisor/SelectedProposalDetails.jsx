@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'; // Import useParams hook
 import Cookies from 'js-cookie';
+import { Toast } from 'primereact/toast';
 
-const SelectedProposalDetails = ({setShowDetails}) => {
+const SelectedProposalDetails = ({ setShowDetails }) => {
     const userId = Cookies.get('userId');
+
+    const toastTopCenter = useRef(null);
 
     const { rollno } = useParams(); // Get rollno from URL params
     const [thesisData, setThesisData] = useState(null);
@@ -17,6 +20,10 @@ const SelectedProposalDetails = ({setShowDetails}) => {
     const [bibliography, setBibliography] = useState('');
     const [comments, setComments] = useState('');
 
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
+
     useEffect(() => {
         // Check if rollno is defined before fetching data
         if (rollno) {
@@ -29,9 +36,13 @@ const SelectedProposalDetails = ({setShowDetails}) => {
                             'Authorization': `${Cookies.get('jwtoken')}`
                         }
                     });
+                    const data = await response.json();
 
+                    if (data.message === "Proposal Evaluations are not open yet") {
+                        showMessage('info', data.message);
+                        console.log(data.message);
+                    }
                     if (response.ok) {
-                        const data = await response.json();
                         console.log(data);
                         setThesisData(data);
                     } else {
@@ -88,6 +99,14 @@ const SelectedProposalDetails = ({setShowDetails}) => {
 
     const submitEvaluation = async (e) => {
         e.preventDefault();
+
+        // Check if any required field is empty
+        if (!significance || !understanding || !statement || !rationale || !timeline || !bibliography || !comments) {
+            showMessage('error', 'Please fill in thesis all required fields');
+            return;
+        }
+
+
         try {
             // Check if thesisData is not null before accessing its properties
             if (thesisData && thesisData.student) {
@@ -129,20 +148,19 @@ const SelectedProposalDetails = ({setShowDetails}) => {
                         })
                     });
 
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log(data);
-                        if (data.message) {
-                            // Handle success message
-                            alert(data.message);
-                            setShowDetails(false);
+                    const data = await response.json();
+
+                    if (response.status === 200) {
+                        if (data.message === "Proposal evaluation and feedback updated successfully" || data.message === "Proposal evaluation and feedback stored successfully") {
+                            showMessage('success', data.message);
+                            console.log(data.message);
                         } else {
-                            // Handle error message
-                            alert(data.error);
+                            showMessage('error', data.message);
+                            console.log(data.message);
                         }
                     } else {
-                        window.alert(response.error);
-                        throw new Error('Failed to submit evaluation');
+                        showMessage('info', data.message);
+                        console.log("info", data);
                     }
                 } else {
                     throw new Error('Failed to fetch faculty data');
@@ -151,7 +169,7 @@ const SelectedProposalDetails = ({setShowDetails}) => {
                 console.error('thesisData or thesisData.student is null or undefined');
             }
         } catch (error) {
-            console.error('Error submitting evaluation:', error);
+            console.error('System Error! Please try later', error);
         }
     };
 
@@ -163,8 +181,9 @@ const SelectedProposalDetails = ({setShowDetails}) => {
 
     return (
         <>
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="w-full my-4">
+            <Toast ref={toastTopCenter} position="top-center" />
+            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 lg:px-8">
+                <div className="w-full my-2">
                     <h2 className="text-center text-2xl tracking-tight text-gray-950 font-bold">
                         Proposal Defense Evaluation Form
                     </h2>
@@ -180,7 +199,7 @@ const SelectedProposalDetails = ({setShowDetails}) => {
                                             Roll Number
                                         </label>
                                         <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                            id="grid-first-name" type="text" placeholder="20F-1234" value={thesisData.student.rollno} />
+                                            id="grid-first-name" type="text" placeholder="20F-1234" value={thesisData.student?.rollno} />
                                     </div>
                                 </div>
                                 <div className='col-span-1 p-2'>
@@ -189,7 +208,7 @@ const SelectedProposalDetails = ({setShowDetails}) => {
                                             Student Name
                                         </label>
                                         <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                            id="grid-first-name" type="text" placeholder="Muhammad Ahmad" value={thesisData.student.name} />
+                                            id="grid-first-name" type="text" placeholder="Muhammad Ahmad" value={thesisData.student?.name} />
                                     </div>
                                 </div>
                                 <div className='col-span-1 p-2'>
@@ -198,7 +217,7 @@ const SelectedProposalDetails = ({setShowDetails}) => {
                                             Batch
                                         </label>
                                         <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                            id="grid-first-name" type="text" placeholder="3.16" value={thesisData.student.batch} />
+                                            id="grid-first-name" type="text" placeholder="3.16" value={thesisData.student?.batch} />
                                     </div>
                                 </div>
                                 <div className='col-span-1 p-2'>
@@ -207,7 +226,7 @@ const SelectedProposalDetails = ({setShowDetails}) => {
                                             Semester
                                         </label>
                                         <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                            id="grid-first-name" type="text" placeholder="7" value={thesisData.student.semester} />
+                                            id="grid-first-name" type="text" placeholder="7" value={thesisData.student?.semester} />
                                     </div>
                                 </div>
                                 <div className='col-span-1 p-2'>
@@ -216,7 +235,7 @@ const SelectedProposalDetails = ({setShowDetails}) => {
                                             Supervisor ID
                                         </label>
                                         <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                            id="grid-first-name" type="text" placeholder="1234" value={thesisData.thesis.facultyid} />
+                                            id="grid-first-name" type="text" placeholder="1234" value={thesisData.thesis?.facultyid} />
                                     </div>
                                 </div>
                                 <div className='col-span-1 p-2'>
@@ -225,7 +244,7 @@ const SelectedProposalDetails = ({setShowDetails}) => {
                                             Supervisor Name
                                         </label>
                                         <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                            id="grid-first-name" type="text" placeholder="M. Fayyaz" value={thesisData.thesis.supervisorname} />
+                                            id="grid-first-name" type="text" placeholder="M. Fayyaz" value={thesisData.thesis?.supervisorname} />
                                     </div>
                                 </div>
                             </div>
@@ -237,7 +256,7 @@ const SelectedProposalDetails = ({setShowDetails}) => {
                                             Title of Thesis
                                         </label>
                                         <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                            value={thesisData.thesis.thesistitle}
+                                            value={thesisData.thesis?.thesistitle}
                                             required
                                             type="synopsistitle"
                                             name="synopsistitle"
@@ -542,21 +561,3 @@ const SelectedProposalDetails = ({setShowDetails}) => {
     )
 }
 export default SelectedProposalDetails;
-
-
-// {
-//     "rollno": "20F-0245",
-//     "stdname": "Mustajab Ahmad",
-//     "batch": 20,
-//     "semester": 3,
-//     "thesistitle": "ATEMS",
-//     "facultyid": 6176,
-//     "facname": "Dr. Rabia",
-//     "significance": "Satisfactory",
-//     "understanding": "Satisfactory",
-//     "statement": "Satisfactory",
-//     "rationale": "Satisfactory",
-//     "timeline": "Satisfactory",
-//     "bibliography": "Satisfactory",
-//     "comments": "This is a well-written proposal with clear objectives and a detailed timeline."
-//   }

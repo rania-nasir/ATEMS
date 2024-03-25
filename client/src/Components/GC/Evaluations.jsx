@@ -1,11 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import Cookie from 'js-cookie';
+import { Toast } from 'primereact/toast';
 
 export default function Evaluations({ setShowDetails }) {
+
+    const toastTopCenter = useRef(null);
+
     const [allPendingProposals, setAllPendingProposals] = useState([]);
     const [allPendingMids, setAllPendingMids] = useState([]);
     const [allPendingFinals, setAllPendingFinals] = useState([]);
+
+    const [proposalmessage, setproposalmessage] = useState('');
+    const [midmessage, setmidmessage] = useState('');
+    const [finalmessage, setfinalmessage] = useState('');
+
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
+
 
     useEffect(() => {
         async function fetchAllPendingProposals() {
@@ -22,7 +35,8 @@ export default function Evaluations({ setShowDetails }) {
                     setAllPendingProposals(data.pendingProposals);
                     console.log(data.message);
                     if (data.message) {
-                        window.alert(data.message);
+                        setproposalmessage(data.message);
+                        // showMessage('info', data.message);
                     }
                 } else {
                     throw new Error('Failed to fetch data');
@@ -50,7 +64,9 @@ export default function Evaluations({ setShowDetails }) {
                     setAllPendingMids(data.pendingMidReviews);
                     console.log(data.message);
                     if (data.message) {
-                        window.alert(data.message);
+                        setmidmessage(data.message);
+                        showMessage('info', data.message);
+                        // window.alert(data.message);
                     }
                 } else {
                     throw new Error('Failed to fetch data');
@@ -78,7 +94,8 @@ export default function Evaluations({ setShowDetails }) {
                     setAllPendingFinals(data.pendingFinalReviews);
                     console.log(data.message);
                     if (data.message) {
-                        window.alert(data.message);
+                        setfinalmessage(data.message);
+                        // showMessage('info', data.message);
                     }
                 } else {
                     throw new Error('Failed to fetch data');
@@ -98,9 +115,10 @@ export default function Evaluations({ setShowDetails }) {
 
     return (
         <>
-            <div className='m-2 p-2 grid grid-cols-1'>
+            <Toast ref={toastTopCenter} position="top-center" />
+            <div className='m-2 grid grid-cols-1'>
                 <div className="mx-4">
-                    <h2 className="my-4 text-left text-xl font-bold tracking-tight text-gray-950">
+                    <h2 className="my-4 text-left text-2xl font-bold tracking-tight text-gray-900">
                         Thesis 1 Evaluations
                     </h2>
                 </div>
@@ -129,16 +147,16 @@ export default function Evaluations({ setShowDetails }) {
                             {allPendingProposals && allPendingProposals.length > 0 ? (
                                 allPendingProposals?.map(proposal => (
                                     <tr key={proposal.rollno} className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {proposal.rollno}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {proposal.stdname}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {proposal.batch}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             <NavLink to={`/viewPendingProposal/${proposal.rollno}`}
                                                 onClick={() => handleViewDetails()} // Call handleViewDetails
                                                 className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
@@ -149,8 +167,8 @@ export default function Evaluations({ setShowDetails }) {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="4" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
-                                        No pending proposals found
+                                    <td colSpan="4" className="px-6 py-4 font-medium text-gray-900 dark:text-white text-center">
+                                    {proposalmessage && proposalmessage.length > 0 ? proposalmessage : "Proposal evaluation permission record not found"}
                                     </td>
                                 </tr>
                             )}
@@ -184,19 +202,19 @@ export default function Evaluations({ setShowDetails }) {
                             {allPendingMids && allPendingMids.length > 0 ? (
                                 allPendingMids?.map(proposal => (
                                     <tr key={proposal.rollno} className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {proposal.rollno}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {proposal.stdname}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {proposal.thesistitle}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            <NavLink to={`/viewPendingMid/${proposal.rollno}`} 
-                                             onClick={() => handleViewDetails()} // Call handleViewDetails
-                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                            <NavLink to={`/viewPendingMid/${proposal.rollno}`}
+                                                onClick={() => handleViewDetails()} // Call handleViewDetails
+                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                 View Details
                                             </NavLink>
                                         </td>
@@ -204,8 +222,9 @@ export default function Evaluations({ setShowDetails }) {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="4" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
-                                        No pending Mid evaluations found
+                                    <td colSpan="4" className="px-6 py-4 font-medium text-gray-900 dark:text-white text-center">
+                                    {midmessage && midmessage.length > 0 ? midmessage : "Mid evaluation permission record not found"}
+
                                     </td>
                                 </tr>
                             )}
@@ -238,19 +257,19 @@ export default function Evaluations({ setShowDetails }) {
                             {allPendingFinals && allPendingFinals.length > 0 ? (
                                 allPendingFinals?.map(proposal => (
                                     <tr key={proposal.rollno} className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {proposal.rollno}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {proposal.stdname}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {proposal.thesistitle}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            <NavLink to={`/viewPendingFinal/${proposal.rollno}`} 
-                                             onClick={() => handleViewDetails()} // Call handleViewDetails
-                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                            <NavLink to={`/viewPendingFinal/${proposal.rollno}`}
+                                                onClick={() => handleViewDetails()} // Call handleViewDetails
+                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                 View Details
                                             </NavLink>
                                         </td>
@@ -258,8 +277,9 @@ export default function Evaluations({ setShowDetails }) {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="4" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
-                                        No pending Final evaluations found
+                                    <td colSpan="4" className="px-6 py-4 font-medium text-gray-900 dark:text-white text-center">
+                                    {finalmessage && finalmessage.length > 0 ? finalmessage : "Final evaluation permission record not found"}
+
                                     </td>
                                 </tr>
                             )}

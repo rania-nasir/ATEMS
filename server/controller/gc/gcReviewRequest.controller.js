@@ -203,7 +203,7 @@ const grantPropEvalPermission = async (req, res) => {
     try {
 
         if (isMidEvaluationApproved) {
-            return res.status(400).json({ error: 'Mid Evaluations are open. Proposal Evaluations cannot be approved at this time.' });
+            return res.json({ message: 'Mid Evaluations are open. Proposal Evaluations cannot be approved at this time.' });
         }
 
         const allApproved = await thesis.findOne({
@@ -317,10 +317,10 @@ const getGCProposalPermissionStatus = async (req, res) => {
             } else if (permissionValue === 'Revoke') {
                 res.json({ gcproposalpermission: false });
             } else {
-                res.json({ message: "No thesis record found" });
+                res.json({ message: "No Proposal Evaluation record found" });
             }
         } else {
-            res.json({ message: "No thesis record found" });
+            res.json({ message: "No Proposal Evaluation record found" });
         }
     } catch (error) {
         console.error('Error retrieving GC proposal permission:', error);
@@ -398,7 +398,7 @@ const gcAllPendingProposals = async (req, res) => {
                     res.json({ message: "Not all pending proposals have been evaluated by Supervisor and Internals" });
                 }
             } else {
-                res.json({ message: "Prposal are in th phase of Evaluation. Revoke the proposals permssion to complete the action" });
+                res.json({ message: "Proposals are in the phase of Evaluation. Revoke the proposals permssion to complete the action" });
             }
         } else {
             res.json({ message: "No thesis record found" });

@@ -707,7 +707,7 @@ const panelTime = async (req, res) => {
 
     }
 
-    res.json({ message: 'Time slots assigned successfully', panels: assignedPanels });
+    res.json({ message: 'Time slots assigned successfully. Schedule mail has been sent to all the respective members.', panels: assignedPanels });
 
     // Generate 1 Mail for Everyone
     const tableHTML = generateTableHtml(assignedPanels);
