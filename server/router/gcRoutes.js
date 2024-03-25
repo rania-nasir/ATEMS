@@ -95,6 +95,9 @@ gcRouter.get('/allMid2Evaluations', gcThesisTwo.getAllMid2Evaluations);
 gcRouter.get('/viewMid2Evaluation/:rollno', gcThesisTwo.getSelectedMid2EvaluationDetails);
 gcRouter.put('/approveMid2Comments/:rollno', gcThesisTwo.approveMid2Evaluation);
 
+gcRouter.get('/getAllReadyThesis', gcThesisTwo.getAllApprovedThesis);
+gcRouter.post('/addExternal', gcThesisTwo.assignExternalToThesis);
+
 
 //gcRouter.put('/grantFinalEvalPermission', gcThesisTwo.grantFinalEvalPermission);
 //gcRouter.put('/revokeFinalEvalPermission', gcThesisTwo.revokeFinalEvalPermission);
