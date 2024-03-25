@@ -30,6 +30,8 @@ import CommonSection from './Components/CommonSection';
 import MakeAnnouncement from './Components/GC/MakeAnnouncement';
 import ViewStudent from './Components/GC/ViewStudent';
 import ViewFaculty from './Components/GC/ViewFaculty';
+import UpdateFaculty from './Components/GC/UpdateFaculty';
+import UpdateStudent from './Components/GC/UpdateStudent'
 
 import StudentviewAnnouncement from './Components/Student/StudentviewAnnouncement';
 import ViewFeedback from './Components/Student/ViewFeedback';
@@ -252,6 +254,8 @@ function App() {
                                     <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
                                     <Route path='/viewfaculty' element={<ViewFaculty />} />
                                     <Route path='/viewstudent' element={<ViewStudent />} />
+                                    <Route path='/updateFaculty/:facultyid' element={<UpdateFaculty />} />
+                                    <Route path='/updateStudent/:rollno' element={<UpdateStudent />} />
                                     {/* {activeTitle === 'Home' && (
                                       <Route path='/' element={<GCDashboard />} />
                                     )} */}

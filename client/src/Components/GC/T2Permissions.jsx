@@ -35,7 +35,7 @@ export default function T2Permissions() {
     };
 
     const showMessage = (severity, label) => {
-        toastTopCenter.current.show({ severity, summary: label, detail: label, life: 3000 });
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
     };
 
     const handleMid2TogglePermission = () => {
@@ -65,15 +65,16 @@ export default function T2Permissions() {
             });
 
             const data = await response.json();
-            setMessage(data.message);
 
             // Conditionally update the permission status based on the response message
             if (data.message === 'Mid 2 evaluation permission granted for all records' ||
                 data.message === 'Mid 2 Evaluation permission revoked for all records') {
                 setMid2PermissionStatus(newStatus); // Updated status
+                showMessage('success', data.message);
             }
-
-            showMessage('success', message);
+            else{
+                showMessage('info', data.message);
+            }
 
             // Close the dialog after performing the action
             setMid2Visible(false);

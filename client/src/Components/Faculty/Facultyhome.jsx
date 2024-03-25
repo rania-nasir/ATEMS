@@ -90,7 +90,7 @@ const Facultyhome = () => {
                                             Mobile
                                         </dt>
                                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                            {facultyData.mobile}
+                                            <span>+92 {facultyData.mobile}</span>
                                         </dd>
                                     </div>
                                     <div className="sm:col-span-1">
