@@ -18,7 +18,7 @@ export default function T2GetRegistration({ setShowDetails }) {
                     const data = await response.json();
                     setRegistrationData(data);
 
-                    // const rowData = data.map(item => item.Studentsid);
+                    // const rowData = data?.map(item => item.Studentsid);
                     console.log('Students Data -> ', data)
 
                 } else {
@@ -70,7 +70,7 @@ export default function T2GetRegistration({ setShowDetails }) {
                         <tbody>
                             {RegistrationData && RegistrationData.allStudents.length > 0 ? (
 
-                                RegistrationData.allStudents.map(rowData => (
+                                RegistrationData.allStudents?.map(rowData => (
                                     <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={rowData.Studentsid}>
                                         <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {rowData.rollno}

@@ -61,7 +61,7 @@ const NavbarDefault = () => {
     }, []);
 
     const infoToast = () => {
-        toastTopCenter.current.show({ severity: 'info', detail: 'You are already on Home Page', life: 3000 });
+        toastTopCenter.current.show({ severity: 'info', detail: 'You are on Home Page', life: 3000 });
     };
 
     const handleLogoClick = () => {

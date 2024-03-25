@@ -129,7 +129,7 @@ const EvaluationMid1Details = ({setShowDetails}) => {
 
                                 <dl>
                                     {/* Render selectedMid details here */}
-                                    {selectedMid.map((proposal, index) => (
+                                    {selectedMid?.map((proposal, index) => (
                                         <>
 
                                             <div key={index} className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

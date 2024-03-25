@@ -45,7 +45,7 @@ export default function GetThesisDetails({ setShowDetails }) {
     const [selectedInternal1, setselectedInternal1] = useState(null);
     const [selectedInternal2, setselectedInternal2] = useState(null);
 
-    const selectedValue = ThesisData.facultyList ? ThesisData.facultyList.map(item => ({ label: item.name, value: item.name })) : [];
+    const selectedValue = ThesisData.facultyList ? ThesisData.facultyList?.map(item => ({ label: item.name, value: item.name })) : [];
 
     const showMessage = (severity, label) => {
         toastTopCenter.current.show({ severity, summary: label, life: 3000 });

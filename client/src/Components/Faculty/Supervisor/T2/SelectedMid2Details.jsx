@@ -234,7 +234,7 @@ const SelectedMid2Details = ({ setShowDetails }) => {
                                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Task Titles
                                     </label>
-                                    {thesisDetails.tasktitles && thesisDetails.tasktitles.map((taskTitle, index) => (
+                                    {thesisDetails.tasktitles && thesisDetails.tasktitles?.map((taskTitle, index) => (
                                         <input key={index} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                             readOnly
                                             type="text"
@@ -249,7 +249,7 @@ const SelectedMid2Details = ({ setShowDetails }) => {
                                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Goals/Objectives
                                     </label>
-                                    {thesisDetails.objectives && thesisDetails.objectives.map((objective, index) => (
+                                    {thesisDetails.objectives && thesisDetails.objectives?.map((objective, index) => (
                                         <input key={index} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                             readOnly
                                             type="text"
@@ -264,7 +264,7 @@ const SelectedMid2Details = ({ setShowDetails }) => {
                                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Completion Date
                                     </label>
-                                    {thesisDetails.completiondates && thesisDetails.completiondates.map((completionDate, index) => (
+                                    {thesisDetails.completiondates && thesisDetails.completiondates?.map((completionDate, index) => (
                                         <input key={index} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                             readOnly
                                             type="text"

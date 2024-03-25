@@ -42,7 +42,7 @@ export default function GetSynopsisDetails({ setShowDetails }) {
         fetchSynopsisData();
     }, [synopsisId]);
 
-    const selectedValue = synopsisData.facultyList.map(item => ({ label: item.name, value: item.name }))
+    const selectedValue = synopsisData.facultyList?.map(item => ({ label: item.name, value: item.name }))
 
     const showMessage = (severity, label) => {
         toastTopCenter.current.show({ severity, summary: label, life: 3000 });

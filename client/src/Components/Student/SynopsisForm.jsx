@@ -22,7 +22,7 @@ export default function SynopsisForm() {
                     console.log(data.allfaculties);
 
                     // Extracting only the names from allFaculties
-                    const names = data.allFaculties.map(faculty => faculty.name);
+                    const names = data.allFaculties?.map(faculty => faculty.name);
                     Fdata = names; // Update the exported FacultyData
                     
                     console.log('Synopsis form Fdata : ',Fdata);

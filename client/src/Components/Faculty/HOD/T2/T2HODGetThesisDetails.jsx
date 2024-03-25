@@ -116,7 +116,7 @@ export default function T2HODGetThesisDetails({ setShowDetails }) {
                                             Internals ID
                                         </dt>
                                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                            {ThesisData.studentDetails.internalsid.map((internal, index) => (
+                                            {ThesisData.studentDetails.internalsid?.map((internal, index) => (
                                                 <div className='my-1' key={index}>{internal}</div>
                                             ))}
                                         </dd>
@@ -126,7 +126,7 @@ export default function T2HODGetThesisDetails({ setShowDetails }) {
                                             InternalS Name:
                                         </dt>
                                         <dd className="text-sm text-gray-900">
-                                            {ThesisData.studentDetails.internals.map((internal, index) => (
+                                            {ThesisData.studentDetails.internals?.map((internal, index) => (
                                                 <div className='my-1' key={index}>{internal}</div>
                                             ))}
                                         </dd>
@@ -149,7 +149,7 @@ export default function T2HODGetThesisDetails({ setShowDetails }) {
                                             Task Title:
                                         </dt>
                                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                            {ThesisData.studentDetails.tasktitles.map((task, index) => (
+                                            {ThesisData.studentDetails.tasktitles?.map((task, index) => (
                                                 <div className='my-1' key={index}>{task}</div>
                                             ))}
                                         </dd>
@@ -159,7 +159,7 @@ export default function T2HODGetThesisDetails({ setShowDetails }) {
                                             Goal/ Objectives:
                                         </dt>
                                         <dd className="text-sm text-gray-900">
-                                            {ThesisData.studentDetails.objectives.map((obj, index) => (
+                                            {ThesisData.studentDetails.objectives?.map((obj, index) => (
                                                 <div className='my-1' key={index}>{obj}</div>
                                             ))}
                                         </dd>
@@ -169,7 +169,7 @@ export default function T2HODGetThesisDetails({ setShowDetails }) {
                                             Completion Date:
                                         </dt>
                                         <dd className="text-sm text-gray-900">
-                                            {ThesisData.studentDetails.completiondates.map((date, index) => (
+                                            {ThesisData.studentDetails.completiondates?.map((date, index) => (
                                                 <div className='my-1' key={index}>{date}</div>
                                             ))}
                                         </dd>
