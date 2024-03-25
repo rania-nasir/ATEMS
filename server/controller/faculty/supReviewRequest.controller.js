@@ -585,7 +585,7 @@ const getTitleChangeRequests = async (req, res) => {
             res.json({ pendingTitleChangeRequests });
         }
         else {
-            res.status(404).json({ error: 'No pending title change requests found' });
+            res.json({ message: 'No pending title change requests found' });
         }
 
 
@@ -612,7 +612,7 @@ const getTitleChangeDetails = async (req, res) => {
             res.json(TitleRequestDetails);
         }
         else {
-            res.status(404).json({ error: 'No pending title change requests found' });
+            res.json({ message: 'No pending title change requests found' });
         }
 
     } catch (error) {
@@ -647,14 +647,14 @@ const ApproveTitleChangeSupervisor = async (req, res) => {
                 { where: { rollno: rollno } }
             );
             if (updatedRows > 0) {
-                res.json('Request Approved and Forwarded to GC');
+                res.json({ message: 'Request Approved and Forwarded to GC'});
             }
             else {
-                res.status(500).json({ error: 'Error approving pending title request' });
+                res.json({ message: 'Error approving pending title request' });
             }
         }
         else {
-            res.status(404).json({ error: 'No pending title change requests found' });
+            res.json({ message: 'No pending title change requests found' });
         }
 
 
@@ -693,11 +693,11 @@ const RejectTitleChangeSupervisor = async (req, res) => {
                 res.json('Request Rejected');
             }
             else {
-                res.status(500).json({ error: 'Error rejecting pending title request' });
+                res.json({ message: 'Error rejecting pending title request' });
             }
         }
         else {
-            res.status(404).json({ error: 'No pending title change requests found' });
+            res.json({ message: 'No pending title change requests found' });
         }
 
 
@@ -720,7 +720,7 @@ const getSupervisorChangeRequests = async (req, res) => {
             }
         });
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
         const pendingSupervisorChangeRequests = await supchangerequests.findAll({
@@ -731,7 +731,7 @@ const getSupervisorChangeRequests = async (req, res) => {
         });
 
         if (!pendingSupervisorChangeRequests) {
-            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+            return res.json({ message: 'No pending supervisor change requests found' });
         }
 
         res.json(pendingSupervisorChangeRequests);
@@ -778,7 +778,7 @@ const getSupervisorChangeDetails = async (req, res) => {
         });
 
         if (!supervisorRequestDetails) {
-            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+            return res.json({ message: 'No pending supervisor change requests found' });
         }
 
         res.json(supervisorRequestDetails);
@@ -834,14 +834,14 @@ const approveSupervisorChangeSup = async (req, res) => {
             );
             if (updatedRows > 0) {
 
-                return res.json('Supervisor Change Request Approved and forwarded to GC');
+                return res.json({ message: 'Supervisor Change Request Approved and forwarded to GC'});
             }
             else {
-                return res.status(500).json({ error: 'Error approving pending supervisor change request' });
+                return res.json({ message: 'Error approving pending supervisor change request' });
             }
         }
         else {
-            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+            return res.json({ message: 'No pending supervisor change requests found' });
         }
     } catch (error) {
         console.error('Error approving pending title request:', error);
@@ -894,14 +894,14 @@ const rejectSupervisorChangeSup = async (req, res) => {
             );
             if (updatedRows > 0) {
 
-                return res.json('Supervisor Change Request Rejected');
+                return res.json({ message: 'Supervisor Change Request Rejected'});
             }
             else {
-                return res.status(500).json({ error: 'Error rejecting pending supervisor change request' });
+                return res.json({ message: 'Error rejecting pending supervisor change request' });
             }
         }
         else {
-            return res.status(404).json({ error: 'No pending supervisor change requests found' });
+            return res.json({ message: 'No pending supervisor change requests found' });
         }
     } catch (error) {
         console.error('Error approving pending title request:', error);
@@ -940,7 +940,7 @@ const viewAllThesisRegistered = async (req, res) => {
 
     } catch (error) {
         console.error('Error viewing supervisor change request : ', error);
-        return res.status(500).json({ message: 'An error occurred while viewing form for supervisor change' });
+        return res.json({ message: 'An error occurred while viewing form for supervisor change' });
     }
 }
 
@@ -970,7 +970,7 @@ const selectThesisToRequestChange = async (req, res) => {
         });
 
         if (!selectedThesis) {
-            return res.status(403).json({ error: 'You are not supervising any thesis' });
+            return res.json({ message: 'You are not supervising any thesis' });
         };
 
         let SupervisorList;
@@ -987,7 +987,7 @@ const selectThesisToRequestChange = async (req, res) => {
 
     } catch (error) {
         console.error('Error viewing supervisor change request : ', error);
-        return res.status(500).json({ message: 'An error occurred while viewing form for supervisor change' });
+        return res.json({ message: 'An error occurred while viewing form for supervisor change' });
     }
 }
 
@@ -1009,7 +1009,7 @@ const submitSupervisorChangeForm = async (req, res) => {
         })
 
         if (!selectedThesis) {
-            return res.status(403).json({ error: 'You are not supervising any thesis' });
+            return res.json({ message: 'You are not supervising any thesis' });
         }
 
         const studentData = await students.findOne({
@@ -1020,7 +1020,7 @@ const submitSupervisorChangeForm = async (req, res) => {
         });
 
         if (!studentData) {
-            return res.status(404).json({ message: 'Student not found' });
+            return res.json({ message: 'Student not found' });
         }
 
         const supervisorData = await faculties.findOne({
@@ -1030,7 +1030,7 @@ const submitSupervisorChangeForm = async (req, res) => {
         })
 
         if (!supervisorData) {
-            return res.status(404).json({ message: 'Supervisor not found' });
+            return res.json({ message: 'Supervisor not found' });
         }
 
         const facultyList = await faculties.findAll({
@@ -1040,12 +1040,12 @@ const submitSupervisorChangeForm = async (req, res) => {
         const newSupervisorid = facultyList.find(faculty => faculty.name === newSupervisorName)?.facultyid;
 
         if (!newSupervisorid) {
-            return res.status(400).json({ error: 'Invalid supervisor name' });
+            return res.json({ message: 'Invalid supervisor name' });
         }
 
         // Validating that current supervisor and new supervisor are not the same
         if (selectedThesis.facultyId === newSupervisorid) {
-            return res.status(400).json({ error: 'Current Supervisor and New Supervisor must be different' });
+            return res.json({ message: 'Current Supervisor and New Supervisor must be different' });
         }
 
         await supchangerequests.create({
@@ -1070,7 +1070,7 @@ const submitSupervisorChangeForm = async (req, res) => {
             res.json({ message: 'Request for Supervisor change successfully submitted', request: newSupervisorChangeRequest });
         }
         else {
-            res.status(500).json({ message: 'An error occurred while submitting request for supervisor change' });
+            res.json({ message: 'An error occurred while submitting request for supervisor change' });
         }
 
     } catch (error) {

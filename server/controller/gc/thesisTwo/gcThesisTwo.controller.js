@@ -61,7 +61,7 @@ const approveThesisTwoRegRequest = async (req, res) => {
         });
 
         if (!studentRegistration) {
-            return res.status(404).json({ message: 'No pending request found for this student' });
+            return res.json({ message: 'No pending request found for this student' });
         }
 
 
@@ -106,13 +106,17 @@ const grantMidEvalPermission = async (req, res) => {
             );
 
             res.json({ message: 'Mid 2 evaluation permission granted for all records' });
+            
         } else if (!allRecordsApproved) {
             res.json({ message: 'Some registrations are pending for relevant approvals' });
+
         } else if (!allRecordsHaveThesisTwoReport) {
             res.json({ message: 'Some students have not uploaded their thesis two report file yet. Permission cannot be granted.' });
+
         } else {
             res.json({ message: 'Some registrations are pending for relevant approvals and/or thesis two report file upload.' });
         }
+
     } catch (error) {
         console.error('Error granting mid 2 evaluation permission:', error);
         res.status(500).json({ message: 'An error occurred while granting mid-evaluation permission' });
@@ -320,7 +324,7 @@ const getSelectedMid2EvaluationDetails = async (req, res) => {
         if (selectedMidEvaluation) {
             res.json({ selectedMidEvaluation });
         } else {
-            res.status(404).json({ error: 'Mid Evaluation not found' });
+            res.json({ message: 'Mid Evaluation not found' });
         }
     } catch (error) {
         console.error('Error fetching mid evaluation details:', error);

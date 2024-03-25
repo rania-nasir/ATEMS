@@ -41,7 +41,7 @@ const getThesis2StudentDetails = async (req, res) => {
         });
 
         if (!studentDetails) {
-            return res.status(404).json({ message: 'No approved request found for this student' });
+            return res.json({ message: 'No approved request found for this student' });
         }
 
         res.json({ studentDetails });
@@ -68,7 +68,7 @@ const approveThesis2Request = async (req, res) => {
         });
 
         if (!studentRegistration) {
-            return res.status(404).json({ message: 'No pending request found for this student' });
+            return res.json({ message: 'No pending request found for this student' });
         }
 
 
@@ -104,7 +104,7 @@ const supthesis2AllMidEvals = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
         }
 
 
@@ -169,7 +169,7 @@ const internalthesis2AllMidEvals = async (req, res) => {
         });
 
         if (!faculty) {
-            return res.status(403).json({ error: 'Forbidden - Insufficient permissions' });
+            return res.json({ error: 'Forbidden - Insufficient permissions' });
         }
 
 
@@ -203,7 +203,7 @@ const internalthesis2AllMidEvals = async (req, res) => {
 
         // Check if mid2EvaluationPermission is true
         if (!mid2Evaluation || mid2Evaluation.gcmidevalpermission !== true) {
-            return res.status(403).json({ error: 'Mid evaluations are not open yet.' });
+            return res.json({ message: 'Mid evaluations are not open yet.' });
         }
 
         return res.json(examinableThesisWithPermission);
@@ -234,7 +234,7 @@ const mid2EvalDetails = async (req, res) => {
         });
 
         if (registrationsThesis2.length === 0) {
-            return res.status(404).json({ error: 'No evaluations found for this student' });
+            return res.json({ message: 'No evaluations found for this student' });
         }
 
         return res.json(registrationsThesis2);
@@ -277,7 +277,7 @@ const evaluateMid2 = async (req, res) => {
 
         const existingEvaluation = await twomidevaluations.findOne({ where: { facultyid, rollno } });
         if (existingEvaluation) {
-            res.status(400).json({ error: 'You have already evaluated this thesis proposal' });
+            res.json({ message: 'You have already evaluated this thesis proposal' });
             return;
         }
 
@@ -311,7 +311,7 @@ const evaluateMid2 = async (req, res) => {
             grade
         });
 
-        return res.status(200).json({ message: 'Mid 2 evaluation completed successfully', evaluation: newEvaluation });
+        return res.json({ message: 'Mid 2 evaluation completed successfully', evaluation: newEvaluation });
     } catch (error) {
         console.error('Error evaluating mid 2:', error);
         res.status(500).json({ error: 'Internal server error' });
