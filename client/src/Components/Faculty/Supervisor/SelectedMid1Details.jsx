@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import Cookie from 'js-cookie';
+import { Toast } from 'primereact/toast';
 
-const SelectedMid1Details = ({ setShowDetails}) => {
+const SelectedMid1Details = ({ setShowDetails }) => {
     const thesisId = useParams().thesisId;
     const userId = Cookie.get('userId');
 
+    const toastTopCenter = useRef(null);
 
     const [thesisDetails, setThesisDetails] = useState({});
     const [studentDetails, setStudentDetails] = useState({});
@@ -23,6 +25,9 @@ const SelectedMid1Details = ({ setShowDetails}) => {
         setStateFunction(event.target.value);
     };
 
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
     // Retrieve thesis and student details from the backend
     useEffect(() => {
         const fetchData = async () => {
@@ -52,6 +57,17 @@ const SelectedMid1Details = ({ setShowDetails}) => {
     const handleSubmit = async (event) => {
         // event.preventDefault();
         try {
+
+            // Check if any required field is empty
+            if (!literatureReviewRank || !problemGapIdentified || !problemClearlyDefined || !problemPlacement || !solutionUnderstanding || !comment) {
+                showMessage('error', 'Please fill in all the fields before submitting.');
+                return; // Exit the function if any field is empty
+            }
+
+            if (literatureReviewRank === 'c' && !paper1 && !paper2) {
+                showMessage('error', 'Please fill in the paper before submitting.');
+                return; // Exit the function if any field is empty
+            }
 
             const facultyResponse = await fetch(`http://localhost:5000/faculty/showFacData/${userId}`, {
                 method: 'GET',
@@ -91,15 +107,25 @@ const SelectedMid1Details = ({ setShowDetails}) => {
                     })
                 });
 
-                const data = response.json()
+                // Await the response.json() call
+                const data = await response.json(); // Add 'await' here
+
                 if (!response.ok) {
                     throw new Error('Failed to submit evaluation');
                 }
                 // Handle successful submission, e.g., show a success message
                 console.log(data);
-                window.alert(data.message)
-                setShowDetails(false);
-                console.log('Evaluation submitted successfully');
+                if (data.message === "Mid evaluation and feedback stored successfully") {
+                    showMessage('success', data.message);
+                    setTimeout(() => {
+                        setShowDetails(false);
+                    }, 3000);
+                    console.log('Evaluation submitted successfully');
+                }
+                else {
+                    showMessage('info', data.message);
+                }
+
             } else {
                 throw new Error('Failed to fetch faculty data');
             }
@@ -111,13 +137,14 @@ const SelectedMid1Details = ({ setShowDetails}) => {
 
     return (
         <>
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="w-full my-4">
+            <Toast ref={toastTopCenter} position="top-center" />
+            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 lg:px-8">
+                <div className="w-full my-2">
                     <h2 className="text-center text-2xl tracking-tight text-gray-950 font-bold">
-                        Thesis 1 Mid Evaluation Form
+                        MS Thesis 1 Mid Evaluation Form
                     </h2>
                 </div>
-                <div className="mt-6 sm:mx-auto">
+                <div className="my-4 sm:mx-auto">
                     <form className="sm:mx-auto" enctype="multipart/form-data">
                         <div className='grid grid-cols-3'>
                             <div className='col-span-1 p-2'>
@@ -166,29 +193,16 @@ const SelectedMid1Details = ({ setShowDetails}) => {
                                 </div>
                             </div>
                             <div className='col-span-1 p-2'>
-                                <div className='col-span-1 p-2'>
-                                    <div className='w-full px-3'>
-                                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
-                                            View Proposal File
-                                        </label>
-                                        <a href={`http://localhost:5000/${thesisDetails.proposalfilename}`} target="_blank" rel="noopener noreferrer" type='application/pdf'>
-                                            View Proposal
-                                        </a>
-
-                                    </div>
-                                </div>
-
-                            </div>
-                            {/* <div className='col-span-1 p-2'>
                                 <div className='w-full px-3'>
                                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                                         Supervisor Name
                                     </label>
                                     <input className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                         id="grid-first-name" type="text" placeholder="M. Fayyaz"
+                                        value={thesisDetails.supervisorname}
                                     />
                                 </div>
-                            </div> */}
+                            </div>
                         </div>
 
                         <div className='grid grid-cols-2'>

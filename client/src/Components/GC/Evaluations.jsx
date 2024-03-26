@@ -65,7 +65,7 @@ export default function Evaluations({ setShowDetails }) {
                     console.log(data.message);
                     if (data.message) {
                         setmidmessage(data.message);
-                        showMessage('info', data.message);
+                        // showMessage('info', data.message);
                         // window.alert(data.message);
                     }
                 } else {
