@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Cookie from 'js-cookie';
 import { NavLink } from 'react-router-dom';
 import { Button } from 'primereact/button';
@@ -6,6 +6,7 @@ import { Dialog } from 'primereact/dialog';
 import AddFaculty from './AddFaculty';
 
 export default function ViewFaculty() {
+
     const [FacultyData, setFacultyData] = useState([]);
     const [visible, setVisible] = useState(false);
     const [selectedFacultyId, setSelectedFacultyId] = useState(null);

@@ -98,9 +98,6 @@ export default function ViewStudent() {
                                     Email
                                 </th>
                                 <th scope="col" class="px-3 py-3">
-                                    Mobile
-                                </th>
-                                <th scope="col" class="px-3 py-3">
                                     Credit Hours
                                 </th>
                                 <th scope="col" class="px-3 py-3">
@@ -108,9 +105,6 @@ export default function ViewStudent() {
                                 </th>
                                 <th scope="col" class="px-3 py-3">
                                     Batch
-                                </th>
-                                <th scope="col" class="px-3 py-3">
-                                    Semester
                                 </th>
                                 <th scope="col" class="px-3 py-3">
                                     Program
@@ -142,9 +136,6 @@ export default function ViewStudent() {
                                             {rowData.email}
                                         </td>
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
-                                            {rowData.mobile}
-                                        </td>
-                                        <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.credithours}
                                         </td>
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
@@ -152,9 +143,6 @@ export default function ViewStudent() {
                                         </td>
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.batch}
-                                        </td>
-                                        <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
-                                            {rowData.semester}
                                         </td>
                                         <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.program}

@@ -249,7 +249,7 @@ export default function GetSynopsisDetails({ setShowDetails }) {
                                     name="researcharea1"
                                     value={researchArea1} // Assuming researchArea1 is a state variable
                                     onChange={(e) => setResearchArea1(e.target.value)}
-                                    className="mb-6 w-full h-11 bg-gray-200 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    className="mb-6 px-2 w-full h-11 bg-gray-200 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                 />
                             </div>
                         </div>
@@ -277,7 +277,7 @@ export default function GetSynopsisDetails({ setShowDetails }) {
                                     name="researcharea2"
                                     value={researchArea2} // Assuming researchArea2 is a state variable
                                     onChange={(e) => setResearchArea2(e.target.value)}
-                                    className="mb-6 w-full h-12 bg-gray-200 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    className="mb-6 px-2 w-full h-12 bg-gray-200 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                 />
                             </div>
                         </div>

@@ -1,14 +1,22 @@
 import React, { useRef, useState } from 'react';
 import Cookies from 'js-cookie';
+import { Toast } from 'primereact/toast';
 
 const AddStudent = () => {
+    const toastTopCenter = useRef(null);
+
     const fileUploadRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileName, setFileName] = useState('');
 
+
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
+
     const PostData = async () => {
         if (!selectedFile) {
-            alert('Please select a file');
+            showMessage('error', "Please select a file")
             return;
         }
 
@@ -30,8 +38,13 @@ const AddStudent = () => {
 
             if (response.ok) {
                 const result = JSON.parse(responseBody);
-                alert(result.message);
-                window.location.reload();
+                if (result.message === "File uploaded successfully") {
+                    showMessage('success', result.message)
+                    window.location.reload();
+                }
+                else {
+                    showMessage('error', result.message)
+                }
             } else {
                 const error = JSON.parse(responseBody);
                 alert(`Error: ${error.message}`);
@@ -54,6 +67,9 @@ const AddStudent = () => {
     };
 
     return (
+        <>
+            <Toast ref={toastTopCenter} position="top-center" />
+
         <div className='flex justify-center px-10 my-10 items-center'>
             <div className="flex justify-center items-center w-[60%]">
                 <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-20 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
@@ -80,6 +96,7 @@ const AddStudent = () => {
                 Upload Students
             </button>
         </div>
+        </>
     );
 };
 

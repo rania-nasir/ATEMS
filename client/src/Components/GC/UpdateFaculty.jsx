@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { Checkbox } from "primereact/checkbox";
 import Cookie from 'js-cookie';
+import { Toast } from 'primereact/toast';
 
 // ... (your import statements)
 
 function UpdateFaculty() {
     const { facultyid } = useParams();
     const navigate = useNavigate();
+    const toastTopCenter = useRef(null);
 
     const [FacultyData, setFacultyData] = useState({});
     const [formData, setFormData] = useState({
@@ -71,6 +73,11 @@ function UpdateFaculty() {
         }
     };
 
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
+
+
     const handleInputChange = (e) => {
         setFormData({
             ...formData,
@@ -93,15 +100,18 @@ function UpdateFaculty() {
                 body: JSON.stringify(updatedFormData),
             });
 
+            const data = await response.json();
+
             if (response.ok) {
-                const updatedData = await response.json();
-                console.log('Faculty data updated successfully: ', updatedData);
-                window.alert('Faculty data updated successfully');
-                navigate('/viewFaculty');
+               
+                console.log('Faculty data updated successfully: ', data.message);
+                showMessage('success', data.message);
+                setTimeout(() => {
+                   navigate('/viewFaculty'); // Navigate to '/viewStudent' after 3 seconds
+                }, 3000); // Delay for 3 seconds (3000 milliseconds)
             } else {
-                const errorMessage = await response.text();
-                console.error('Error updating Faculty data:', errorMessage);
-                window.alert('Error updating faculty data: ' + errorMessage);
+                console.error('Error updating Faculty data:', data.message);
+                showMessage('error', data.message);
             }
         } catch (error) {
             console.error('Failed to update Faculty data: ', error);
@@ -110,6 +120,7 @@ function UpdateFaculty() {
 
     return (
         <>
+        <Toast ref={toastTopCenter} position="top-center" />
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8"
             >
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
