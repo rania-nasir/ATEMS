@@ -42,27 +42,27 @@ export default function T2GetRegistration({ setShowDetails }) {
             <div className='m-2 p-2 grid grid-cols-1'>
 
                 <div className="sm:mx-auto w-full">
-                    <h2 className="m-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                    <h2 className="m-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                         MS Thesis/ Project 2 Registration Students Requests
                     </h2>
                 </div>
                 <div className="overflow-x-auto m-6 shadow-md sm:rounded-lg col-span-1">
-                    <table className="table-auto text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <table className="table-auto w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th scope="col" className="px-4 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Student Roll Number
                                 </th>
-                                <th scope="col" className="px-4 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Student Name
                                 </th>
-                                <th scope="col" className="px-4 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Thesis Title
                                 </th>
-                                <th scope="col" className="px-4 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Internals
                                 </th>
-                                <th scope="col" className="px-4 py-3">
+                                <th scope="col" className="px-6 py-3">
                                     Action
                                 </th>
                             </tr>
@@ -72,19 +72,19 @@ export default function T2GetRegistration({ setShowDetails }) {
 
                                 RegistrationData.allStudents?.map(rowData => (
                                     <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={rowData.Studentsid}>
-                                        <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.rollno}
                                         </td>
-                                        <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.stdname}
                                         </td>
-                                        <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.thesistitle}
                                         </td>
-                                        <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.internals[0]}, {rowData.internals[1]}
                                         </td>
-                                        <td className="px-4 py-4">
+                                        <td className="px-6 py-4">
                                             <NavLink
                                                 to={`/getThesis2StudentDetails/${rowData.rollno}`}
                                                 onClick={() => handleViewDetails()} // Call handleViewDetails
@@ -96,7 +96,7 @@ export default function T2GetRegistration({ setShowDetails }) {
                                 ))
                             ) : (
                                 <tr>
-                                    <td className='px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white' colSpan="6">No Students found</td>
+                                    <td className='px-6 py-4 font-medium text-gray-900 dark:text-white' colSpan="6">No Students found</td>
                                 </tr>
                             )}
 

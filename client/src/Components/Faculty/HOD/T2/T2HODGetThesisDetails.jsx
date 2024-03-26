@@ -1,12 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import Cookie from 'js-cookie';
+import { Toast } from 'primereact/toast';
 
 export default function T2HODGetThesisDetails({ setShowDetails }) {
 
+    const toastTopCenter = useRef(null);
     const { rollno } = useParams();
 
     const [ThesisData, setThesisData] = useState({ studentDetails: null });
+
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
+
 
     useEffect(() => {
         async function fetchThesisData() {
@@ -48,24 +55,23 @@ export default function T2HODGetThesisDetails({ setShowDetails }) {
         console.log("Response data:", data); // Log the response data
 
         if (res.status === 200) {
-            if (data.message === "Invalid Credentials") {
-                window.alert(data.message);
+            if (data.message === "Request approved successfully. Email sent to the respective members.") {
+                showMessage('success', data.message);
                 console.log(data.message);
             } else {
-                window.alert(data.message);
-                console.log("Accepted Thesis Successfully");
-                // navigate('/ReviewRequest')
-                setShowDetails(false);
+                showMessage('info', data.message);
+                console.log(data.message);
             }
         } else {
-            window.alert(data.message);
-            console.log(data.message);
+            showMessage('error', "System Error. Please try later!");
+            console.log("Invalid Input", data);
         }
     }
 
     return (
         <>
-            <div className='flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
+         <Toast ref={toastTopCenter} position="top-center" />
+            <div className='flex flex-1 flex-col justify-center items-center px-6 py-2 lg:px-8'>
                 <div className="mt-2 bg-gray-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
                     <div className="px-4 py-5 sm:px-6">
                         <p className="max-w-2xl text-md text-white">

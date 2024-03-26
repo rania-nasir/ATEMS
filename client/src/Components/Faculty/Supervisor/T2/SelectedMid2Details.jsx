@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Cookie from 'js-cookie';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
+import { Toast } from 'primereact/toast';
 
 const SelectedMid2Details = ({ setShowDetails }) => {
     const { rollno } = useParams();
     const userId = Cookie.get('userId');
+    const toastTopCenter = useRef(null);
 
     const [thesisDetails, setThesisDetails] = useState({});
 
@@ -32,6 +34,10 @@ const SelectedMid2Details = ({ setShowDetails }) => {
     const [visible, setVisible] = useState(false);
 
     console.log("The roll no from use params : ", rollno)
+
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
 
     // Retrieve thesis and student details from the backend
     useEffect(() => {
@@ -69,6 +75,13 @@ const SelectedMid2Details = ({ setShowDetails }) => {
 
     const handleSubmit = async (event) => {
         // event.preventDefault();
+
+        if (!englishlevel || !abstract || !introduction || !research || !literaturereview || !researchgap || !researchproblem || !summary || !researchcontribution || !worktechniality || !completeevaluation || !relevantrefs || !format || !visuals || !comments || !externaldefense || !suggestions | !grade) {
+            showMessage('error', 'Please fill all the fields before evaluating');
+            setVisible(false);
+            return;
+        }
+
         try {
 
             const facultyResponse = await fetch(`http://localhost:5000/faculty/showFacData/${userId}`, {
@@ -118,15 +131,19 @@ const SelectedMid2Details = ({ setShowDetails }) => {
                     })
                 });
 
-                const data = response.json()
-                if (!response.ok) {
-                    throw new Error('Failed to submit evaluation');
+                const data = await response.json()
+                if (data.message === "Mid 2 evaluation completed successfully") {
+                    showMessage('success', data.message);
+                    setVisible(false);
+                    setTimeout(() => {
+                        setShowDetails(false);
+                    }, 3000);
+                    console.log('Mid 2 evaluation completed successfully');
                 }
-                // Handle successful submission, e.g., show a success message
-                console.log(data);
-                window.alert(data)
-                setShowDetails(false);
-                console.log('Evaluation submitted successfully');
+                else {
+                    showMessage('info', data.message);
+                    setVisible(false);
+                }
             } else {
                 throw new Error('Failed to fetch faculty data');
             }
@@ -149,13 +166,14 @@ const SelectedMid2Details = ({ setShowDetails }) => {
 
     return (
         <>
+         <Toast ref={toastTopCenter} position="top-center" />
             <Dialog visible={visible} modal header={headerElement} footer={footerContent} style={{ width: '30rem' }} onHide={() => setVisible(false)}>
                 <p className="m-0">
                     Are you sure you want to grade this?
                 </p>
             </Dialog>
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="w-full my-4">
+            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 lg:px-8">
+                <div className="w-full my-2">
                     <h2 className="text-center text-2xl tracking-tight text-gray-950 font-bold">
                         MS Thesis/ Project 2 Mid Evaluation Form
                     </h2>
@@ -274,7 +292,7 @@ const SelectedMid2Details = ({ setShowDetails }) => {
                                     ))}
                                 </div>
                             </div>
-                            <div className='col-span-6 py-1'>
+                            {/* <div className='col-span-6 py-1'>
                                 <div className='w-full px-3'>
                                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                                         for="grid-first-name">
@@ -284,7 +302,7 @@ const SelectedMid2Details = ({ setShowDetails }) => {
                                         View Proposal
                                     </a>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="my-6 bg-gray-600 shadow overflow-hidden sm:rounded-lg w-full">
                             <div className="px-4 py-5 sm:px-6">

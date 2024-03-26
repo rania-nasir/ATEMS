@@ -58,16 +58,16 @@ export default function T2MainSection() {
                 )}
                 {userType === 'faculty' && (
                     <>
-                        {activeTitle === "Supervisor Management" && (
+                        {activeTitle === "Supervisor" && (
                             <SupervisorComp />
                         )}
-                        {activeTitle === "Internal Management" && (
+                        {activeTitle === "Internal Examiner" && (
                             <InternalComp />
                         )}
-                        {activeTitle === "MSRC Management" && (
+                        {activeTitle === "MSRC Committee" && (
                             <MSRCComp />
                         )}
-                        {activeTitle === "HOD Management" && (
+                        {activeTitle === "Head of Department" && (
                             <HODComp />
                         )}
                         {/* </Routes> */}

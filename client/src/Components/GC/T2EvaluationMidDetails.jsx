@@ -1,17 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import Cookies from 'js-cookie';
+import { Toast } from 'primereact/toast';
 
 const T2MidEvaluationDetails = ({ setShowDetails }) => {
     const [selectedMid, setSelectedMid] = useState(null);
     const userId = useParams();
+    const toastTopCenter = useRef(null);
 
     const [grade, setgrade] = useState("");
     const [visible, setVisible] = useState(false);
 
     const navigate = useNavigate();
+
+
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
 
     useEffect(() => {
         const fetchSelectedMid = async () => {
@@ -47,6 +54,11 @@ const T2MidEvaluationDetails = ({ setShowDetails }) => {
     };
 
     const handleApprove = async () => {
+        if(!grade){
+            showMessage('error', "Please select grade");
+            setVisible(false);
+            return;
+        }
         try {
             const response = await fetch(`http://localhost:5000/gc/approveMid2Comments/${userId.rollno}`, {
                 method: 'PUT',
@@ -61,12 +73,21 @@ const T2MidEvaluationDetails = ({ setShowDetails }) => {
             if (response.ok) {
                 // Proposal approved successfully, update UI or show a success message
                 console.log('Mid Evaluation approved successfully');
-                window.alert(data.message)
-                setShowDetails(false);
-                navigate('/Evaluations')
+                if (data.message === `Mid Evaluation status updated to ${grade} and email sent to student`) {
+                    showMessage('success', data.message);
+                    setVisible(false);
+                    setTimeout(function () {
+                        setShowDetails(false);
+                        navigate('/Evaluations');
+                    }, 3000);
+                }
+                else {
+                    showMessage('info', data.message);
+                    setVisible(false);
+                }
             } else {
-                // Handle error
-                console.error('Failed to approve proposal');
+                // Error occurred while approving proposal
+                showMessage('error', data.message);
             }
         } catch (error) {
             console.error('Error approving proposal:', error);
@@ -87,17 +108,18 @@ const T2MidEvaluationDetails = ({ setShowDetails }) => {
 
     return (
         <>
+        <Toast ref={toastTopCenter} position="top-center" />
             <Dialog visible={visible} modal header={headerElement} footer={footerContent} style={{ width: '30rem' }} onHide={() => setVisible(false)}>
                 <p className="m-0">
                     Are you sure you want to grade this?
                 </p>
             </Dialog>
             {selectedMid ? (
-                <div className='flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
+                <div className='flex flex-1 flex-col justify-center items-center px-6 py-2 lg:px-8'>
                     <div className="mt-2 bg-teal-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
                         <div className="px-4 py-5 sm:px-6">
                             <p className="max-w-2xl text-md text-white">
-                                Thesis 2 Mid Evaluation Details
+                                MS Thesis 2 Mid Evaluation Details
                             </p>
                         </div>
                         <div className="border-t border-gray-200">
@@ -139,7 +161,7 @@ const T2MidEvaluationDetails = ({ setShowDetails }) => {
                                     </div>
                                     <div className="sm:col-span-1">
                                         <dt className="text-sm font-medium text-gray-500">
-                                            View File Report
+                                            File Report
                                         </dt>
                                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
                                             {selectedMid[0].reportfilename}
@@ -152,13 +174,13 @@ const T2MidEvaluationDetails = ({ setShowDetails }) => {
                     </div>
                 </div>
             ) : (
-                <div>Loading Thesis 1 Mid Evaluation...</div>
+                <div>Loading Thesis 2 Mid Evaluation...</div>
             )}
 
             {/* Examiner Evaluation Section */}
             {selectedMid ? (
                 <>
-                    <div className='flex flex-1 flex-col justify-center items-center px-6 lg:px-8'>
+                    <div className='flex flex-1 flex-col justify-center items-center px-6 py-2 lg:px-8'>
                         <div className="bg-gray-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
                             <div className="px-4 py-5 sm:px-6">
                                 <p className="max-w-2xl text-md text-white">
