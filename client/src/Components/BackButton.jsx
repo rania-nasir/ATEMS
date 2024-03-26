@@ -2,8 +2,11 @@ import React from 'react';
 
 const BackButton = ({ onClick }) => {
     return (
-        <button onClick={onClick} className="btn-back">
-            Back
+
+        <button onClick={onClick} className='text-teal-700 hover:text-gray-900 font-medium text-sm py-0.5 text-center me-2 mb-2 dark:text-teal-500'>
+            <svg class="w-6 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+            </svg>
         </button>
     );
 };

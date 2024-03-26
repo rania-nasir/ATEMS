@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import Cookie from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import { Toast } from 'primereact/toast';
 
 function UpdateStudent() {
-
+    const toastTopCenter = useRef(null);
     const { rollno } = useParams();
 
     const navigate = useNavigate();
@@ -20,6 +21,11 @@ function UpdateStudent() {
         mobile: '',
         credithours: '',
     });
+
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
+
 
     useEffect(() => {
         async function fetchStudentData() {
@@ -76,17 +82,19 @@ function UpdateStudent() {
                 body: JSON.stringify(formData),
             });
 
+            const data = await response.json();
+
             if (response.ok) {
-                const updatedData = await response.json();
-                console.log('Student data updated successfully: ', updatedData);
-                window.alert('Student data updated successfully');
-                navigate('/viewStudent')
+                console.log('Student data updated successfully: ', data.message);
+                showMessage('success', data.message);
+                setTimeout(() => {
+                   navigate('/viewStudent'); // Navigate to '/viewStudent' after 3 seconds
+                }, 3000); // Delay for 3 seconds (3000 milliseconds)
                 // Handle success, e.g., show a success message, redirect, etc.
             } else {
-                const errorMessage = await response.text();
-                console.error('Error updating student data:', errorMessage);
+                console.error('Error updating student data:', data);
                 // Handle error, e.g., show an error message to the user
-                window.alert('Error updating student data: ' + errorMessage);
+                showMessage('error', data.message);
             }
         } catch (error) {
             console.error('Failed to update student data: ', error);
@@ -96,6 +104,7 @@ function UpdateStudent() {
 
     return (
         <>
+        <Toast ref={toastTopCenter} position="top-center" />
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8"
             >
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -230,7 +239,7 @@ function UpdateStudent() {
 
                                 </div>
                             </div>
-                            
+
                         </div>
 
                         <div className="my-4 px-4">

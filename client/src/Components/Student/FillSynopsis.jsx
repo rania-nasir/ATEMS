@@ -4,8 +4,10 @@ import { RadioButton } from "primereact/radiobutton";
 import SynopsisForm, { Fdata } from './SynopsisForm'
 import Cookies from 'js-cookie';
 import { Toast } from 'primereact/toast';
+// import { useNavigate } from 'react-router-dom';
 
 const FillSynopsis = () => {
+    // const Navigate = useNavigate();
     const userId = Cookies.get('userId');
 
     const toastTopCenter = useRef(null);
@@ -121,6 +123,7 @@ const FillSynopsis = () => {
             if (data.message === "Synopsis created successfully. Email has been send to your supervisor") {
                 showMessage('success', data.message);
                 console.log(data.message);
+                // Navigate('/')
             } else {
                 showMessage('error', data.message);
                 console.log(data.message);

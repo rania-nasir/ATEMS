@@ -24,11 +24,11 @@ export default function MakeAnnouncement() {
         const { announcementTitle, announcementContent } = user;
 
         const announcementData = {
-            announcementTitle, announcementContent, announcementType: selectedannouncementType
-        }
-
-        console.log(`announcementType are ===== ` + announcementData.announcementType)
-
+            announcementTitle,
+            announcementContent,
+            announcementType: selectedannouncementType.toString() // Convert to string
+        };
+        
         try {
             const res = await fetch("http://localhost:5000/gc/makeAnnouncement", {
                 method: "POST",
