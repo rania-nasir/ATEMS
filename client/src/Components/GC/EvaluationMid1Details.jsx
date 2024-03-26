@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { Toast } from 'primereact/toast';
 
-const EvaluationMid1Details = ({setShowDetails}) => {
+const EvaluationMid1Details = ({ setShowDetails }) => {
     const [selectedMid, setSelectedMid] = useState(null);
     const userId = useParams();
-
+    const toastTopCenter = useRef(null);
     const navigate = useNavigate();
+
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
 
     useEffect(() => {
         const fetchSelectedMid = async () => {
@@ -47,9 +52,16 @@ const EvaluationMid1Details = ({setShowDetails}) => {
             if (response.ok) {
                 // Proposal approved successfully, update UI or show a success message
                 console.log('Mid Evaluation approved successfully');
-                window.alert(data.message)
-                setShowDetails(false);
-                navigate('/Evaluations')
+                if (data.message === "Mid Evaluation approved, comingevaluation status updated, and email sent to student") {
+                    showMessage('success', data.message);
+                    setTimeout(function () {
+                        setShowDetails(false);
+                        navigate('/Evaluations');
+                    }, 3000);
+                }
+                else {
+                    showMessage('info', data.message);
+                }
             } else {
                 // Handle error
                 console.error('Failed to approve proposal');
@@ -61,12 +73,13 @@ const EvaluationMid1Details = ({setShowDetails}) => {
 
     return (
         <>
+            <Toast ref={toastTopCenter} position="top-center" />
             {selectedMid ? (
-                <div className='flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
-                    <div className="mt-2 bg-teal-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
+                <div className='flex flex-1 flex-col justify-center items-center px-6 py-2 lg:px-8'>
+                    <div className="my-2 bg-teal-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
                         <div className="px-4 py-5 sm:px-6">
                             <p className="max-w-2xl text-md text-white">
-                                Thesis 1 Mid Evaluation Details
+                                MS Thesis 1 Mid Evaluation Details
                             </p>
                         </div>
                         <div className="border-t border-gray-200">
@@ -154,7 +167,16 @@ const EvaluationMid1Details = ({setShowDetails}) => {
                                                         Literature Review Rank
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                                        {selectedMid[index].literatureReviewRank}
+                                                        {selectedMid[index].literatureReviewRank === "a" && "The literature review is comprehensive with little or no chance of any significant work missing from the coverage"}
+                                                        {selectedMid[index].literatureReviewRank === "b" && "The literature review is good with all the major works identified. Some works might be missing, but they would probably have no major impact on the identified research gap"}
+                                                        {selectedMid[index].literatureReviewRank === "c" && (
+                                                            <>
+                                                                <p>{selectedMid[index].paper1 !== null && selectedMid[index].paper1}</p>
+                                                                <p>{selectedMid[index].paper2 !== null && selectedMid[index].paper2}</p>
+                                                            </>
+                                                        )}
+
+                                                        {selectedMid[index].literatureReviewRank === "d" && "The literature review is poor with a majority of literature not covered"}
                                                     </dd>
                                                 </div>
                                                 <div className="sm:col-span-1">
@@ -186,7 +208,10 @@ const EvaluationMid1Details = ({setShowDetails}) => {
                                                         Solution Understanding
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                                        {selectedMid[index].solutionUnderstanding}
+                                                        {selectedMid[index].solutionUnderstanding === "a" && "The student has no idea about the solution"}
+                                                        {selectedMid[index].solutionUnderstanding === "b" && "The student has some idea about the solution and needs refinement "}
+                                                        {selectedMid[index].solutionUnderstanding === "c" && "The student has a high level idea about the solution"}
+                                                        {selectedMid[index].solutionUnderstanding === "d" && "The student has a clear idea about the solution to start the work"}
                                                     </dd>
                                                 </div>
                                                 <div className="sm:col-span-3">

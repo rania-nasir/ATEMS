@@ -41,7 +41,7 @@ export default function AllProposalEvaluations({ setShowDetails }) {
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 lg:px-8">
                 <div className="w-full my-2">
                     <h2 className="text-center text-2xl tracking-tight text-gray-950 font-bold">
-                        All Defense Proposal Evaluations
+                    MS Thesis/ Project 1 Proposal Evaluations
                     </h2>
                 </div>
                 <div class="m-6 shadow-md sm:rounded-lg">

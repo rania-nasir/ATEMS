@@ -36,10 +36,10 @@ export default function AllMid1Evaluations({ setShowDetails }) {
 
     return (
         <>
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="w-full my-4">
+            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 lg:px-8">
+                <div className="w-full my-2">
                     <h2 className="text-center text-2xl tracking-tight text-gray-950 font-bold">
-                        All Thesis 1 Mid Evaluations
+                        MS Thesis/ Project 1 Mid Evaluations
                     </h2>
                 </div>
                 <div className="m-6 shadow-md sm:rounded-lg">

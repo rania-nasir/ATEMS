@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
+import { Toast } from 'primereact/toast';
 
-
-const EvaluationFinal1Details = ({setShowDetails}) => {
+const EvaluationFinal1Details = ({ setShowDetails }) => {
     const [visible, setVisible] = useState(false);
     const [thesisonegrade, setthesisonegrade] = useState(null)
-
+    const toastTopCenter = useRef(null);
     const [selectedFinal, setSelectedFinal] = useState(null);
     const userId = useParams();
 
     const navigate = useNavigate();
+
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
 
     useEffect(() => {
         const fetchSelectedFinal = async () => {
@@ -48,6 +52,13 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
 
     const handleApprove = async () => {
         try {
+
+            if (!thesisonegrade) {
+                showMessage('error', 'Kindly recommend the grade of the final evaluation');
+                setVisible(false);
+                return;
+            }
+
             const response = await fetch(`http://localhost:5000/gc/approveFinalComments/${userId.rollno}`, {
                 method: 'PUT',
                 headers: {
@@ -62,11 +73,18 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
             const data = await response.json();
             if (response.ok) {
                 // Proposal approved successfully, update UI or show a success message
-                console.log('Final Evaluation approved successfully');
-                window.alert(data.message)
-                setVisible(false)
-                setShowDetails(false);
-                navigate('/Evaluations')
+                if (data.message === "Final Evaluation updated, comingevaluation status updated, and email sent to student") {
+                    showMessage('success', data.message);
+                    setTimeout(function () {
+                        setVisible(false)
+                        setShowDetails(false);
+                        navigate('/Evaluations')
+                    }, 3000);
+                }
+                else {
+                    showMessage('info', data.message);
+                }
+
             } else {
                 // Handle error
                 console.error('Failed to approve proposal');
@@ -91,17 +109,18 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
 
     return (
         <>
+            <Toast ref={toastTopCenter} position="top-center" />
             <Dialog visible={visible} modal header={headerElement} footer={footerContent} style={{ width: '30rem' }} onHide={() => setVisible(false)}>
                 <p className="m-0">
                     Are you sure you want to grade this?
                 </p>
             </Dialog>
             {selectedFinal ? (
-                <div className='flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
-                    <div className="mt-2 bg-teal-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
+                <div className='flex flex-1 flex-col justify-center items-center px-6 py-2 lg:px-8'>
+                    <div className="m-2 bg-teal-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
                         <div className="px-4 py-5 sm:px-6">
                             <p className="max-w-2xl text-md text-white">
-                                Thesis 1 Final Evaluation Details
+                                MS Thesis 1 Final Evaluation Details
                             </p>
                         </div>
                         <div className="border-t border-gray-200">
@@ -137,7 +156,7 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
                                             GC Comment Review
                                         </dt>
                                         <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                            {selectedFinal[0].gcFinalCommentsReview}
+                                            {selectedFinal[0].gcfinalcommentsreview}
                                         </dd>
                                     </div>
                                     {/* Add more fields as needed */}
@@ -189,10 +208,13 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
                                                         Literature Review Rank
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                                        {selectedFinal[index].literatureReviewRank}
+                                                        {selectedFinal[index].literaturereviewrank === "e" && "The literature review is comprehensive with little or no chance of any significant work missing from the coverage"}
+                                                        {selectedFinal[index].literaturereviewrank === "f" && "The literature review is good with all the major works identified. Some works might be missing, but they would probably have no major impact on the identified research gap"}
+                                                        {selectedFinal[index].literaturereviewrank === "g" && "The literature review is missing a number of significant papers"}
+                                                        {selectedFinal[index].literaturereviewrank === "h" && "The literature review is poor with a majority of literature not covered"}
                                                     </dd>
                                                 </div>
-                                                {selectedFinal[index].literatureReviewRank === "g" && (  // Check if paper1 exists
+                                                {selectedFinal[index].literaturereviewrank === "g" && (  // Check if paper1 exists
                                                     <>
                                                         <div className="sm:col-span-3">
                                                             <dt className="text-sm font-medium text-gray-500">
@@ -217,7 +239,7 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
                                                         Thorough Comparative Analysis
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                                        {selectedFinal[index].comparativeAnalysisThorough}
+                                                        {selectedFinal[index].comparativeanalysisthorough}
                                                     </dd>
                                                 </div>
                                                 <div className="sm:col-span-1">
@@ -225,7 +247,7 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
                                                         Research Gap Clearly Identified
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                                        {selectedFinal[index].researchGapClearlyIdentified}
+                                                        {selectedFinal[index].researchgapclearlyidentified}
                                                     </dd>
                                                 </div>
                                                 <div className="sm:col-span-1">
@@ -233,7 +255,7 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
                                                         Research Problem Clearly Defined
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                                        {selectedFinal[index].researchProblemClearlyDefined}
+                                                        {selectedFinal[index].researchproblemclearlydefined}
                                                     </dd>
                                                 </div>
                                                 <div className="sm:col-span-1">
@@ -241,7 +263,7 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
                                                         Problem Context In Literature
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                                        {selectedFinal[index].problemContextInLiterature}
+                                                        {selectedFinal[index].problemcontextinliterature}
                                                     </dd>
                                                 </div>
                                                 <div className="sm:col-span-1">
@@ -249,7 +271,7 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
                                                         Proposed Work Evaluation
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                                        {selectedFinal[index].proposedWorkEvaluation}
+                                                        {selectedFinal[index].proposedworkevaluation}
                                                     </dd>
                                                 </div>
                                                 <div className="sm:col-span-3">
@@ -257,7 +279,10 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
                                                         Understanding Of Solution
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                                        {selectedFinal[index].understandingOfSolution}
+                                                        {selectedFinal[index].understandingofsolution === "e" && "The student has no idea about the solution"}
+                                                        {selectedFinal[index].understandingofsolution === "f" && "The student has some idea about the solution and needs refinement"}
+                                                        {selectedFinal[index].understandingofsolution === "g" && "The student has a high level idea about the solution "}
+                                                        {selectedFinal[index].understandingofsolution === "h" && "The student has a clear idea about the solution to start the work"}
                                                     </dd>
                                                 </div>
                                                 <div className="sm:col-span-1">
@@ -265,7 +290,7 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
                                                         Report Quality
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                                        {selectedFinal[index].reportQuality}
+                                                        {selectedFinal[index].reportquality}
                                                     </dd>
                                                 </div>
                                                 <div className="sm:col-span-1">
@@ -273,7 +298,7 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
                                                         Report Organization Acceptable
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                                        {selectedFinal[index].reportOrganizationAcceptable}
+                                                        {selectedFinal[index].reportorganizationacceptable}
                                                     </dd>
                                                 </div>
                                                 <div className="sm:col-span-1">
@@ -281,7 +306,7 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
                                                         Communication Skills
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                                        {selectedFinal[index].communicationSkills}
+                                                        {selectedFinal[index].communicationskills}
                                                     </dd>
                                                 </div>
                                                 <div className="sm:col-span-1">
@@ -289,7 +314,7 @@ const EvaluationFinal1Details = ({setShowDetails}) => {
                                                         Questions Handling
                                                     </dt>
                                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0">
-                                                        {selectedFinal[index].questionsHandling}
+                                                        {selectedFinal[index].questionshandling}
                                                     </dd>
                                                 </div>
                                                 <div className="sm:col-span-3">
