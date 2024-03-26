@@ -6,6 +6,8 @@ export default function T2Evaluations({ setShowDetails }) {
     const [allPendingMids, setAllPendingMids] = useState([]);
     const [allPendingFinals, setAllPendingFinals] = useState([]);
 
+    const [midmessage, setmidmessage] = useState('');
+
     useEffect(() => {
         async function fetchAllPendingMids() {
             try {
@@ -21,7 +23,9 @@ export default function T2Evaluations({ setShowDetails }) {
                     setAllPendingMids(data.pendingMid2Evaluations);
                     console.log(data.message);
                     if (data.message) {
-                        window.alert(data.message);
+                        setmidmessage(data.message);
+                        // showMessage('info', data.message);
+                        // window.alert(data.message);
                     }
                 } else {
                     throw new Error('Failed to fetch data');
@@ -110,10 +114,10 @@ export default function T2Evaluations({ setShowDetails }) {
                                             {proposal.thesistitle}
                                         </td>
                                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            <NavLink 
-                                            to={`/viewMid2Evaluation/${proposal.rollno}`} 
-                                             onClick={() => handleViewDetails()} // Call handleViewDetails
-                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            <NavLink
+                                                to={`/viewMid2Evaluation/${proposal.rollno}`}
+                                                onClick={() => handleViewDetails()} // Call handleViewDetails
+                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                 View Details
                                             </NavLink>
                                         </td>
@@ -122,7 +126,8 @@ export default function T2Evaluations({ setShowDetails }) {
                             ) : (
                                 <tr>
                                     <td colSpan="4" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
-                                        No pending Mid evaluations found
+                                        {midmessage && midmessage.length > 0 ? midmessage : "Mid evaluation permission record not found"}
+
                                     </td>
                                 </tr>
                             )}
@@ -158,17 +163,17 @@ export default function T2Evaluations({ setShowDetails }) {
                                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {proposal.rollno}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {proposal.stdname}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {proposal.thesistitle}
                                         </td>
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            <NavLink 
-                                            // to={`/viewPendingFinal/${proposal.rollno}`} 
-                                            //  onClick={() => handleViewDetails()} // Call handleViewDetails
-                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                        <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                            <NavLink
+                                                // to={`/viewPendingFinal/${proposal.rollno}`} 
+                                                //  onClick={() => handleViewDetails()} // Call handleViewDetails
+                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                 View Details
                                             </NavLink>
                                         </td>
@@ -176,7 +181,7 @@ export default function T2Evaluations({ setShowDetails }) {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="4" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
+                                    <td colSpan="4" className="px-6 py-4 font-medium text-gray-900 dark:text-white text-center">
                                         No pending Final evaluations found
                                     </td>
                                 </tr>

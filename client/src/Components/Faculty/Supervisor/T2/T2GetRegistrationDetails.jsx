@@ -1,14 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import Cookie from 'js-cookie';
+import { Toast } from 'primereact/toast';
 
 export default function T2GetRegistrationDetails({ setShowDetails }) {
 
     const { rollno } = useParams();
-    const [registrationData, setregistrationData] = useState({ studentDetails: null });
+    const toastTopCenter = useRef(null);
+
+    const [registrationData, setRegistrationData] = useState({ studentDetails: null });
+
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
 
     useEffect(() => {
-        async function fetchregistrationData() {
+        async function fetchRegistrationData() {
             try {
                 const response = await fetch(`http://localhost:5000/faculty/getThesis2StudentDetails/${rollno}`, {
                     method: 'GET',
@@ -19,8 +26,8 @@ export default function T2GetRegistrationDetails({ setShowDetails }) {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    setregistrationData(data);
-                    console.log('registration Data Detail -> ', data);
+                    setRegistrationData(data);
+                    console.log('Registration Data Detail -> ', data);
                 } else {
                     throw new Error('Failed to fetch data');
                 }
@@ -29,7 +36,7 @@ export default function T2GetRegistrationDetails({ setShowDetails }) {
             }
         }
 
-        fetchregistrationData();
+        fetchRegistrationData();
     }, [rollno]);
 
     const approveData = async (e) => {
@@ -47,31 +54,35 @@ export default function T2GetRegistrationDetails({ setShowDetails }) {
         console.log("Response data:", data); // Log the response data
 
         if (res.status === 200) {
-            if (data.message === "Invalid Credentials") {
-                window.alert("Invalid Credentials");
-                console.log("Invalid Credentials");
-                setShowDetails(false);
+            if (data.message === "Request approved successfully") {
+                showMessage('success', data.message);
+                console.log(data.message);
+                setTimeout(() => {
+                    setShowDetails(false);
+                }, 3000);
             } else {
-                window.alert("Accepted registration Successfully");
-                console.log("Accepted registration Successfully");
-                setShowDetails(false);
+                showMessage('info', data.message);
+                console.log(data.message);
+                // setShowDetails(false);
             }
         } else {
-            window.alert("Something went wrong");
-            console.log("Something went wrong");
+            showMessage('error', "System Error! Please try later")
+            console.log("System Error! Please try later");
         }
     }
 
     return (
         <>
-            <div className='flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
-                <div className="mt-2 bg-gray-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
-                    <div className="px-4 py-5 sm:px-6">
-                        <p className="max-w-2xl text-md text-white">
-                            Thesis Registration registration Request Details
-                        </p>
-                    </div>
-                    {registrationData.studentDetails && (
+        <Toast ref={toastTopCenter} position="top-center" />
+            <div className='flex flex-1 flex-col justify-center items-center px-6 py-2 lg:px-8'>
+            {registrationData.studentDetails ? (
+                <>
+                    <div className="bg-gray-500 shadow overflow-hidden sm:rounded-lg w-[90%]">
+                        <div className="px-4 py-5 sm:px-6">
+                            <p className="max-w-2xl text-md text-white">
+                                Thesis Registration registration Request Details
+                            </p>
+                        </div>
                         <div className="border-t border-gray-200">
                             <dl>
                                 <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6">
@@ -174,19 +185,20 @@ export default function T2GetRegistrationDetails({ setShowDetails }) {
                                 </div>
                             </dl>
                         </div>
-                    )}
-                </div>
-
-                {/* Approval buttons */}
-                <div className='my-6 w-[90%] flex justify-start'>
-                    <button className="flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-6 py-2.5 text-center me-2 mb-2"
-                        type="button"
-                        name='approvedata'
-                        onClick={approveData}>
-                        APPROVE
-                    </button>
-                </div>
-            </div>
+                    </div>
+                    <div className='my-6 w-[90%] flex justify-start'>
+                        <button className="flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-6 py-2.5 text-center me-2 mb-2"
+                            type="button"
+                            name='approvedata'
+                            onClick={approveData}>
+                            APPROVE
+                        </button>
+                    </div>
+                </>
+            ) : (
+                <div>Loading...</div>
+            )}
+        </div>
         </>
     );
 }

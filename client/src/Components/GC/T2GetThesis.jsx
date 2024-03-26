@@ -3,12 +3,12 @@ import Cookie from 'js-cookie';
 import { NavLink } from 'react-router-dom';
 
 export default function GetThesis({ setShowDetails }) {
-    const [thesisData, setthesisData] = useState({ allThesis: [] });
+    const [thesisData, setthesisData] = useState({ pendingRequests: [] });
 
     useEffect(() => {
         async function fetchthesisData() {
             try {
-                const response = await fetch('http://localhost:5000/gc/ReviewRequest', {
+                const response = await fetch('http://localhost:5000/gc/thesisTwoRegRequests', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ export default function GetThesis({ setShowDetails }) {
                     const data = await response.json();
                     setthesisData(data);
 
-                    // const rowData = data.map(item => item.thesisid);
+                    // const rowData = data?.map(item => item.thesisid);
 
                     console.log('thesis Data -> ', data)
 
@@ -44,11 +44,11 @@ export default function GetThesis({ setShowDetails }) {
             <div className='m-2'>
                 <div className="sm:mx-auto w-full">
                     <h2 className="pb-2 text-center text-2xl tracking-tight text-gray-950 font-semibold">
-                        MS Thesis/ Project 1 Requests
+                        MS Thesis/ Project 2 Requests
                     </h2>
                 </div>
                 <div class="overflow-x-auto m-6 shadow-md sm:rounded-lg">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <table class="table-auto w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3">
@@ -65,11 +65,11 @@ export default function GetThesis({ setShowDetails }) {
                                 </th>
                             </tr>
                         </thead>
-                        {thesisData.allThesis.length === 0 ? (
+                        {thesisData.pendingRequests && thesisData.pendingRequests.length === 0 ? (
                             <p className="px-6 py-4">No thesis found</p>
                         ) : (
                             <tbody>
-                                {thesisData.allThesis.map(rowData => (
+                                {thesisData.pendingRequests?.map(rowData => (
                                     <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600" key={rowData.thesisid}>
                                         <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {rowData.rollno}
@@ -81,7 +81,7 @@ export default function GetThesis({ setShowDetails }) {
                                             {rowData.thesistitle}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <NavLink to={`/ReviewRequest/${rowData.thesisid}`}
+                                            <NavLink to={`/thesisTwoRegRequest/${rowData.rollno}`}
                                                 onClick={() => handleViewDetails()} // Call handleViewDetails
                                                 className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                 View Details
@@ -91,6 +91,7 @@ export default function GetThesis({ setShowDetails }) {
                                 ))}
                             </tbody>
                         )}
+
                     </table>
                 </div>
             </div>

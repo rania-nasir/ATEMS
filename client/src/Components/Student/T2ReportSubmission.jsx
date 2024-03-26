@@ -1,17 +1,24 @@
 // Import necessary dependencies
 import React, { useRef, useState } from 'react';
 import Cookies from 'js-cookie';
+import { Toast } from 'primereact/toast';
 
 // Define the T2ReportSubmission component
 function T2ReportSubmission() {
-    const  fileUploadRef = useRef(null);
+    const toastTopCenter = useRef(null);
+    const fileUploadRef = useRef(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileName, setFileName] = useState('');
+
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
+
 
     // Function to handle the upload click event
     const handleUploadClick = async () => {
         if (!selectedFile) {
-            alert('Please select a file');
+            showMessage('error', 'Please select a file');
             return;
         }
 
@@ -29,15 +36,14 @@ function T2ReportSubmission() {
                 body: formData,
             });
 
-            // Handle the response from the server
-            if (response.ok) {
-                const result = await response.json();
-                alert(result.message);
-            } else {
-                const error = await response.json();
-                alert(`Error: ${error.error}`);
+            const result = await response.json();
+            if (result.message === "Thesis two report uploaded successfully") {
+                showMessage('success', result.message);
             }
-
+            else {
+                showMessage('error', result.message);
+            }
+            
         } catch (error) {
             console.error('Error uploading the report:', error);
             alert('Error uploading the report');
@@ -54,6 +60,7 @@ function T2ReportSubmission() {
     // Render the component JSX
     return (
         <>
+            <Toast ref={toastTopCenter} position="top-center" />
             <div className='flex flex-col justify-center px-10 my-10 items-center'>
                 <div className="w-full my-8">
                     <h2 className="text-center text-2xl tracking-tight text-gray-950 font-bold">

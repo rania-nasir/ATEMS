@@ -14,7 +14,7 @@ const getThesisTwoRegRequests = async (req, res) => {
                 gcapproval: 'Pending',
                 supervisorapproval: 'Approved'
             },
-            attributes: ['rollno', 'stdname', 'thesistitle', 'internals']
+            attributes: ['rollno', 'stdname', 'thesistitle', 'supervisorname', 'internals']
         });
 
         res.json({ pendingRequests });

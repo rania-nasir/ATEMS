@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import Cookie from 'js-cookie';
-import { Toast } from 'primereact/toast';
 
 export default function Evaluations({ setShowDetails }) {
 
-    const toastTopCenter = useRef(null);
 
     const [allPendingProposals, setAllPendingProposals] = useState([]);
     const [allPendingMids, setAllPendingMids] = useState([]);
@@ -14,11 +12,6 @@ export default function Evaluations({ setShowDetails }) {
     const [proposalmessage, setproposalmessage] = useState('');
     const [midmessage, setmidmessage] = useState('');
     const [finalmessage, setfinalmessage] = useState('');
-
-    const showMessage = (severity, label) => {
-        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
-    };
-
 
     useEffect(() => {
         async function fetchAllPendingProposals() {
@@ -115,7 +108,6 @@ export default function Evaluations({ setShowDetails }) {
 
     return (
         <>
-            <Toast ref={toastTopCenter} position="top-center" />
             <div className='m-2 grid grid-cols-1'>
                 <div className="mx-4">
                     <h2 className="my-4 text-left text-2xl font-bold tracking-tight text-gray-900">

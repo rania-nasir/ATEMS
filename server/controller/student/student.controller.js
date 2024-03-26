@@ -138,7 +138,7 @@ const thesisData = async (req, res) => {
     if (thesisData) {
       res.status(200).json(thesisData);
     } else {
-      res.status(404).json({ message: 'Thesis not found' });
+      res.status(404).json({ message: 'Thesis request is still in process' });
     }
   }
   catch (error) {

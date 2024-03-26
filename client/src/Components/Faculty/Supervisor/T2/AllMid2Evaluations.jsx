@@ -38,10 +38,10 @@ export default function AllMid2Evaluations({ setShowDetails }) {
 
     return (
         <>
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-                <div className="w-full my-4">
+            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 lg:px-8">
+                <div className="w-full my-2">
                     <h2 className="text-center text-2xl tracking-tight text-gray-950 font-bold">
-                        All Thesis 2 Mid Evaluations For Supervisors
+                        MS Thesis/ Project 2 Mid Evaluations
                     </h2>
                 </div>
                 <div className="m-6 shadow-md sm:rounded-lg">
@@ -77,7 +77,7 @@ export default function AllMid2Evaluations({ setShowDetails }) {
                                     <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {student?.rollno}
                                     </td>
-                                    <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    <td className="px-4 py-4 font-medium text-gray-900 dark:text-white">
                                         {student?.stdname}
                                     </td>
                                     <td className="px-4 py-4">{student?.thesistitle}</td>
@@ -99,7 +99,7 @@ export default function AllMid2Evaluations({ setShowDetails }) {
                             {thesisData.length === 0 && (
                                 <tr>
                                     <td
-                                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                                        className="px-6 py-4 font-medium text-gray-900 dark:text-white"
                                         colSpan="6"
                                     >
                                         No Mid Evaluations Found

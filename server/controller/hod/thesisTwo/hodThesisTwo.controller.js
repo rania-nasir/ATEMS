@@ -114,7 +114,7 @@ const approveHodThesis2Request = async (req, res) => {
         }
 
 
-        res.json({ message: 'Request approved successfully' });
+        res.json({ message: 'Request approved successfully. Email sent to the respective members.' });
 
     } catch (error) {
         console.error('Error approving thesis two registration request:', error);

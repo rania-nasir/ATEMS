@@ -38,8 +38,8 @@ export default function T2HODGetThesis({ setShowDetails }) {
         <>
             <div className='m-2'>
                 <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                    <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-950">
-                        Thesis 2 Registration Requests HOD
+                    <h2 className="my-2 text-center text-2xl font-bold tracking-tight text-gray-950">
+                        MS Thesis/ Project 2 Registration Approval Requests
                     </h2>
                 </div>
                 <div class="m-6 shadow-md sm:rounded-lg">
