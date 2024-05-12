@@ -84,7 +84,6 @@ const viewStudentAnnouncements = async (req, res) => {
 };
 
 
-
 // Function for student to view their feedback 
 const viewFeedback = async (req, res) => {
   try {
