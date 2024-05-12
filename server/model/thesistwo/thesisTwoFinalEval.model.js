@@ -1,6 +1,6 @@
 const { sequelize, DataTypes } = require("../../config/sequelize");
 
-const predefevaluations = sequelize.define('predefevaluations', {
+const twofinalevaluations = sequelize.define('twofinalevaluations', {
     thesisid: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -98,7 +98,15 @@ const predefevaluations = sequelize.define('predefevaluations', {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    finalDefenseEvaluationPermission: {
+    gcFinalCommentsReview: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'Pending',
+        validate: {
+            isIn: [['Pending', 'Approved', 'Rejected']]
+        }
+    },
+    finalEvaluationPermission: {
         type: DataTypes.BOOLEAN,
         allowNull: false
     },
@@ -113,10 +121,10 @@ const predefevaluations = sequelize.define('predefevaluations', {
 });
 
 sequelize.sync().then(() => {
-    console.log('Thesis 2 Pre Defense table created successfully!');
+    console.log('Thesis 2 Final Evaluation table created successfully!');
 }).catch((error) => {
     console.error('Unable to create table : ', error);
 });
 
 
-module.exports = { predefevaluations }; 
+module.exports = { twofinalevaluations }; 
