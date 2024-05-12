@@ -40,7 +40,7 @@ const twomidevaluations = sequelize.define('twomidevaluations', {
         allowNull: false
     },
 
-    gcexternalevalpermission: {
+    gcfinalevalpermission: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
@@ -136,14 +136,23 @@ const twomidevaluations = sequelize.define('twomidevaluations', {
         allowNull: false
     },
 
+    gcMidCommentsReview: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'Pending',
+        validate: {
+            isIn: [['Pending', 'Approved', 'Rejected']]
+        }
+    },
+
     createdAt: {
-      type: DataTypes.DATE,
-      allowNull: true,
+        type: DataTypes.DATE,
+        allowNull: true,
     },
 
     updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: true,
+        type: DataTypes.DATE,
+        allowNull: true,
     }
 });
 

@@ -106,10 +106,6 @@ const twofinalevaluations = sequelize.define('twofinalevaluations', {
             isIn: [['Pending', 'Approved', 'Rejected']]
         }
     },
-    finalEvaluationPermission: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false
-    },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: true,

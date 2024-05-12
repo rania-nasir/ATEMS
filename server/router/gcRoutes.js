@@ -85,9 +85,13 @@ gcRouter.get('/thesisDetails/:thesistitle', gcFunctions.thesisDetails);
 
 
 //---Thesis-2----
+
+// Registrations
 gcRouter.get('/thesisTwoRegRequests', gcThesisTwo.getThesisTwoRegRequests);
 gcRouter.get('/thesisTwoRegRequest/:rollno', gcThesisTwo.getThesisTwoRegRequestDetails);
 gcRouter.put('/approveThesisTwoRegRequest/:rollno', gcThesisTwo.approveThesisTwoRegRequest);
+
+// Mid
 gcRouter.put('/grantMid2EvalPermission', gcThesisTwo.grantMidEvalPermission);
 gcRouter.put('/revokeMid2EvalPermission', gcThesisTwo.revokeMidEvalPermission);
 gcRouter.get('/mid2EvaluationStatus', gcThesisTwo.getGCMidPermissionStatus);
@@ -97,6 +101,14 @@ gcRouter.put('/approveMid2Comments/:rollno', gcThesisTwo.approveMid2Evaluation);
 
 gcRouter.get('/getAllReadyThesis', gcThesisTwo.getAllApprovedThesis);
 gcRouter.post('/addExternal', gcThesisTwo.assignExternalToThesis);
+
+// Final
+gcRouter.put('/grantFinal2EvalPermission', gcThesisTwo.grantFinalEvalPermission);
+gcRouter.put('/revokeFinal2EvalPermission', gcThesisTwo.revokeFinalEvalPermission);
+gcRouter.get('/final2EvaluationStatus', gcThesisTwo.getGCFinalPermissionStatus);
+gcRouter.get('/allFinal2Evaluations', gcThesisTwo.getAllFinal2Evaluations);
+gcRouter.get('/viewFinal2Evaluation/:rollno', gcThesisTwo.getSelectedFinal2EvaluationDetails);
+gcRouter.put('/approveFinal2Comments/:rollno', gcThesisTwo.approveFinal2Evaluation);
 
 
 //gcRouter.put('/grantFinalEvalPermission', gcThesisTwo.grantFinalEvalPermission);

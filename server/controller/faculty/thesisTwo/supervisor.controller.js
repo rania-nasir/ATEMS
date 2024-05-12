@@ -4,7 +4,8 @@ const { thesis } = require('../../../model/thesis.model');
 const { students } = require("../../../model/student.model");
 const { faculties } = require("../../../model/faculty.model");
 const { registrations } = require("../../../model/thesistwo/registration.model");
-const { twomidevaluations } = require("../../../model/thesistwo/thesisTwoMidEval.model")
+const { twomidevaluations } = require("../../../model/thesistwo/thesisTwoMidEval.model");
+const { twofinalevaluations } = require("../../../model/thesistwo/thesisTwoFinalEval.model");
 const { Op } = require('sequelize');
 
 
@@ -289,7 +290,7 @@ const evaluateMid2 = async (req, res) => {
             thesistitle,
             facultyid,
             facultyname,
-            gcapproval : 'Pending',
+            gcapproval: 'Pending',
             reportfilename,
             englishlevel,
             abstract,
@@ -319,6 +320,241 @@ const evaluateMid2 = async (req, res) => {
 
 };
 
+const supthesis2AllFinalEvals = async (req, res) => {
+    try {
+
+        const facultyId = req.userId;
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.or]: [
+                        { [Op.contains]: ["Supervisor"] },
+                        { [Op.contains]: ["Internal"] }
+                    ]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
+        }
+
+
+        const examinableThesis = await twomidevaluations.findAll({
+            where: {
+                [Op.or]: [
+                    { facultyid: facultyId },
+                ]
+            }
+        });
+
+
+        const examinableThesisWithPermission = [];
+        for (const eachThesis of examinableThesis) {
+            const final2Evaluations = await twomidevaluations.findOne({
+                where: {
+                    thesistitle: eachThesis.thesistitle,
+                    gcmidevalpermission: true
+                }
+            });
+            if (final2Evaluations) {
+                examinableThesisWithPermission.push(eachThesis);
+            }
+        }
+
+        // Fetch final2EvaluationPermission
+        const final2Evaluation = await twomidevaluations.findOne({
+            attributes: ['gcfinalevalpermission'],
+            limit: 1
+        });
+
+        // Check if final2EvaluationPermission is true
+        if (!final2Evaluation || final2Evaluation.gcfinalevalpermission !== true) {
+            return res.status(403).json({ error: 'Final evaluations are not open yet.' });
+        }
+
+        console.log("Examinable Permission ::: ", examinableThesisWithPermission);
+        return res.json(examinableThesisWithPermission);
+
+    } catch (error) {
+        console.error('Error fetching examinable theses:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+};
+
+const internalthesis2AllFinalEvals = async (req, res) => {
+    try {
+
+        const facultyId = req.userId;
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.or]: [
+                        { [Op.contains]: ["Supervisor"] },
+                        { [Op.contains]: ["Internal"] }
+                    ]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.json({ error: 'Forbidden - Insufficient permissions' });
+        }
+
+
+        const examinableThesis = await twomidevaluations.findAll({
+            where: {
+                [Op.or]: [
+                    { internalsid: { [Op.contains]: [facultyId] } }
+                ]
+            }
+        });
+
+
+        const examinableThesisWithPermission = [];
+        for (const eachThesis of examinableThesis) {
+            const final2Evaluations = await twomidevaluations.findOne({
+                where: {
+                    thesistitle: eachThesis.thesistitle,
+                    gcmidevalpermission: true
+                }
+            });
+            if (final2Evaluations) {
+                examinableThesisWithPermission.push(eachThesis);
+            }
+        }
+
+        // Fetch final2EvaluationPermission
+        const final2Evaluation = await twomidevaluations.findOne({
+            attributes: ['gcmidevalpermission'],
+            limit: 1
+        });
+
+        // Check if final2EvaluationPermission is true
+        if (!final2Evaluation || final2Evaluation.gcfinalevalpermission !== true) {
+            return res.json({ message: 'Final evaluations are not open yet.' });
+        }
+
+        return res.json(examinableThesisWithPermission);
+
+    } catch (error) {
+        console.error('Error fetching examinable theses:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+};
+
+const final2EvalDetails = async (req, res) => {
+
+    try {
+        const { rollno } = req.params;
+        const student = await students.findOne({ where: { rollno } });
+
+        if (!student) {
+            return res.status(404).json({ error: 'Student not found' });
+        }
+
+        const finalThesis2 = await twomidevaluations.findAll({
+            where: {
+                rollno,
+                gcfinalevalpermission: true,
+            },
+        });
+
+        if (finalThesis2.length === 0) {
+            return res.json({ message: 'No evaluations found for this student' });
+        }
+
+        return res.json(finalThesis2);
+    } catch (error) {
+        console.error('Error fetching final2 evaluations:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+};
+
+const evaluateFinal2 = async (req, res) => {
+    try {
+        const {
+            rollno,
+            stdname,
+            thesistitle,
+            supervisorname,
+            supervisorid,
+            // reportfilename,
+            examinerid,
+            examinername,
+            assignedexternalid,
+            titleAppropriateness,
+            titleComments,
+            abstractClarity,
+            abstractComments,
+            introductionClarity,
+            introductionComments,
+            literatureReviewClarity,
+            literatureReviewComments,
+            researchContentRigor,
+            researchContentComments,
+            workEvaluation,
+            workEvaluationComments,
+            organizationQuality,
+            organizationComments,
+            languageQuality,
+            languageComments,
+            generalComments
+        } = req.body;
+
+
+        const existingEvaluation = await twofinalevaluations.findOne({ where: { facultyid, rollno } });
+        if (existingEvaluation) {
+            res.json({ message: 'You have already evaluated this thesis final' });
+            return;
+        }
+
+        // Validate request body fields here if necessary
+
+        const newEvaluation = await twofinalevaluations.create({
+            rollno,
+            stdname,
+            thesistitle,
+            supervisorname,
+            supervisorid,
+            gcFinalCommentsReview: 'Pending',
+            // reportfilename,
+            examinerid,
+            examinername,
+            assignedexternalid,
+            titleAppropriateness,
+            titleComments,
+            abstractClarity,
+            abstractComments,
+            introductionClarity,
+            introductionComments,
+            literatureReviewClarity,
+            literatureReviewComments,
+            researchContentRigor,
+            researchContentComments,
+            workEvaluation,
+            workEvaluationComments,
+            organizationQuality,
+            organizationComments,
+            languageQuality,
+            languageComments,
+            generalComments
+        });
+
+        return res.json({ message: 'Final 2 evaluation completed successfully', evaluation: newEvaluation });
+    } catch (error) {
+        console.error('Error evaluating Final 2:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+};
+
+
 
 module.exports =
 {
@@ -328,5 +564,10 @@ module.exports =
     supthesis2AllMidEvals,
     internalthesis2AllMidEvals,
     mid2EvalDetails,
-    evaluateMid2
+    evaluateMid2,
+    supthesis2AllFinalEvals,
+    internalthesis2AllFinalEvals,
+    // externalthesis2AllFinalEvals,
+    final2EvalDetails,
+    evaluateFinal2
 };
