@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { MultiSelect } from 'primereact//multiselect';
 import Cookie from 'js-cookie';
+import { Toast } from 'primereact/toast';
 
 export default function MakeAnnouncement() {
 
     const navigate = useNavigate();
+    const toastTopCenter = useRef(null);
 
     const [selectedannouncementType, setSelectedannouncementType] = useState(null);
     const announcementType = ['Faculty', 'Student', 'Both'];
@@ -18,10 +20,19 @@ export default function MakeAnnouncement() {
         setuser({ ...user, [name]: value })
     }
 
+    const showMessage = (severity, label) => {
+        toastTopCenter.current.show({ severity, summary: label, life: 3000 });
+    };
+
     const PostData = async (e) => {
         e.preventDefault();
 
         const { announcementTitle, announcementContent } = user;
+
+        if (!announcementTitle || !announcementContent || !selectedannouncementType) {
+            showMessage('error', 'Please fill in all the fields');
+            return; // Exit the function if any field is empty
+        }
 
         const announcementData = {
             announcementTitle,
@@ -44,29 +55,26 @@ export default function MakeAnnouncement() {
             const data = await res.json();
             console.log("Response data:", data);
 
-            if (res.ok) {
-                if (data.message === "Invalid Credentials") {
-                    window.alert("Invalid Credentials");
-                    console.log("Invalid Credentials");
-                } else {
-                    window.alert("Announcement Added Successfully");
-                    console.log("Announcement Added Successfully");
+            if(data.message==="Announcement record added successfully"){
+                showMessage('success', data.message);
+                console.log(data.message);
+                setTimeout(() => {
                     navigate('/');
-                }
-            } else {
-                window.alert("Something went wrong");
-                console.log("Something went wrong");
+                }, 3000);
+            }
+            else{
+                showMessage('error', data.message);
             }
         } catch (error) {
             console.error("Error occurred:", error);
-            window.alert("Error occurred. Please try again.");
+            showMessage('error', 'System error. Please try again later.');
         }
     };
 
 
     return (
         <>
-
+ <Toast ref={toastTopCenter} position="top-center" />
             <div className="bg-white m-2">
                 <div className="mx-auto flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8"
                 >

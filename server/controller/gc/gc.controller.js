@@ -276,13 +276,11 @@ const uploadFacData = {
 // Add Announcement
 const addAnnouncement = async (req, res) => {
   try {
-    const announcementID = req.body.announcementID;
     const announcementType = req.body.announcementType;
     const announcementTitle = req.body.announcementTitle;
     const announcementContent = req.body.announcementContent;
 
     await announcements.create({
-      announcementID,
       announcementType,
       announcementTitle,
       announcementContent
