@@ -199,11 +199,15 @@ const requestTitleChange = async (req, res) => {
       where: {
         rollno: rollno
       },
-      // attributes: { exclude: ['password'] } 
+      attributes: ['comingevaluation'],
     });
 
     if (!studentData) {
       return res.json({ message: 'Student not found' });
+    }
+
+    if (studentData.comingevaluation != 'Proposal') {
+      return res.json({ message: "Can not request title change after proposal has been accepted" });
     }
 
     const thesisData = await thesis.findOne({
@@ -317,11 +321,15 @@ const requestSupervisorChange = async (req, res) => {
       where: {
         rollno: rollno
       },
-      // attributes: { exclude: ['password'] } 
+      attributes: ['comingevaluation'],
     });
 
     if (!studentData) {
       return res.status(404).json({ message: 'Student not found' });
+    }
+
+    if (studentData.comingevaluation != 'Proposal') {
+      return res.json({ message: "Can not request supervisor change after proposal has been accepted" });
     }
 
     const thesisData = await thesis.findOne({
