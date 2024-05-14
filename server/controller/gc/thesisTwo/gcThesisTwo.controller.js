@@ -1,6 +1,7 @@
 const { sequelize } = require("../../../config/sequelize");
 const { faculties } = require("../../../model/faculty.model");
 const { students } = require("../../../model/student.model");
+const { feedbacks } = require("../../../model/feedback.model");
 const { sendMail } = require("../../../config/mailer");
 const { twomidevaluations } = require("../../../model/thesistwo/thesisTwoMidEval.model");
 const { twofinalevaluations } = require("../../../model/thesistwo/thesisTwoFinalEval.model");
@@ -287,7 +288,7 @@ const getAllMid2Evaluations = async (req, res) => {
                 // Query to find all pending proposals
                 const pendingMid2Evaluations = await twomidevaluations.findAll({
                     where: {
-                        gcapproval: 'Pending'
+                        gcMidCommentsReview: 'Pending'
                     },
                     attributes: [
                         [sequelize.literal('DISTINCT "rollno"'), 'rollno'],
@@ -380,6 +381,10 @@ const approveMid2Evaluation = async (req, res) => {
                 // Update relevant student record in students model
                 await students.update(
                     { comingevaluation: 'Final2' },
+                    { where: { rollno } }
+                );
+                await twomidevaluations.update(
+                    { gcMidCommentsReview: 'Approved' },
                     { where: { rollno } }
                 );
                 break;

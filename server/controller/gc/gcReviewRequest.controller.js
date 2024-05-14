@@ -9,6 +9,7 @@ const { sendMail } = require("../../config/mailer");
 const { Sequelize } = require("sequelize");
 const { Op, Model } = require('sequelize');
 const { midevaluations } = require("../../model/midEvaluation.model");
+const { twomidevaluations } = require("../../model/thesistwo/thesisTwoMidEval.model");
 const { finalevaluations } = require("../../model/finalEvaluation.model")
 const { titlerequests } = require("../../model/requestTitle.model");
 const { supchangerequests } = require("../../model/requestSupervisor.model");

@@ -355,7 +355,7 @@ const supthesis2AllFinalEvals = async (req, res) => {
             const final2Evaluations = await twomidevaluations.findOne({
                 where: {
                     thesistitle: eachThesis.thesistitle,
-                    gcmidevalpermission: true
+                    gcfinalevalpermission: true
                 }
             });
             if (final2Evaluations) {
@@ -405,7 +405,7 @@ const internalthesis2AllFinalEvals = async (req, res) => {
         }
 
 
-        const examinableThesis = await twomidevaluations.findAll({
+        const examinableThesis = await registrations.findAll({
             where: {
                 [Op.or]: [
                     { internalsid: { [Op.contains]: [facultyId] } }
@@ -419,7 +419,7 @@ const internalthesis2AllFinalEvals = async (req, res) => {
             const final2Evaluations = await twomidevaluations.findOne({
                 where: {
                     thesistitle: eachThesis.thesistitle,
-                    gcmidevalpermission: true
+                    gcfinalevalpermission: true
                 }
             });
             if (final2Evaluations) {
@@ -429,7 +429,7 @@ const internalthesis2AllFinalEvals = async (req, res) => {
 
         // Fetch final2EvaluationPermission
         const final2Evaluation = await twomidevaluations.findOne({
-            attributes: ['gcmidevalpermission'],
+            attributes: ['gcfinalevalpermission'],
             limit: 1
         });
 
