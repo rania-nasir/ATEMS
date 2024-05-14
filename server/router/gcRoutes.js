@@ -7,6 +7,7 @@ const gcThesisTwo = require("../controller/gc/thesisTwo/gcThesisTwo.controller")
 const { authenticate } = require('../middleware/authMiddleware');
 const upload = multer({ dest: 'uploads/' });
 const uploadMiddleware = upload.single('file');
+const repositoryController = require("../controller/repository/repository.controller");
 
 
 gcRouter.post('/signIn', gcFunctions.GCSignIn);
@@ -113,5 +114,7 @@ gcRouter.put('/approveFinal2Comments/:rollno', gcThesisTwo.approveFinal2Evaluati
 
 //gcRouter.put('/grantFinalEvalPermission', gcThesisTwo.grantFinalEvalPermission);
 //gcRouter.put('/revokeFinalEvalPermission', gcThesisTwo.revokeFinalEvalPermission);
+
+gcRouter.get('/repository', repositoryController.getRepository);
 
 module.exports = gcRouter;

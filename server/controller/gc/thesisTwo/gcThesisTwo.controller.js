@@ -8,6 +8,7 @@ const { twofinalevaluations } = require("../../../model/thesistwo/thesisTwoFinal
 const { registrations } = require("../../../model/thesistwo/registration.model");
 const { Op } = require('sequelize');
 const { thesis } = require("../../../model/thesis.model");
+const { repository } = require("../../../model/repository.model");
 
 
 const getThesisTwoRegRequests = async (req, res) => {
@@ -819,10 +820,19 @@ const approveFinal2Evaluation = async (req, res) => {
                     await feedbacks.create({
                         rollno,
                         facultyid: finalEvaluation.facultyid,
-                        facultyname: finalEvaluation.facname,
+                        facultyname: finalEvaluation.facultyname,
                         feedbackContent: comments,
                         feedbackType: 'Final2',
                     });
+
+                    await repository.create({
+                        thesistitle: finalEvaluation.thesistitle,
+                        rollno: finalEvaluation.rollno,
+                        stdname: finalEvaluation.stdname,
+                        supervisorid: finalEvaluation.supervisorid,
+                        supervisorname: finalEvaluation.supervisorname,
+                        thesisfilename: "placeholder",
+                    })
                 }
 
 

@@ -10,6 +10,7 @@ const thesis2supervisor = require('../controller/faculty/thesisTwo/supervisor.co
 const hodThesisTwo = require('../controller/hod/thesisTwo/hodThesisTwo.controller');
 const { authenticate } = require('../middleware/authMiddleware');
 const gcRouter = require('./gcRoutes');
+const repositoryController = require("../controller/repository/repository.controller");
 
 
 facRouter.post('/signIn', facFunctions.facultySignIn);
@@ -105,5 +106,6 @@ facRouter.get('/getHodThesis2Students', hodThesisTwo.getHodThesis2Students);
 facRouter.get('/getHodThesis2StudentDetails/:rollno', hodThesisTwo.getHodThesis2StudentDetails);
 facRouter.put('/approveHodThesis2Request/:rollno', hodThesisTwo.approveHodThesis2Request);
 
+facRouter.get('/repository', repositoryController.getRepository);
 
 module.exports = facRouter;
