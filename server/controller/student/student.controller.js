@@ -199,7 +199,7 @@ const requestTitleChange = async (req, res) => {
       where: {
         rollno: rollno
       },
-      attributes: ['comingevaluation'],
+      // attributes: ['comingevaluation'],
     });
 
     if (!studentData) {
@@ -321,7 +321,7 @@ const requestSupervisorChange = async (req, res) => {
       where: {
         rollno: rollno
       },
-      attributes: ['comingevaluation'],
+      // attributes: ['comingevaluation'],
     });
 
     if (!studentData) {

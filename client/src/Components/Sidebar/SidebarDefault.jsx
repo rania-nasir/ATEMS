@@ -127,6 +127,12 @@ const SidebarDefault = () => {
             path: '/gcViewPendingSupervisorRequests',
             iconsrc: ReqIcon,
         },
+        {
+            id: 12,
+            title: 'Add External',
+            path: '/getAllReadyThesis',
+            iconsrc: ReqIcon,
+        },
     ];
 
     const facultySidebarItems = [

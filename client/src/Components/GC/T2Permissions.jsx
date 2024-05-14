@@ -50,7 +50,7 @@ export default function T2Permissions() {
                 }
             });
             const data = await response.json();
-            const status = Boolean(data.gcfinalevalpermission); // Changed to match server response
+            const status = Boolean(data); // Changed to match server response
             setFinal2PermissionStatus(status);
         } catch (error) {
             console.error('Error fetching Final2 permission status:', error);
