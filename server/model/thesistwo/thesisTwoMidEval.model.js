@@ -26,7 +26,10 @@ const twomidevaluations = sequelize.define('twomidevaluations', {
         type: DataTypes.STRING,
         allowNull: false
     },
-
+    externalid: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
     gcapproval: {
         type: DataTypes.STRING,
         allowNull: true,

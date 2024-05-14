@@ -7,6 +7,7 @@ const { twomidevaluations } = require("../../../model/thesistwo/thesisTwoMidEval
 const { twofinalevaluations } = require("../../../model/thesistwo/thesisTwoFinalEval.model");
 const { registrations } = require("../../../model/thesistwo/registration.model");
 const { Op } = require('sequelize');
+const { thesis } = require("../../../model/thesis.model");
 
 
 const getThesisTwoRegRequests = async (req, res) => {
@@ -479,7 +480,7 @@ function generateRandomPassword(length) {
 const assignExternalToThesis = async (req, res) => {
     try {
         const facultyId = req.userId;
-        const { name, email, gender, mobile } = req.body;
+        const { name, email, gender, mobile, thesistitle } = req.body;
 
         // Check if the faculty has the GC role
         const faculty = await faculties.findOne({
@@ -493,6 +494,21 @@ const assignExternalToThesis = async (req, res) => {
 
         if (!faculty) {
             return res.json({ message: 'Forbidden - Insufficient permissions' });
+        }
+
+        const Thesis2MidEval = await twomidevaluations.findOne({
+            where: {
+                thesistitle: thesistitle,
+                gcMidCommentsReview: 'Approved',
+            }
+        });
+
+        if (!Thesis2MidEval) {
+            return res.json({ error: 'Thesis not found or not approved' });
+        }
+
+        if (Thesis2MidEval.externalid) {
+            return res.json({ error: 'External Already assigned' });
         }
 
         // Find the highest numeric facultyid
@@ -522,10 +538,14 @@ const assignExternalToThesis = async (req, res) => {
             return res.json({ error: 'Failed to add external ' });
         }
 
+        await Thesis2MidEval.update({
+            externalid: nextFacultyId,
+        });
+
         res.json(newExternal);
 
     } catch (error) {
-        console.error('Error getting all approved thesis :', error);
+        console.error('Error assigning external to thesis :', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 }
