@@ -6,6 +6,9 @@ const thesistwoController = require("../controller/synopsis/thesistwo.controller
 const studThesisTwoController = require("../controller/student/thesisTwo/studThesisTwo.controller")
 const { authenticate } = require('../middleware/authMiddleware');
 const { synopsis } = require("../model/synopsis.model");
+const repositoryController = require("../controller/repository/repository.controller");
+
+
 
 stdRouter.post('/signIn', stdFunctions.stdSignIn);
 stdRouter.use(authenticate);
@@ -26,5 +29,7 @@ stdRouter.post("/requestSupervisorChange", stdFunctions.requestSupervisorChange)
 
 stdRouter.post("/thesisTwoRegistration", thesistwoController.thesisTwoRegistration);
 stdRouter.put("/uploadThesisTwoReport", studThesisTwoController.uploadThesisTwoReport);
+
+stdRouter.get('/repository', repositoryController.getRepository);
 
 module.exports = stdRouter;
