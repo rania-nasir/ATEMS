@@ -1,10 +1,14 @@
 const { sequelize, DataTypes } = require("../../config/sequelize");
 
 const twofinalevaluations = sequelize.define('twofinalevaluations', {
-    thesisid: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+
+    rollno: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    stdname: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
     thesistitle: {
         type: DataTypes.STRING,
@@ -18,16 +22,20 @@ const twofinalevaluations = sequelize.define('twofinalevaluations', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    examinerid: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    examinername: {
+    gcFinalCommentsReview: {
         type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'Pending',
+        validate: {
+            isIn: [['Pending', 'Approved', 'Rejected']]
+        }
+    },
+    facultyid: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
-    assignedexternalid: {
-        type: DataTypes.INTEGER,
+    facultyname: {
+        type: DataTypes.STRING,
         allowNull: false
     },
     titleAppropriateness: {
@@ -97,14 +105,6 @@ const twofinalevaluations = sequelize.define('twofinalevaluations', {
     generalComments: {
         type: DataTypes.TEXT,
         allowNull: false
-    },
-    gcFinalCommentsReview: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: 'Pending',
-        validate: {
-            isIn: [['Pending', 'Approved', 'Rejected']]
-        }
     },
     createdAt: {
         type: DataTypes.DATE,

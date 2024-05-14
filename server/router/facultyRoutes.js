@@ -94,6 +94,7 @@ facRouter.put('/evaluateMid2', thesis2supervisor.evaluateMid2);
 // Final
 facRouter.get('/supthesis2AllFinalEvals', thesis2supervisor.supthesis2AllFinalEvals);
 facRouter.get('/internalthesis2AllFinalEvals', thesis2supervisor.internalthesis2AllFinalEvals);
+facRouter.get('/externalthesis2AllFinalEvals', thesis2supervisor.externalthesis2AllFinalEvals);
 facRouter.get('/final2EvalDetails/:rollno', thesis2supervisor.final2EvalDetails);
 facRouter.put('/evaluateFinal2', thesis2supervisor.evaluateFinal2);
 

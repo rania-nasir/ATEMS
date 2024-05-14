@@ -447,11 +447,61 @@ const internalthesis2AllFinalEvals = async (req, res) => {
 
 };
 
+const externalthesis2AllFinalEvals = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const examinableThesis = await twomidevaluations.findAll({
+            where: {
+                externalid: facultyId,
+            }
+        });
+
+        if (!examinableThesis) {
+            return res.json({ message: 'No Thesis found' });
+        }
+
+        const examinableThesisWithPermission = [];
+        for (const eachThesis of examinableThesis) {
+            const final2Evaluations = await twomidevaluations.findOne({
+                where: {
+                    thesistitle: eachThesis.thesistitle,
+                    gcfinalevalpermission: true
+                }
+            });
+            if (final2Evaluations) {
+                examinableThesisWithPermission.push(eachThesis);
+            }
+        }
+
+        // Fetch final2EvaluationPermission
+        const final2Evaluation = await twomidevaluations.findOne({
+            attributes: ['gcfinalevalpermission'],
+            limit: 1
+        });
+
+        // Check if final2EvaluationPermission is true
+        if (!final2Evaluation || final2Evaluation.gcfinalevalpermission !== true) {
+            return res.json({ message: 'Final evaluations are not open yet.' });
+        }
+
+        return res.json(examinableThesisWithPermission);
+
+    } catch (error) {
+        console.error('Error fetching examinable theses:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 const final2EvalDetails = async (req, res) => {
 
     try {
         const { rollno } = req.params;
-        const student = await students.findOne({ where: { rollno } });
+        const student = await students.findOne({
+            where:
+            {
+                rollno: rollno,
+            }
+        });
 
         if (!student) {
             return res.status(404).json({ error: 'Student not found' });
@@ -478,6 +528,7 @@ const final2EvalDetails = async (req, res) => {
 
 const evaluateFinal2 = async (req, res) => {
     try {
+        const facultyId = req.userId;
         const {
             rollno,
             stdname,
@@ -485,9 +536,8 @@ const evaluateFinal2 = async (req, res) => {
             supervisorname,
             supervisorid,
             // reportfilename,
-            examinerid,
-            examinername,
-            assignedexternalid,
+            facultyid,
+            facultyname,
             titleAppropriateness,
             titleComments,
             abstractClarity,
@@ -508,7 +558,12 @@ const evaluateFinal2 = async (req, res) => {
         } = req.body;
 
 
-        const existingEvaluation = await twofinalevaluations.findOne({ where: { facultyid, rollno } });
+        const existingEvaluation = await twofinalevaluations.findOne({
+            where: {
+                facultyid: facultyId,
+                rollno
+            }
+        });
         if (existingEvaluation) {
             res.json({ message: 'You have already evaluated this thesis final' });
             return;
@@ -524,9 +579,8 @@ const evaluateFinal2 = async (req, res) => {
             supervisorid,
             gcFinalCommentsReview: 'Pending',
             // reportfilename,
-            examinerid,
-            examinername,
-            assignedexternalid,
+            facultyid,
+            facultyname,
             titleAppropriateness,
             titleComments,
             abstractClarity,
@@ -567,7 +621,7 @@ module.exports =
     evaluateMid2,
     supthesis2AllFinalEvals,
     internalthesis2AllFinalEvals,
-    // externalthesis2AllFinalEvals,
+    externalthesis2AllFinalEvals,
     final2EvalDetails,
     evaluateFinal2
 };
