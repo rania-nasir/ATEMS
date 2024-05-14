@@ -2,7 +2,7 @@ const { repository } = require("../../model/repository.model");
 
 const getRepository = async (req, res) => {
     try {
-        const allThesis = repository.findAll();
+        const allThesis = await repository.findAll();
 
         res.json(allThesis);
     } catch (error) {
