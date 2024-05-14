@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import Mainsection from './Mainsection';
 import Aboutsection from './Aboutsection'
-import Contactsection from './Contactsection';
+// import Contactsection from './Contactsection';
 import Footersection from './Footersection';
 
 const LandingPage = () => {
@@ -43,7 +43,7 @@ const LandingPage = () => {
                     <Aboutsection />
 
                     {/* Contact Section  */}
-                    <Contactsection />
+                    {/* <Contactsection /> */}
 
                     {/* Footer section  */}
                     <Footersection />

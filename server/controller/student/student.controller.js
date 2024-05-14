@@ -150,6 +150,7 @@ const thesisData = async (req, res) => {
 const viewTitleChangeFrom = async (req, res) => {
   try {
     const rollno = req.userId;
+    console.log('rollno :::', rollno);
     const studentData = await students.findOne({
       where: {
         rollno: rollno
@@ -169,7 +170,7 @@ const viewTitleChangeFrom = async (req, res) => {
 
     if (!thesisData) {
       return res.status(404).json({ message: 'Thesis not found' });
-    }
+    } else { return res.status(200).json({ message: "Thesis Found" }) }
 
   } catch (error) {
     console.error('Error submitting title change request : ', error);
@@ -182,6 +183,17 @@ const requestTitleChange = async (req, res) => {
     const rollno = req.userId;
 
     const newThesisTitle = req.body.newThesisTitle;
+
+    const reqData = await titlerequests.findOne({
+      where: {
+        rollno: rollno
+      },
+      // attributes: { exclude: ['password'] } 
+    });
+
+    if (reqData) {
+      return res.json({ message: 'Your Title Change Request has been sent already.' });
+    }
 
     const studentData = await students.findOne({
       where: {
@@ -322,6 +334,11 @@ const requestSupervisorChange = async (req, res) => {
       return res.json({ message: 'Thesis not found' });
     }
 
+    const Request = await supchangerequests.findOne({ where: { rollno: thesisData.rollno } });
+    if (Request) {
+      return res.json({ message: 'Your request has been sent already.' });
+    }
+
     const supervisorData = await faculties.findOne({
       where: {
         facultyid: thesisData.facultyid.toString()
@@ -341,10 +358,16 @@ const requestSupervisorChange = async (req, res) => {
     if (!newSupervisorid) {
       return res.json({ message: 'Invalid supervisor name' });
     }
-
     // Validating that current supervisor and new supervisor are not the same
-    if (thesisData.facultyId === newSupervisorid) {
+    if (supervisorData.facultyid === newSupervisorid) {
       return res.json({ message: 'Current Supervisor and New Supervisor must be different' });
+    }
+    // Validating that new supervisor is not in the internalsid array
+    if (thesisData.internalsid[0].toString() === newSupervisorid) {
+      return res.json({ message: 'Current internal and New Supervisor must be different' });
+    }
+    if (thesisData.internalsid[1].toString() === newSupervisorid) {
+      return res.json({ message: 'Current internal and New Supervisor must be different' });
     }
 
     await supchangerequests.create({
@@ -364,12 +387,9 @@ const requestSupervisorChange = async (req, res) => {
       hodReview: 'Pending',
     });
 
-    const newSupervisorChangeRequest = await supchangerequests.findOne({ where: { rollno } });
+    const newSupervisorChangeRequest = await supchangerequests.findOne({ where: { rollno: thesisData.rollno } });
     if (newSupervisorChangeRequest) {
       res.json({ message: 'Request for Supervisor change successfully submitted', request: newSupervisorChangeRequest });
-    }
-    else {
-      res.json({ message: 'An error occurred while submitting request for supervisor change' });
     }
 
   } catch (error) {

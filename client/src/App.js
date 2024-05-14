@@ -25,6 +25,9 @@ import NotFoundPage from './Components/Error/NotFoundPage'
 import ThesisTabs from './Components/ThesisTabs';
 import CommonSection from './Components/CommonSection';
 
+import TitleChangeRequests from './Components/Faculty/Supervisor/TitleChangeRequests';
+import TitleChangeRequestDetails from './Components/Faculty/Supervisor/TitleChangeReqDetails';
+
 
 // --------------
 import MakeAnnouncement from './Components/GC/MakeAnnouncement';
@@ -34,8 +37,13 @@ import UpdateFaculty from './Components/GC/UpdateFaculty';
 import UpdateStudent from './Components/GC/UpdateStudent'
 import PanelTime from './Components/GC/PanelTime';
 
+import GCTitleChangeRequests from './Components/GC/GCTitleChangeRequests';
+import GCTitleChangeRequestDetails from './Components/GC/GCTitleChangeReqDetails';
+
 import StudentviewAnnouncement from './Components/Student/StudentviewAnnouncement';
 import ViewFeedback from './Components/Student/ViewFeedback';
+import TitleChangeReq from './Components/Student/TitleChangeReq';
+import SupChangeReq from './Components/Student/SupChangeReq';
 
 import FacultyviewAnnouncement from './Components/Faculty/FacultyviewAnnouncement';
 
@@ -157,7 +165,7 @@ function App() {
   }, [activeTitle]);
 
   // console.log('Active Title in app.js : ', activeTitle);
-  const sidebararray = ["Home", "Dashboard", "View Announcement", "View Feedback", "Make Announcement", "Faculty Records", "Student Records", "Panel Timelines"];
+  const sidebararray = ["Home", "Dashboard", "View Announcement", "View Feedback", "Thesis Title Change Request", "Supervisor Change Request", "Title Change Requests", "Make Announcement", "Faculty Records", "Student Records", "Panel Timelines"];
 
   useEffect(() => {
     if (!activeTitle) {
@@ -227,6 +235,8 @@ function App() {
                                   <Route path='/' element={<Facultyhome />} />
                                   <Route path='/viewAnnouncement' element={<FacultyviewAnnouncement />} />
                                   <Route path='/fillSynopsis' element={<ThesisTabs />} />
+                                  <Route path='/supViewPendingTitleRequests' element={<TitleChangeRequests/>}/>
+                                  <Route path='/supViewPendingTitleDetails/:rollno' element={<TitleChangeRequestDetails/>}/>
                                   {/* {activeTitle === 'Home' && (
                                     <Route path='/' element={<Facultyhome />} />
                                   )} */}
@@ -238,6 +248,8 @@ function App() {
                                   <Route path='/' element={<Studenthome />} />
                                   <Route path='/viewAnnouncement' element={<StudentviewAnnouncement />} />
                                   <Route path='/ViewFeedback' element={<ViewFeedback />} />
+                                  <Route path='/viewTitleChangeForm' element={<TitleChangeReq />} />
+                                  <Route path='/viewSupervisorChangeForm' element={<SupChangeReq />} />
                                   <Route path='/Supervisor' elememt={<ThesisTabs />} />
                                   <Route path='/Internal' element={<ThesisTabs />} />
                                   <Route path='/MSRC' element={<ThesisTabs />} />
@@ -258,6 +270,8 @@ function App() {
                                     <Route path='/updateFaculty/:facultyid' element={<UpdateFaculty />} />
                                     <Route path='/updateStudent/:rollno' element={<UpdateStudent />} />
                                     <Route path='/PanelTimelines' element={<PanelTime />} />
+                                    <Route path='/gcViewPendingTitleRequests' element={<GCTitleChangeRequests />} />
+                                    <Route path='/gcViewPendingTitleDetails/:rollno' element={<GCTitleChangeRequestDetails />} />
                                     {/* {activeTitle === 'Home' && (
                                       <Route path='/' element={<GCDashboard />} />
                                     )} */}
