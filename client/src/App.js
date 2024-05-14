@@ -28,7 +28,6 @@ import CommonSection from './Components/CommonSection';
 import TitleChangeRequests from './Components/Faculty/Supervisor/TitleChangeRequests';
 import TitleChangeRequestDetails from './Components/Faculty/Supervisor/TitleChangeReqDetails';
 
-
 // --------------
 import MakeAnnouncement from './Components/GC/MakeAnnouncement';
 import ViewStudent from './Components/GC/ViewStudent';
@@ -39,6 +38,8 @@ import PanelTime from './Components/GC/PanelTime';
 
 import GCTitleChangeRequests from './Components/GC/GCTitleChangeRequests';
 import GCTitleChangeRequestDetails from './Components/GC/GCTitleChangeReqDetails';
+import GCSuperChangeReq from './Components/GC/GCSuperChangeReq';
+import GCSuperChangeReqDetails from './Components/GC/GCSuperChangeReqDetails';
 
 import StudentviewAnnouncement from './Components/Student/StudentviewAnnouncement';
 import ViewFeedback from './Components/Student/ViewFeedback';
@@ -195,104 +196,112 @@ function App() {
         </header>
       ) : (
         <>
+          <div>
 
-          <div className='mr-2'>
+            <NavbarDefault />
+            <div className='mr-2'>
 
-            <RoleContext.Provider value={{ role, setRole }}>
-              <ThesisContext.Provider value={{ thesis, setThesis }}>
-                <ActiveTitleContext.Provider value={{ activeTitle, setActiveTitle }}>
-                  <NavbarDefault />
-                  <div style={{ display: "flex" }}>
+              <RoleContext.Provider value={{ role, setRole }}>
+                <ThesisContext.Provider value={{ thesis, setThesis }}>
+                  <ActiveTitleContext.Provider value={{ activeTitle, setActiveTitle }}>
 
-                    {userDetails.userType && <SidebarDefault />}
+                    <div style={{ display: "flex" }}>
 
-                    <div className='w-full'>
+                      {userDetails.userType && <SidebarDefault />}
 
                       <div className='w-full'>
-                        {/* Conditional rendering based on activeTitle and sidebararray */}
-                        {firstLoad ? null : (
-                          (!activeTitle || !sidebararray.includes(activeTitle)) ?
-                            <ThesisTabs /> : null
-                        )}
 
-                        <Routes>
+                        <div className='w-full'>
+                          {/* Conditional rendering based on activeTitle and sidebararray */}
+                          {firstLoad ? null : (
+                            (!activeTitle || !sidebararray.includes(activeTitle)) ?
+                              <ThesisTabs /> : null
+                          )}
 
-                          {/* Main Page  */}
-                          {!authToken ? (
-                            <>
-                              <Route path='/' element={<LandingPage />} />
-                              {/* Login Pages  */}
-                              <Route path='/login' element={<LoginPage />} />
-                              <Route path='/gclogin' element={<GClogin />} />
-                            </>
-                          ) : (
-                            // Conditional rendering based on userType
-                            <>
+                          <Routes>
 
-                              {userDetails.userType === 'faculty' && (
-                                // Render faculty pages for faculty user
-                                <>
-                                  <Route path='/' element={<Facultyhome />} />
-                                  <Route path='/viewAnnouncement' element={<FacultyviewAnnouncement />} />
-                                  <Route path='/fillSynopsis' element={<ThesisTabs />} />
-                                  <Route path='/supViewPendingTitleRequests' element={<TitleChangeRequests/>}/>
-                                  <Route path='/supViewPendingTitleDetails/:rollno' element={<TitleChangeRequestDetails/>}/>
-                                  {/* {activeTitle === 'Home' && (
+                            {/* Main Page  */}
+                            {!authToken ? (
+                              <>
+                                <Route path='/' element={<LandingPage />} />
+                                {/* Login Pages  */}
+                                <Route path='/login' element={<LoginPage />} />
+                                <Route path='/gclogin' element={<GClogin />} />
+                              </>
+                            ) : (
+                              // Conditional rendering based on userType
+                              <>
+
+                                {userDetails.userType === 'faculty' && (
+                                  // Render faculty pages for faculty user
+                                  <>
+                                    <Route path='/' element={<Facultyhome />} />
+                                    <Route path='/viewAnnouncement' element={<FacultyviewAnnouncement />} />
+                                    <Route path='/fillSynopsis' element={<ThesisTabs />} />
+                                    <Route path='/supViewPendingTitleRequests' element={<TitleChangeRequests />} />
+                                    <Route path='/supViewPendingTitleDetails/:rollno' element={<TitleChangeRequestDetails />} />
+
+                                    {/* {activeTitle === 'Home' && (
                                     <Route path='/' element={<Facultyhome />} />
                                   )} */}
-                                </>
-                              )}
-                              {userDetails.userType === 'student' && (
-                                // Render student pages for student user
-                                <>
-                                  <Route path='/' element={<Studenthome />} />
-                                  <Route path='/viewAnnouncement' element={<StudentviewAnnouncement />} />
-                                  <Route path='/ViewFeedback' element={<ViewFeedback />} />
-                                  <Route path='/viewTitleChangeForm' element={<TitleChangeReq />} />
-                                  <Route path='/viewSupervisorChangeForm' element={<SupChangeReq />} />
-                                  <Route path='/Supervisor' elememt={<ThesisTabs />} />
-                                  <Route path='/Internal' element={<ThesisTabs />} />
-                                  <Route path='/MSRC' element={<ThesisTabs />} />
-                                  <Route path='/HOD' element={<ThesisTabs />} />
-                                  {/* {activeTitle === 'Home' && (
+                                  </>
+                                )}
+                                {userDetails.userType === 'student' && (
+                                  // Render student pages for student user
+                                  <>
+                                    <Route path='/' element={<Studenthome />} />
+                                    <Route path='/viewAnnouncement' element={<StudentviewAnnouncement />} />
+                                    <Route path='/ViewFeedback' element={<ViewFeedback />} />
+                                    <Route path='/viewTitleChangeForm' element={<TitleChangeReq />} />
+                                    <Route path='/viewSupervisorChangeForm' element={<SupChangeReq />} />
+                                    <Route path='/Supervisor' elememt={<ThesisTabs />} />
+                                    <Route path='/Internal' element={<ThesisTabs />} />
+                                    <Route path='/MSRC' element={<ThesisTabs />} />
+                                    <Route path='/HOD' element={<ThesisTabs />} />
+                                    {/* {activeTitle === 'Home' && (
                                     <Route path='/' element={<Studenthome />} />
                                   )} */}
-                                </>
-                              )}
-                              {
-                                userDetails.userType === 'gc' && (
-                                  // Render gc pages for gc user
-                                  <>
-                                    <Route path='/' element={<GCDashboard />} />
-                                    <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
-                                    <Route path='/viewfaculty' element={<ViewFaculty />} />
-                                    <Route path='/viewstudent' element={<ViewStudent />} />
-                                    <Route path='/updateFaculty/:facultyid' element={<UpdateFaculty />} />
-                                    <Route path='/updateStudent/:rollno' element={<UpdateStudent />} />
-                                    <Route path='/PanelTimelines' element={<PanelTime />} />
-                                    <Route path='/gcViewPendingTitleRequests' element={<GCTitleChangeRequests />} />
-                                    <Route path='/gcViewPendingTitleDetails/:rollno' element={<GCTitleChangeRequestDetails />} />
-                                    {/* {activeTitle === 'Home' && (
+                                  </>
+                                )}
+                                {
+                                  userDetails.userType === 'gc' && (
+                                    // Render gc pages for gc user
+                                    <>
+                                      <Route path='/' element={<GCDashboard />} />
+                                      <Route path='/makeAnnouncement' element={<MakeAnnouncement />} />
+                                      <Route path='/viewfaculty' element={<ViewFaculty />} />
+                                      <Route path='/viewstudent' element={<ViewStudent />} />
+                                      <Route path='/updateFaculty/:facultyid' element={<UpdateFaculty />} />
+                                      <Route path='/updateStudent/:rollno' element={<UpdateStudent />} />
+                                      <Route path='/PanelTimelines' element={<PanelTime />} />
+                                      <Route path='/gcViewPendingTitleRequests' element={<GCTitleChangeRequests />} />
+                                      <Route path='/gcViewPendingTitleDetails/:rollno' element={<GCTitleChangeRequestDetails />} />
+                                      <Route path='/gcViewPendingSupervisorRequests' element={<GCSuperChangeReq />} />
+                                      <Route path='/gcViewPendingSupervisorDetails/:rollno' element={<GCSuperChangeReqDetails />} />
+
+                                      {/* {activeTitle === 'Home' && (
                                       <Route path='/' element={<GCDashboard />} />
                                     )} */}
-                                  </>
-                                )
-                              }
-                            </>
-                          )}
+                                    </>
+                                  )
+                                }
+                              </>
+                            )}
 
-                          {/* Error Pages */}
-                          {activeTitle === "Home" && (
-                            <Route path='*' element={<NotFoundPage />} />
-                          )}
-                        </Routes>
+                            {/* Error Pages */}
+                            {activeTitle === "Home" && (
+                              <Route path='*' element={<NotFoundPage />} />
+                            )}
+                          </Routes>
 
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </ActiveTitleContext.Provider>
-              </ThesisContext.Provider>
-            </RoleContext.Provider>
+                  </ActiveTitleContext.Provider>
+                </ThesisContext.Provider>
+              </RoleContext.Provider>
+            </div>
+
           </div>
         </>
       )}

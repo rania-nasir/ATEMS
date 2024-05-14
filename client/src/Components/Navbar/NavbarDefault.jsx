@@ -75,7 +75,7 @@ const NavbarDefault = () => {
         <>
             <ActiveTitleContext.Provider value={{ activeTitle, setActiveTitle }}>
 
-                <div className="mx-auto py-1 px-4 lg:px-8 lg:py-4 shadow" >
+                <div className="bg-white w-full py-1 px-4 lg:px-8 lg:py-4 shadow">
                     <Toast ref={toastTopCenter} position="top-center" />
                     <div className="container mx-auto flex items-center justify-between text-blue-gray-900">
 
