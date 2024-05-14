@@ -647,7 +647,7 @@ const ApproveTitleChangeSupervisor = async (req, res) => {
                 { where: { rollno: rollno } }
             );
             if (updatedRows > 0) {
-                res.json({ message: 'Request Approved and Forwarded to GC'});
+                res.json({ message: 'Request Approved and Forwarded to GC' });
             }
             else {
                 res.json({ message: 'Error approving pending title request' });
@@ -690,7 +690,7 @@ const RejectTitleChangeSupervisor = async (req, res) => {
                 { where: { rollno: rollno } }
             );
             if (updatedRows > 0) {
-                res.json('Request Rejected');
+                res.json({message: 'Request Rejected'});
             }
             else {
                 res.json({ message: 'Error rejecting pending title request' });
@@ -834,7 +834,7 @@ const approveSupervisorChangeSup = async (req, res) => {
             );
             if (updatedRows > 0) {
 
-                return res.json({ message: 'Supervisor Change Request Approved and forwarded to GC'});
+                return res.json({ message: 'Supervisor Change Request Approved and forwarded to GC' });
             }
             else {
                 return res.json({ message: 'Error approving pending supervisor change request' });
@@ -894,7 +894,7 @@ const rejectSupervisorChangeSup = async (req, res) => {
             );
             if (updatedRows > 0) {
 
-                return res.json({ message: 'Supervisor Change Request Rejected'});
+                return res.json({ message: 'Supervisor Change Request Rejected' });
             }
             else {
                 return res.json({ message: 'Error rejecting pending supervisor change request' });
@@ -912,7 +912,6 @@ const rejectSupervisorChangeSup = async (req, res) => {
 const viewAllThesisRegistered = async (req, res) => {
     try {
         const facultyId = req.userId;
-
         const faculty = await faculties.findOne({
             attributes: ['facultyid', 'name'],
             where: {

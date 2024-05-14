@@ -34,24 +34,26 @@ const SidebarDefault = () => {
 
     useEffect(() => {
         async function fetchfacultyData() {
-            try {
-                const response = await fetch(`http://localhost:5000/faculty/showFacData/${userId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `${Cookies.get('jwtoken')}`
-                    }
-                });
+            if (userType === 'faculty') {
+                try {
+                    const response = await fetch(`http://localhost:5000/faculty/showFacData/${userId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `${Cookies.get('jwtoken')}`
+                        }
+                    });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(data);
-                    setfacultyData(data);
-                } else {
-                    throw new Error('Failed to fetch data');
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log(data);
+                        setfacultyData(data);
+                    } else {
+                        throw new Error('Failed to fetch data');
+                    }
+                } catch (error) {
+                    console.error('Failed to retrieve data: ', error);
                 }
-            } catch (error) {
-                console.error('Failed to retrieve data: ', error);
             }
         }
 
@@ -112,7 +114,13 @@ const SidebarDefault = () => {
             title: 'Thesis Evaluations',
             path: '/Evaluations',
             iconsrc: evaluationsicon,
-        }
+        },
+        {
+            id: 10,
+            title: 'Title Change Requests',
+            path: '/gcViewPendingTitleRequests',
+            iconsrc: evaluationsicon,
+        },
     ];
 
     const facultySidebarItems = [
@@ -152,6 +160,12 @@ const SidebarDefault = () => {
             path: '/HOD',
             iconsrc: Managingsicon,
         },
+        {
+            id: 7,
+            title: 'Title Change Requests',
+            path: '/supViewPendingTitleRequests',
+            iconsrc: Managmentsicon,
+        },
     ];
 
     const studentSidebarItems = [
@@ -183,6 +197,18 @@ const SidebarDefault = () => {
             id: 5,
             title: 'View Feedback',
             path: '/viewFeedback',
+            iconsrc: feedbackicon,
+        },
+        {
+            id: 6,
+            title: 'Thesis Title Change Request',
+            path: '/viewTitleChangeForm',
+            iconsrc: ReportIcon,
+        },
+        {
+            id: 7,
+            title: 'Supervisor Change Request',
+            path: '/viewSupervisorChangeForm',
             iconsrc: feedbackicon,
         },
     ];

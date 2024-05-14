@@ -77,7 +77,7 @@ const RoleTabs = () => {
                 <TabView activeIndex={activeIndex} onTabChange={(e) => setActiveIndex(e.index)}>
                     {userTabs &&
                         userTabs.panels?.map((panel, index) => (
-                            (thesisStatus !== 2 || (thesisStatus === 2 && panel !== 'Proposal Defense' && panel !== 'Proposal Defense Evaluations')) && (
+                            (thesisStatus !== 2 || (thesisStatus === 2 && panel !== 'Proposal Defense' && panel !== 'Proposal Defense Evaluations' && panel !== 'MSRC Thesis Requests')) && (
                                 <TabPanel key={index} header={panel}>
                                     {thesisStatus === 1 ? (
                                         showDetails ? (
@@ -278,7 +278,7 @@ const RoleTabs = () => {
                                                     </>
                                                 )}
                                                 {/* MSRCS  */}
-                                                {panel === "MSRC Thesis Requests" && (
+                                                {/* {panel === "MSRC Thesis Requests" && (
                                                     <>
                                                         <BackButton onClick={() => {
                                                             setShowDetails(false); // Set showDetails to false
@@ -288,7 +288,7 @@ const RoleTabs = () => {
                                                             <Route path='/msrcThesisDetails/:thesisid' element={<MSRCThesisDetails setShowDetails={setShowDetails} />} />
                                                         </Routes>
                                                     </>
-                                                )}
+                                                )} */}
                                                 {/* HOD  */}
                                                 {panel === "Thesis Approval Requests" && (
                                                     <>
@@ -319,7 +319,7 @@ const RoleTabs = () => {
                                                 {panel === "Mid Evaluations" && <AllMid2InternalEvaluations setShowDetails={setShowDetails} />}
                                                 {panel === "Final Evaluations" && <AllFinal1InternalEvaluations setShowDetails={setShowDetails} />}
                                                 {/* MSRC */}
-                                                {panel === "MSRC Thesis Requests" && <MSRCAllThesis setShowDetails={setShowDetails} />}
+                                                {/* {panel === "MSRC Thesis Requests" && <MSRCAllThesis setShowDetails={setShowDetails} />} */}
                                                 {/* HOD  */}
                                                 {panel === "Thesis Approval Requests" && <T2HODGetThesis setShowDetails={setShowDetails} />}
                                                 {/* </Routes> */}
