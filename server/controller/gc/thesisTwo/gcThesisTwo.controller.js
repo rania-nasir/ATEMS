@@ -1,8 +1,10 @@
 const { sequelize } = require("../../../config/sequelize");
 const { faculties } = require("../../../model/faculty.model");
 const { students } = require("../../../model/student.model");
+const { feedbacks } = require("../../../model/feedback.model");
 const { sendMail } = require("../../../config/mailer");
 const { twomidevaluations } = require("../../../model/thesistwo/thesisTwoMidEval.model");
+const { twofinalevaluations } = require("../../../model/thesistwo/thesisTwoFinalEval.model");
 const { registrations } = require("../../../model/thesistwo/registration.model");
 const { Op } = require('sequelize');
 
@@ -286,7 +288,7 @@ const getAllMid2Evaluations = async (req, res) => {
                 // Query to find all pending proposals
                 const pendingMid2Evaluations = await twomidevaluations.findAll({
                     where: {
-                        gcapproval: 'Pending'
+                        gcMidCommentsReview: 'Pending'
                     },
                     attributes: [
                         [sequelize.literal('DISTINCT "rollno"'), 'rollno'],
@@ -379,6 +381,10 @@ const approveMid2Evaluation = async (req, res) => {
                 // Update relevant student record in students model
                 await students.update(
                     { comingevaluation: 'Final2' },
+                    { where: { rollno } }
+                );
+                await twomidevaluations.update(
+                    { gcMidCommentsReview: 'Approved' },
                     { where: { rollno } }
                 );
                 break;
@@ -524,7 +530,328 @@ const assignExternalToThesis = async (req, res) => {
     }
 }
 
+const grantFinalEvalPermission = async (req, res) => {
+    try {
 
+        const facultyId = req.userId;
+        // Check if the faculty has the GC role
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
+        }
+
+        // Check if midPermission is false
+        const gcFinalPermission = await twomidevaluations.findOne({
+            attributes: ['gcfinalevalpermission'],
+            limit: 1
+        });
+
+        if (!gcFinalPermission || gcFinalPermission.gcfinalevalpermission !== false) {
+            return res.json({ message: 'Mid Evaluations permission is not revoked' });
+        }
+
+        // Check if all gcMidCommentsReview in proposalEvaluations table are 'Approved'
+        const allApproved = await twomidevaluations.findAll({
+            where: {
+                gcMidCommentsReview: {
+                    [Op.ne]: 'Approved'
+                }
+            }
+        });
+
+        if (allApproved.length > 0) {
+            return res.json({ message: 'All mid evaluations are not completely evaluated yet.' });
+        }
+
+        // Update finalEvaluationPermission for all records
+        await twomidevaluations.update(
+            { gcfinalevalpermission: true },
+            { where: {} }
+        );
+
+        return res.json({ message: 'Final-evaluation permissions successfully granted.' });
+
+    } catch (error) {
+        console.error('Error granting final 2 permission:', error);
+        res.status(500).json({ message: 'An error occurred while granting final-evaluation permission' });
+    }
+};
+
+const revokeFinalEvalPermission = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        // Check if the faculty has the GC role
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
+        }
+
+        // Update all records in midevaluations to set finalEvaluationPermission to false
+        await twomidevaluations.update(
+            { gcfinalevalpermission: false },
+            { where: {} } // No specific where clause needed, as we're updating all records
+        );
+
+        return res.json({ message: 'Final-evaluation permissions revoked for all record.' });
+
+    } catch (error) {
+        console.error('Error setting Final-evaluation permissions:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const getGCFinalPermissionStatus = async (req, res) => {
+    try {
+        // Query to retrieve the value of finalEvaluationPermission from midevaluations table
+        const finalEvaluation = await twomidevaluations.findOne({
+            attributes: ['gcfinalevalpermission'],
+            limit: 1 // Limit to one result as we only need one value
+        });
+
+        // Check if a record was found
+        if (finalEvaluation) {
+            const finalEvaluationValue = finalEvaluation.gcfinalevalpermission;
+            res.json({ gcfinalevalpermission: finalEvaluationValue });
+        } else {
+            res.json({ message: "No Final Evaluation record found" });
+        }
+    } catch (error) {
+        console.error('Error retrieving Final Evaluation permission:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const getAllFinal2Evaluations = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
+        }
+
+        // Fetch finalEvaluationPermission
+        const finalEvaluation = await twomidevaluations.findOne({
+            attributes: ['gcfinalevalpermission'],
+            limit: 1 // Limit to one result as we only need one value
+        });
+
+        // Check if a record was found
+        if (!finalEvaluation) {
+            return res.json({ message: 'Final evaluation permission record not found' });
+        }
+
+        // Check if finalEvaluationPermission is true (indicating it's not closed yet)
+        if (finalEvaluation.gcfinalevalpermission === true) {
+            return res.json({ message: 'Final evaluations are not closed yet' });
+        }
+
+        // Find all pending final evaluations
+        const pendingFinalReviews = await twofinalevaluations.findAll({
+            where: {
+                gcFinalCommentsReview: 'Pending'
+            },
+            attributes: [
+                [sequelize.literal('DISTINCT "rollno"'), 'rollno'],
+                'stdname',
+                'rollno',
+                'thesistitle',
+            ]
+        });
+
+        res.json({ pendingFinalReviews });
+
+    } catch (error) {
+        console.error('Error fetching pending final evaluations:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+const getSelectedFinal2EvaluationDetails = async (req, res) => {
+
+    try {
+        const facultyId = req.userId;
+        // Check if the faculty has the GC role
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
+        }
+        const { rollno } = req.params;
+
+        const selectedFinalEvaluation = await twofinalevaluations.findAll({
+            where: {
+                rollno
+            }
+        });
+
+        if (selectedFinalEvaluation) {
+            res.json({ selectedFinalEvaluation });
+        } else {
+            res.status(404).json({ error: 'Final Evaluation not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching Final evaluation details:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+};
+
+const approveFinal2Evaluation = async (req, res) => {
+    try {
+        const facultyId = req.userId;
+        // Check if the faculty has the GC role
+        const faculty = await faculties.findOne({
+            where: {
+                facultyid: facultyId,
+                role: {
+                    [Op.contains]: ["GC"]
+                },
+            }
+        });
+
+        if (!faculty) {
+            return res.json({ message: 'Forbidden - Insufficient permissions' });
+        }
+
+        const { rollno } = req.params;
+        const { thesistwograde } = req.body;
+
+        // Update all final evaluations for the given rollno
+        // const [updatedRows] = await finalevaluations.update(
+        //     {
+        //         gcFinalCommentsReview: 'Approved',
+        //         thesisonegrade
+        //     },
+
+        //     { where: { rollno } }
+        // );
+
+
+        if (!thesistwograde) {
+            return res.json({ message: 'Thesis grade is required' });
+        }
+
+        let gcFinalCommentsReview = '';
+        let mailText = '';
+
+        if (thesistwograde === 'A') {
+            gcFinalCommentsReview = 'Approved';
+            mailText = 'Your Final Evaluation has been approved, You can now view the feedback, Grade will be updated on FLEX.';
+        } else if (thesistwograde === 'F') {
+            gcFinalCommentsReview = 'Rejected';
+            mailText = 'Your Final Evaluation has been rejected with an F grade.';
+
+        }
+
+        const [updatedRows] = await twofinalevaluations.update(
+            { gcFinalCommentsReview, thesistwograde },
+            { where: { rollno } }
+        );
+
+        if (updatedRows > 0) {
+
+            // Find the approved final evaluations for the given rollno
+            const approvedFinalEvaluation = await twofinalevaluations.findAll({
+                where: {
+                    rollno,
+                    gcFinalCommentsReview
+                }
+            });
+
+            if (approvedFinalEvaluation.length > 0) {
+                // Iterate through each approved final evaluation
+                for (const finalEvaluation of approvedFinalEvaluation) {
+                    // Extract comments from the approved final evaluation
+                    const comments = finalEvaluation.comments;
+
+                    // Create a feedback record for the approved final evaluation
+                    await feedbacks.create({
+                        rollno,
+                        facultyid: finalEvaluation.facultyid,
+                        facultyname: finalEvaluation.facname,
+                        feedbackContent: comments,
+                        feedbackType: 'Final2',
+                    });
+                }
+
+
+
+                // Update the comingevaluation status in the students model
+                const [updatedStudentCount] = await students.update(
+                    {
+                        comingevaluation: thesistwograde === 'A' ? 'Mid2' : 'Proposal',
+                        thesisstatus: thesistwograde === 'A' ? 2 : 1,
+                        reevaluationstatus: 'false'
+                    },
+                    { where: { rollno } }
+                );
+
+                if (updatedStudentCount > 0) {
+                    // Get student details
+                    const student = await students.findOne({ where: { rollno } });
+
+                    if (student) {
+                        // Send approval email to student
+                        const subject = 'Final Evaluation 2';
+                        // const text = 'Your Final Evaluation has been approved, You can now view the feedback, Grade will be updated on FLEX';
+                        await sendMail(student.email, subject, mailText);
+
+                        if (thesistwograde === 'F') {
+                            // Delete records from related models only if the grade is F
+                            await registrations.destroy({ where: { rollno } });
+                            await twomidevaluations.destroy({ where: { rollno } });
+                            await twofinalevaluations.destroy({ where: { rollno } });
+                        }
+
+                        res.json({ message: 'Final Evaluation updated, and email sent to student' });
+                    } else {
+                        res.json({ message: 'Student not found' });
+                    }
+                } else {
+                    res.json({ message: 'Final evaluation not approved or student not found' });
+                }
+            } else {
+                res.json({ message: 'No Final evaluation found or not approved' });
+            }
+        } else {
+            res.json({ message: 'No Final evaluation found for the student' });
+        }
+    } catch (error) {
+        console.error('Error approving Final evaluation:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 
 
 module.exports =
@@ -539,5 +866,11 @@ module.exports =
     getSelectedMid2EvaluationDetails,
     approveMid2Evaluation,
     getAllApprovedThesis,
-    assignExternalToThesis
+    assignExternalToThesis,
+    grantFinalEvalPermission,
+    revokeFinalEvalPermission,
+    getGCFinalPermissionStatus,
+    getAllFinal2Evaluations,
+    getSelectedFinal2EvaluationDetails,
+    approveFinal2Evaluation
 }
