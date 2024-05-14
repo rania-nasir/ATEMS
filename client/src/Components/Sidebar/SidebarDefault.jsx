@@ -21,7 +21,7 @@ import formicon from '../../Icons/form.png';
 import feedbackicon from '../../Icons/feedback.png'
 import Permissionicon from '../../Icons/permissions.png';
 import ReportIcon from '../../Icons/report.png';
-
+import ReqIcon from '../../Icons/changereqicon.png'
 
 const SidebarDefault = () => {
     const { activeTitle, setActiveTitle } = useContext(ActiveTitleContext);
@@ -119,7 +119,13 @@ const SidebarDefault = () => {
             id: 10,
             title: 'Title Change Requests',
             path: '/gcViewPendingTitleRequests',
-            iconsrc: evaluationsicon,
+            iconsrc: ReqIcon,
+        },
+        {
+            id: 11,
+            title: 'Supervisor Change Request',
+            path: '/gcViewPendingSupervisorRequests',
+            iconsrc: ReqIcon,
         },
     ];
 
@@ -164,7 +170,7 @@ const SidebarDefault = () => {
             id: 7,
             title: 'Title Change Requests',
             path: '/supViewPendingTitleRequests',
-            iconsrc: Managmentsicon,
+            iconsrc: ReqIcon,
         },
     ];
 
@@ -203,13 +209,13 @@ const SidebarDefault = () => {
             id: 6,
             title: 'Thesis Title Change Request',
             path: '/viewTitleChangeForm',
-            iconsrc: ReportIcon,
+            iconsrc: ReqIcon,
         },
         {
             id: 7,
             title: 'Supervisor Change Request',
             path: '/viewSupervisorChangeForm',
-            iconsrc: feedbackicon,
+            iconsrc: ReqIcon,
         },
     ];
 
@@ -287,9 +293,8 @@ const SidebarDefault = () => {
     return (
         <>
             <div className="flex min-w-max">
-                <div className="text-gray-900 px-2 pt-4 flex flex-col border-r border-gray-350">
+                <div className="text-gray-900 px-2 pt-4 flex flex-col border-r border-gray-350" style={{ maxHeight: "calc(100vh - 100px)", overflowY: "auto" }}>
                     {menuItems?.map((menuItem) => {
-
                         return (
                             <div className="w-full" key={menuItem.id}>
                                 <NavLink
@@ -306,6 +311,7 @@ const SidebarDefault = () => {
                     })}
                 </div>
             </div>
+
         </>
     );
 };

@@ -12,7 +12,7 @@ export default function SupChangeReq() {
 
     const [supData, setSupData] = useState([]);
     const [selectedSupervisor, setSelectedSupervisor] = useState('');
-    const [ideaProposalBy, setIdeaProposalBy] = useState('');
+    const [ideaProposalBy, setIdeaProposalBy] = useState('Student');
     const [allowSameTopic, setAllowSameTopic] = useState(false);
     const [comments, setComments] = useState('');
 
@@ -51,6 +51,7 @@ export default function SupChangeReq() {
             // You can also set an error state to display a message to the user
             return;
         }
+        setIdeaProposalBy('Student');
 
         try {
             const response = await fetch('http://localhost:5000/std/requestSupervisorChange', {
@@ -119,18 +120,11 @@ export default function SupChangeReq() {
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="ideaProposalBy">
                             Idea Proposed By
                         </label>
-                        <div className="relative">
-                            <Dropdown
-                                placeholder="Proposed by"
-                                options={[
-                                    { label: 'Student', value: 'Student' },
-                                    { label: 'Supervisor', value: 'Supervisor' }
-                                ]}
+                        <input
+                                id="ideaproposedby"
+                                className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                 value={ideaProposalBy}
-                                onChange={(e) => setIdeaProposalBy(e.value)}
-                                className="w-full bg-gray-200 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                             />
-                        </div>
                     </div>
 
                     <div className="mb-6 col-span-2 px-4">

@@ -382,9 +382,9 @@ const requestSupervisorChange = async (req, res) => {
       newsupervisorname: newSupervisorName,
       newsupervisorid: newSupervisorid,
       initiatorComments: comments,
-      currSupReview: 'Pending',
+      currSupReview: 'Approved',
       gcReview: 'Pending',
-      hodReview: 'Pending',
+      hodReview: 'Approved',
     });
 
     const newSupervisorChangeRequest = await supchangerequests.findOne({ where: { rollno: thesisData.rollno } });

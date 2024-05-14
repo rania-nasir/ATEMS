@@ -1519,7 +1519,7 @@ const getSupervisorChangeRequests = async (req, res) => {
             return res.json({ message: 'No pending supervisor change requests found' });
         }
 
-        res.json(pendingSupervisorChangeRequests);
+        res.json({pendingSupervisorChangeRequests});
 
     } catch (error) {
         console.error('Error fetching pending supervisor requests:', error);
@@ -1602,15 +1602,27 @@ const approveSupervisorChangeGC = async (req, res) => {
                 { where: { rollno: rollno } }
             );
             if (updatedRows > 0) {
+                const [updatedRowsRows] = await thesis.update(
+                    {
+                        facultyid: SupervisorRequestDetails.newsupervisorid,
+                        supervisorname: SupervisorRequestDetails.newsupervisorname,
+                    },
+                    { where: { rollno: rollno } }
+                );
 
-                return res.json({ message: 'Supervisor Change Request Approved and forwarded to HOD'});
+                if (updatedRowsRows > 0) {
+                    return res.json({ message: 'Supervisor Change Request Approved'});
+                }
+                else {
+                    return res.json({ message: 'Error approving pending supervisor change request' });
+                }
             }
             else {
                 return res.json({ message: 'Error approving pending supervisor change request' });
             }
         }
         else {
-            return res.json({ message: 'No pending supervisor change requests found' });
+            return res.status(404).json({ error: 'No pending supervisor change requests found' });
         }
     } catch (error) {
         console.error('Error approving pending title request:', error);

@@ -26,10 +26,12 @@ facRouter.delete('/decline-synopsis/:synopsisId', facReview.declineSynopsis); //
 facRouter.get('/supviewPropEvalsStudents', facReview.superisorviewPropEvals);
 facRouter.get('/selectedProposal/:rollno', facReview.selectedProposalDetails);
 facRouter.post('/evaluateProposal/:rollno', facReview.evaluateProposal);
+
 facRouter.get('/supViewPendingTitleRequests', facReview.getTitleChangeRequests);
 facRouter.get('/supViewPendingTitleDetails/:rollno', facReview.getTitleChangeDetails);
 facRouter.post('/supApprovePendingTitleRequests/:rollno', facReview.ApproveTitleChangeSupervisor);
 facRouter.post('/supRejectPendingTitleRequests/:rollno', facReview.RejectTitleChangeSupervisor);
+
 facRouter.get('/supViewPendingSupChangeRequests', facReview.getSupervisorChangeRequests);
 facRouter.get('/supViewPendingSupChangeDetails/:rollno', facReview.getSupervisorChangeDetails);
 facRouter.post('/supApprovePendingSupChangeRequests/:rollno', facReview.approveSupervisorChangeSup);
