@@ -7,6 +7,7 @@ export default function T2Evaluations({ setShowDetails }) {
     const [allPendingFinals, setAllPendingFinals] = useState([]);
 
     const [midmessage, setmidmessage] = useState('');
+    const [finalmessage, setfinalmessage] = useState('');
 
     useEffect(() => {
         async function fetchAllPendingMids() {
@@ -38,33 +39,35 @@ export default function T2Evaluations({ setShowDetails }) {
         fetchAllPendingMids();
     }, []);
 
-    // useEffect(() => {
-    //     async function fetchAllPendingFinals() {
-    //         try {
-    //             const response = await fetch('http://localhost:5000/gc/gcViewPendingFinals', {
-    //                 method: 'GET',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Authorization': `${Cookie.get('jwtoken')}`
-    //                 }
-    //             });
-    //             if (response.ok) {
-    //                 const data = await response.json();
-    //                 setAllPendingFinals(data.pendingFinalReviews);
-    //                 console.log(data.message);
-    //                 if (data.message) {
-    //                     window.alert(data.message);
-    //                 }
-    //             } else {
-    //                 throw new Error('Failed to fetch data');
-    //             }
-    //         } catch (error) {
-    //             console.error('Failed to retrieve data: ', error);
-    //         }
-    //     }
+    useEffect(() => {
+        async function fetchAllPendingFinals() {
+            try {
+                const response = await fetch('http://localhost:5000/gc/allFinal2Evaluations', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `${Cookie.get('jwtoken')}`
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setAllPendingFinals(data.pendingFinalReviews);
+                    console.log(data.message);
+                    if (data.message) {
+                        setfinalmessage(data.message);
+                        // showMessage('info', data.message);
+                        // window.alert(data.message);
+                    }
+                } else {
+                    throw new Error('Failed to fetch data');
+                }
+            } catch (error) {
+                console.error('Failed to retrieve data: ', error);
+            }
+        }
 
-    //     fetchAllPendingFinals();
-    // }, []);
+        fetchAllPendingFinals();
+    }, []);
 
     const handleViewDetails = () => {
         // Trigger setShowDetails when "View Details" link is clicked
@@ -171,8 +174,8 @@ export default function T2Evaluations({ setShowDetails }) {
                                         </td>
                                         <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             <NavLink
-                                                // to={`/viewPendingFinal/${proposal.rollno}`} 
-                                                //  onClick={() => handleViewDetails()} // Call handleViewDetails
+                                                to={`/viewFinal2Evaluation/${proposal.rollno}`} 
+                                                 onClick={() => handleViewDetails()} // Call handleViewDetails
                                                 className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                 View Details
                                             </NavLink>
@@ -182,7 +185,7 @@ export default function T2Evaluations({ setShowDetails }) {
                             ) : (
                                 <tr>
                                     <td colSpan="4" className="px-6 py-4 font-medium text-gray-900 dark:text-white text-center">
-                                        No pending Final evaluations found
+                                    {finalmessage && finalmessage.length > 0 ? finalmessage : "Final evaluation permission record not found"}
                                     </td>
                                 </tr>
                             )}

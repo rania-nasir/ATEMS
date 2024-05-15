@@ -50,7 +50,7 @@ export default function T2Permissions() {
                 }
             });
             const data = await response.json();
-            const status = Boolean(data); // Changed to match server response
+            const status = Boolean(data.gcfinalevalpermission); // Changed to match server response
             setFinal2PermissionStatus(status);
         } catch (error) {
             console.error('Error fetching Final2 permission status:', error);
@@ -99,7 +99,7 @@ export default function T2Permissions() {
                 setMid2PermissionStatus(newStatus); // Updated status
                 showMessage('success', data.message);
             }
-            else{
+            else {
                 showMessage('info', data.message);
             }
 
@@ -110,7 +110,6 @@ export default function T2Permissions() {
             setMessage('Failed to toggle mid2 permission');
         }
     };
-
     const handleConfirmFinal2Permission = async () => {
         try {
             let endpoint = '';
@@ -136,12 +135,12 @@ export default function T2Permissions() {
             const data = await response.json();
 
             // Conditionally update the permission status based on the response message
-            if (data.message === 'Final 2 evaluation permission granted for all records' ||
-                data.message === 'Final 2 Evaluation permission revoked for all records') {
+            if (data.message === 'Final-evaluation permissions successfully granted.' ||
+                data.message === 'Final-evaluation permissions revoked for all record.') {
                 setFinal2PermissionStatus(newStatus); // Updated status
                 showMessage('success', data.message);
             }
-            else{
+            else {
                 showMessage('info', data.message);
             }
 
@@ -218,6 +217,7 @@ export default function T2Permissions() {
                             >
                                 {final2PermissionStatus === true ? 'Revoke Permission' : 'Grant Permission'}
                             </button>
+
                         </div>
                     </div>
                 </div>

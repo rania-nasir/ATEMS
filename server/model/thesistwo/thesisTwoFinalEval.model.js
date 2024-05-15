@@ -39,7 +39,7 @@ const twofinalevaluations = sequelize.define('twofinalevaluations', {
         allowNull: false
     },
     titleAppropriateness: {
-        type: DataTypes.ENUM('Yes', 'No', 'Unsure'),
+        type: DataTypes.ENUM('yes', 'no', 'unsure'),
         allowNull: false
     },
     titleComments: {
@@ -47,7 +47,7 @@ const twofinalevaluations = sequelize.define('twofinalevaluations', {
         allowNull: false
     },
     abstractClarity: {
-        type: DataTypes.ENUM('Yes', 'No', 'Unsure'),
+        type: DataTypes.ENUM('yes', 'no', 'unsure'),
         allowNull: false
     },
     abstractComments: {
@@ -55,7 +55,7 @@ const twofinalevaluations = sequelize.define('twofinalevaluations', {
         allowNull: false
     },
     introductionClarity: {
-        type: DataTypes.ENUM('Yes', 'No', 'Unsure'),
+        type: DataTypes.ENUM('yes', 'no', 'unsure'),
         allowNull: false
     },
     introductionComments: {
@@ -63,7 +63,7 @@ const twofinalevaluations = sequelize.define('twofinalevaluations', {
         allowNull: false
     },
     literatureReviewClarity: {
-        type: DataTypes.ENUM('Yes', 'No', 'Unsure'),
+        type: DataTypes.ENUM('yes', 'no', 'unsure'),
         allowNull: false
     },
     literatureReviewComments: {
@@ -71,7 +71,7 @@ const twofinalevaluations = sequelize.define('twofinalevaluations', {
         allowNull: false
     },
     researchContentRigor: {
-        type: DataTypes.ENUM('Yes', 'No', 'Unsure'),
+        type: DataTypes.ENUM('yes', 'no', 'unsure'),
         allowNull: false
     },
     researchContentComments: {
@@ -79,7 +79,7 @@ const twofinalevaluations = sequelize.define('twofinalevaluations', {
         allowNull: false
     },
     workEvaluation: {
-        type: DataTypes.ENUM('Yes', 'No', 'Unsure'),
+        type: DataTypes.ENUM('yes', 'no', 'unsure'),
         allowNull: false
     },
     workEvaluationComments: {
@@ -87,7 +87,7 @@ const twofinalevaluations = sequelize.define('twofinalevaluations', {
         allowNull: false
     },
     organizationQuality: {
-        type: DataTypes.ENUM('Yes', 'No', 'Unsure'),
+        type: DataTypes.ENUM('yes', 'no', 'unsure'),
         allowNull: false
     },
     organizationComments: {
@@ -95,7 +95,7 @@ const twofinalevaluations = sequelize.define('twofinalevaluations', {
         allowNull: false
     },
     languageQuality: {
-        type: DataTypes.ENUM('Yes', 'No', 'Unsure'),
+        type: DataTypes.ENUM('yes', 'no', 'unsure'),
         allowNull: false
     },
     languageComments: {

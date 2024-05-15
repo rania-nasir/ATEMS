@@ -96,6 +96,7 @@ export default function T2MainSection() {
                                         }} />
                                         <Routes>
                                             <Route path="/viewMid2Evaluation/:rollno" element={<T2MidEvaluationDetails setShowDetails={setShowDetails} />} />
+                                            {/* <Route path="viewFinal2Evaluation/:rollno" element={<T2MidEvaluationDetails setShowDetails={setShowDetails} />} /> */}
                                         </Routes>
                                         {/* <Routes>
                                             <Route path="/viewPendingFinal/:rollno" element={<EvaluationFinal1Details setShowDetails={setShowDetails} />} />

@@ -45,6 +45,10 @@ import AllMid2Evaluations from './Supervisor/T2/AllMid2Evaluations';
 import AllMid2InternalEvaluations from './Supervisor/T2/AllMid2InternalEvaluations'
 import SelectedMid2Details from './Supervisor/T2/SelectedMid2Details';
 
+import AllFinal2Evaluations from './Supervisor/T2/AllFinal2Evaluations';
+import AllFinal2InternalEvaluations from './Supervisor/T2/AllFinal2InternalEvaluations';
+import SelectedFinal2Details from './Supervisor/T2/SelectedFinal2Details';
+
 
 const RoleTabs = () => {
     const { thesisStatus } = useContext(ThesisContext); // Access thesisStatus from ThesisContext
@@ -250,7 +254,7 @@ const RoleTabs = () => {
                                                             navigateBack(); // Call the navigateBack function to navigate back
                                                         }} />
                                                         <Routes>
-                                                            <Route path='/viewSelectedFinalExaminableThesis/:thesisId' element={<SelectedFinal1Details setShowDetails={setShowDetails} />} />
+                                                            <Route path='/final2EvalDetails/:rollno' element={<SelectedFinal2Details setShowDetails={setShowDetails} />} />
                                                         </Routes>
                                                     </>
                                                 )}
@@ -273,7 +277,7 @@ const RoleTabs = () => {
                                                             navigateBack(); // Call the navigateBack function to navigate back
                                                         }} />
                                                         <Routes>
-                                                            <Route path='/viewSelectedFinalExaminableThesis/:thesisId' element={<SelectedFinal1Details setShowDetails={setShowDetails} />} />
+                                                            <Route path='/final2EvalDetails/:rollno' element={<SelectedFinal2Details setShowDetails={setShowDetails} />} />
                                                         </Routes>
                                                     </>
                                                 )}
@@ -314,10 +318,10 @@ const RoleTabs = () => {
                                                 {panel === "Thesis Requests" &&
                                                     <T2GetRegistration setShowDetails={setShowDetails} />}
                                                 {panel === "Mid Evaluation" && <AllMid2Evaluations setShowDetails={setShowDetails} />}
-                                                {panel === "Final Evaluation" && <AllFinal1Evaluations setShowDetails={setShowDetails} />}
+                                                {panel === "Final Evaluation" && <AllFinal2Evaluations setShowDetails={setShowDetails} />}
                                                 {/* INTERNALS  */}
                                                 {panel === "Mid Evaluations" && <AllMid2InternalEvaluations setShowDetails={setShowDetails} />}
-                                                {panel === "Final Evaluations" && <AllFinal1InternalEvaluations setShowDetails={setShowDetails} />}
+                                                {panel === "Final Evaluations" && <AllFinal2InternalEvaluations setShowDetails={setShowDetails} />}
                                                 {/* MSRC */}
                                                 {/* {panel === "MSRC Thesis Requests" && <MSRCAllThesis setShowDetails={setShowDetails} />} */}
                                                 {/* HOD  */}

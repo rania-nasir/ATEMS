@@ -375,7 +375,7 @@ const supthesis2AllFinalEvals = async (req, res) => {
         }
 
         console.log("Examinable Permission ::: ", examinableThesisWithPermission);
-        return res.json(examinableThesisWithPermission);
+        return res.json({examinableThesisWithPermission});
 
     } catch (error) {
         console.error('Error fetching examinable theses:', error);
@@ -558,6 +558,8 @@ const evaluateFinal2 = async (req, res) => {
         } = req.body;
 
 
+       
+
         const existingEvaluation = await twofinalevaluations.findOne({
             where: {
                 facultyid: facultyId,
@@ -570,13 +572,12 @@ const evaluateFinal2 = async (req, res) => {
         }
 
         // Validate request body fields here if necessary
-
         const newEvaluation = await twofinalevaluations.create({
             rollno,
             stdname,
             thesistitle,
-            supervisorname,
-            supervisorid,
+            supervisorname: facultyname,
+            supervisorid: facultyid,
             gcFinalCommentsReview: 'Pending',
             //reportfilename,
             facultyid,
@@ -600,6 +601,8 @@ const evaluateFinal2 = async (req, res) => {
             generalComments
         });
 
+        console.log("faculty id::::::::::::::", facultyid);
+        console.log("facultyname::::::::::::::", facultyname);
         return res.json({ message: 'Final 2 evaluation completed successfully', evaluation: newEvaluation });
     } catch (error) {
         console.error('Error evaluating Final 2:', error);
