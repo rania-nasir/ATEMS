@@ -44,7 +44,7 @@ const SelectedFinal2Details = ({ setShowDetails }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/faculty/final2EvalDetails`, {
+                const response = await fetch(`http://localhost:5000/faculty/final2EvalDetails/${rollno}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ const SelectedFinal2Details = ({ setShowDetails }) => {
     const handleSubmit = async (event) => {
         // event.preventDefault();
 
-        if (!titleAppropriateness || !abstractClarity || !introductionClarity || !literatureReviewClarity || !researchContentRigor || !workEvaluation || !organizationQuality || !languageQuality || !titleComments || !abstractComments || !introductionComments || !literatureReviewComments || !researchContentComments || !workEvaluationComments || !organizationComments || !languageComments || !generalComments || !grade) {
+        if (!titleAppropriateness || !abstractClarity || !introductionClarity || !literatureReviewClarity || !researchContentRigor || !workEvaluation || !organizationQuality || !languageQuality || !titleComments || !abstractComments || !introductionComments || !literatureReviewComments || !researchContentComments || !workEvaluationComments || !organizationComments || !languageComments || !generalComments) {
             showMessage('error', 'Please fill all the fields before evaluating');
             setVisible(false);
             return;
@@ -108,7 +108,7 @@ const SelectedFinal2Details = ({ setShowDetails }) => {
                         rollno: thesisDetails.rollno,
                         stdname: thesisDetails.stdname,
                         thesistitle: thesisDetails.thesistitle,
-                        reportfilename: thesisDetails.thesistwofilename,
+                        // reportfilename: thesisDetails.thesistwofilename,
                         facultyid: userId,
                         facultyname,
                         titleAppropriateness,
@@ -128,7 +128,7 @@ const SelectedFinal2Details = ({ setShowDetails }) => {
                         languageQuality,
                         languageComments,
                         generalComments,
-                        grade,
+                        // grade,
                     })
                 });
 
@@ -161,7 +161,7 @@ const SelectedFinal2Details = ({ setShowDetails }) => {
 
     const footerContent = (
         <div>
-            <Button label="Grade" icon="pi pi-check" onClick={handleSubmit} />
+            <Button label="Submit" icon="pi pi-check" onClick={handleSubmit} />
         </div>
     );
 
@@ -170,7 +170,7 @@ const SelectedFinal2Details = ({ setShowDetails }) => {
             <Toast ref={toastTopCenter} position="top-center" />
             <Dialog visible={visible} modal header={headerElement} footer={footerContent} style={{ width: '30rem' }} onHide={() => setVisible(false)}>
                 <p className="m-0">
-                    Are you sure you want to grade this?
+                    Are you sure you want to evaluate this?
                 </p>
             </Dialog>
             <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-2 lg:px-8">
@@ -207,7 +207,7 @@ const SelectedFinal2Details = ({ setShowDetails }) => {
                                     />
                                 </div>
                             </div>
-                            <div className='col-span-2 py-1'>
+                            {/* <div className='col-span-2 py-1'>
                                 <div className='w-full px-3'>
                                     <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
                                         for="grid-first-name">
@@ -231,7 +231,7 @@ const SelectedFinal2Details = ({ setShowDetails }) => {
                                         readOnly
                                     />
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div className='col-span-6 py-2'>
                                 <div className='w-full px-3'>
@@ -707,7 +707,7 @@ const SelectedFinal2Details = ({ setShowDetails }) => {
                         </div>
                         <div className='flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
 
-                            <h3 class="mb-5 text-lg font-medium text-gray-900 dark:text-white">Please specify one of the following:</h3>
+                            {/* <h3 class="mb-5 text-lg font-medium text-gray-900 dark:text-white">Please specify one of the following:</h3>
                             <ul class="grid w-full gap-6 md:grid-cols-3">
                                 <li>
                                     <input type="radio" id="hosting-Ready" name="hosting" value='Ready' class="hidden peer"
@@ -751,7 +751,7 @@ const SelectedFinal2Details = ({ setShowDetails }) => {
                                         </svg>
                                     </label>
                                 </li>
-                            </ul>
+                            </ul> */}
                             <div className="mt-6">
                                 <button className="block flex-shrink-0 text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-md shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
                                     type="button"
