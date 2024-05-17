@@ -25,7 +25,7 @@ ATEMS is a web-based platform that digitizes the manual process of thesis for al
    ```sh
    https://github.com/rania-nasir/ATEMS.git
 
-2. Install NPM Packages for bother Client and Server Folder
+2. Install NPM Packages For Both Client And Server Folder
    ```sh
    npm install 
 
