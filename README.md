@@ -16,8 +16,6 @@ ATEMS is a web-based platform that digitizes the manual process of thesis for al
 * <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white"/>
 * <img src="https://img.shields.io/badge/postman-323330?style=for-the-badge&logo=postman&logoColor=green"/>
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 ## Installation
   
 1. Clone This Repository
