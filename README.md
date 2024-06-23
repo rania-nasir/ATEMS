@@ -1,5 +1,4 @@
-# ATEMS
-Final Year Project - ATEMS (Academic Thesis Evaluation And Management System)
+# Final Year Project - ATEMS (Academic Thesis Evaluation And Monitoring System)
 
 ## Introduction
 ATEMS is a web-based platform that digitizes the manual process of thesis for all consumers involved. It provides a simplified and error-free system for students and faculty. The platform is designed to ensure a smooth flow of the management and evaluation of thesis. It tackles the mismanagement that can occur in the manual process and provides fast and optimized path to students and faculty. The processes of submission for students, selection of faculty for supervision/evaluations, announcements, communication between students and faculty and grade evaluations are handled on ATEMS.
