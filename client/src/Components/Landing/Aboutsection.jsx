@@ -22,9 +22,9 @@ const Aboutsection = () => {
                             </NavLink>
                             <div class="p-5">
                                 <NavLink to="#">
-                                    <h5 class="mb-2 mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Welcome to ATEMS - the Academic Thesis Evaluation and Management System</h5>
+                                    <h5 class="mb-2 mt-5 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Welcome to ATEMS - the Academic Thesis Evaluation and Monitoring System</h5>
                                 </NavLink>
-                                <p class="mb-3 mt-5 font-normal text-gray-700 dark:text-gray-400"> Revolutionizing thesis management. Streamlined, error-free, and user-friendly. Modernize your thesis experience today!</p>
+                                <p class="mb-3 mt-5 font-normal text-gray-700 dark:text-gray-400"> Revolutionizing thesis monitoring. Streamlined, error-free, and user-friendly. Modernize your thesis experience today!</p>
                             </div>
                         </div>
 

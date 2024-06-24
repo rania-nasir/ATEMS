@@ -10,7 +10,7 @@ const ATEMS = () => {
     return (
         <NavLink to='/'>
             <span className='text-xl font-bold ml-2 mr-2 '>
-                {isLandingPage || isWhoPage ? 'Academic Thesis Evaluation And Management System' : 'ATEMS'}
+                {isLandingPage || isWhoPage ? 'Academic Thesis Evaluation And Monitoring System' : 'ATEMS'}
             </span>
         </NavLink>
     );
