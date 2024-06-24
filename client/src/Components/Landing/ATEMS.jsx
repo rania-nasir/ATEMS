@@ -8,7 +8,7 @@ const ATEMS = () => {
     const isWhoPage = location.pathname === '/who';
 
     return (
-        <span className='text-xl font-medium m-6'>{isLandingPage || isWhoPage ? 'Academic Thesis Evaluation And Management System' : 'ATEMS'}</span>
+        <span className='text-xl font-medium m-6'>{isLandingPage || isWhoPage ? 'Academic Thesis Evaluation And Monitoring System' : 'ATEMS'}</span>
     );
 }
 

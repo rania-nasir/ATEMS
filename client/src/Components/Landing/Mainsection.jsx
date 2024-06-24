@@ -16,7 +16,7 @@ const Mainsection = () => {
                             Revolutionize Thesis Evaluation with ATEMS: <span className='text-teal-600'>Elevate Academic Excellence!</span>
                         </p>
                         <p className="text-lg pt-8 px-2 text-justify">
-                            Discover a new era in academic thesis evaluation with ATEMS. Our software redefines the entire process, combining an intuitive interface, collaborative tools, and customizable evaluations. Say goodbye to the complexities of thesis management as ATEMS ensures secure document handling, compatibility across platforms, and scalable solutions. We prioritize your academic journey, offering a robust system that not only streamlines processes but also gathers valuable feedback for continuous improvement. Elevate your thesis evaluation experience with ATEMS – where innovation meets efficiency.
+                            Discover a new era in academic thesis evaluation with ATEMS. Our software redefines the entire process, combining an intuitive interface, collaborative tools, and customizable evaluations. Say goodbye to the complexities of thesis monitoring as ATEMS ensures secure document handling, compatibility across platforms, and scalable solutions. We prioritize your academic journey, offering a robust system that not only streamlines processes but also gathers valuable feedback for continuous improvement. Elevate your thesis evaluation experience with ATEMS – where innovation meets efficiency.
                         </p>
                     </div>
 
